@@ -1,9 +1,8 @@
 {
-    "guildId":"795030154158014494",
-    "hiByeChannel":"",
-    "hiRole": "796735115421417503",
-    "hiByeLog":"798522008777654322",
-    "deleteLog":"798521943799627807",
-    "serverLog":"808271839101059092",
-    "warningLog":"809020625792008202"
+    "guildId":"",//server id
+    "hiByeChannel":"",// the channel where the bot sends a welcome message to
+    "hiRole": "",// the role that is given when a member joins
+    "hiByeLog":"",// a logging channel for when members join and leave the server
+    "deleteLog":"",//a logging channel for deleted/edited messages
+    "serverLog":""//a logging channel for any changes that happen to the server
 }
