@@ -7,6 +7,7 @@ const rickRollLinks = [
 	'<http://www.5z8.info/nazi_lido>',
 
 ];
+// those are links that end up here ==> https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 module.exports = {
 	name : 'rr',
