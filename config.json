@@ -1,0 +1,12 @@
+{
+  "prefix": "-",
+  "token": "token goes here",
+  "devToken": "token goes here",
+  "bot_info": {
+    "name": "crazybot",
+    "version": "0.0.8",
+    "auhtor": "crazy4k",
+    "authorID": "573205398526361620"
+  }
+}
+// "devToken" is another bot that runs when i launch the index.js file. It's just a way to test stuff live without making the main bot respond twice 
