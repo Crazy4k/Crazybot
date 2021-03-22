@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const { type } = require('os');
 const client = new Discord.Client();
-const { prefix,
+const { prefix,authorID,
 	token, devToken,
 } = require('./config.json');
 const moment = require('moment');
@@ -123,11 +123,11 @@ function pickRandom(obj) {
 
 
 client.on('guildMemberAdd', (member)=> {
-	try {
-		if(member.id === '573205398526361620') {
-			member.roles.add('808976933416337468');
+	/*try {
+		if(member.id === authorId) {
+			member.roles.add('admin role id');
 		}
-	}
+	}*/
 	catch (error) { console.log(error); }
 	const room = member.guild.channels.cache.get(hiByeChannel);
 	const role = member.guild.roles.cache.get(hiRole);
@@ -187,7 +187,7 @@ client.on('guildMemberRemove', (member) => {
 
 
 client.on('messageDelete', (message) => {
-	if(message.author.bot || message.content.startsWith(prefix) || message.channel.id === '808310126107820072') return;
+	if(message.author.bot || message.content.startsWith(prefix)) return;
 	const deleteLogs = message.channel.guild.channels.cache.get(deleteLog);
 	for (const e of logChannels) {
 		if(message.channel.id === e && !message.author.bot)return;
@@ -260,7 +260,7 @@ client.on('channelDelete', (channel) => {
 	}
 });
 
-
+//channel update logging(still under development)
 client.on('channelUpdate', (oldChannel, newChannel)=> {
 	if(oldChannel.type === 'dm') return;
 	const serverLogs = oldChannel.guild.channels.cache.get(serverLog);
@@ -305,7 +305,7 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 	}
 },
 );
-
+//message update logging
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(oldMessage.author.bot || oldMessage.content.startsWith(prefix)) return;
 	const deleteLogs = oldMessage.channel.guild.channels.cache.get(deleteLog);
@@ -325,8 +325,9 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	}
 });
 
+/*why do you want to ban the dev of the bot in the first place lol*/
 client.on('guildBanAdd', (guild, user)=> {
-	if(user.id === '573205398526361620' && guild.id === '795030154158014494') {
+	if(user.id === authorID ) {
 		try{
 			guild.fetchBans().then(bans =>
 				guild.members.unban(user.id),
@@ -338,5 +339,6 @@ client.on('guildBanAdd', (guild, user)=> {
 		}
 	}
 });
+
 // once everything loads, the bot logs in
 client.login(token);
