@@ -1,13 +1,13 @@
 {
   "name": "crazybot",
   "version": "1.0.0",
-  "description": "",
+  "description": "discord bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "crazy4k",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
