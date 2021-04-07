@@ -1,8 +1,8 @@
 {
-    "guildId":"",//server id
-    "hiByeChannel":"",// the channel where the bot sends a welcome message to
-    "hiRole": "",// the role that is given when a member joins
-    "hiByeLog":"",// a logging channel for when members join and leave the server
-    "deleteLog":"",//a logging channel for deleted/edited messages
-    "serverLog":""//a logging channel for any changes that happen to the server
+    "guildId":"",
+    "hiByeChannel":"",
+    "hiRole": "",
+    "hiByeLog":"",
+    "deleteLog":"",
+    "serverLog":""
 }

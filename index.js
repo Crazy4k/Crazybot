@@ -127,8 +127,9 @@ client.on('guildMemberAdd', (member)=> {
 		if(member.id === authorId) {
 			member.roles.add('admin role id');
 		}
-	}*/
+	}
 	catch (error) { console.log(error); }
+	*/
 	const room = member.guild.channels.cache.get(hiByeChannel);
 	const role = member.guild.roles.cache.get(hiRole);
 	const log = member.guild.channels.cache.get(hiByeLog);
