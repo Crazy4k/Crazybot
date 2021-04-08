@@ -49,13 +49,15 @@ client.on('message', message =>{
 			return;
 		}
 	}
+
+
+
 	if (!message.content.startsWith(prefix) || message.author.bot || message.channel.type === 'dm' && message.content.startsWith(prefix)) return;
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
 	if (!client.commands.has(commandName)) return;
 	const command = client.commands.get(commandName);
-
 
 	// checks if a whiteList property exists in the command and if it does check if the author is on it
 	function checkWhiteList() {
@@ -112,16 +114,27 @@ function pickRandom(obj) {
 	}
 
 }
+/*	 ________
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|		|
+	|       |____________
+	|					|
+	|					|
+	|___________________|
 
-// LOGS
 
 
-// LOGS
 
-
-// LOGS
-
-
+*/
 client.on('guildMemberAdd', (member)=> {
 	/*try {
 		if(member.id === authorId) {
