@@ -114,21 +114,21 @@ function pickRandom(obj) {
 	}
 
 }
-/*	 ________
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
-	|		|
+/*	________
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
 	|       |____________
-	|					|
-	|					|
+	|		    |
+	|		    |
 	|___________________|
 
 
@@ -336,21 +336,6 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 				{ name:'After', value:newMessage.content, inline: false },
 			);
 		deleteLogs.send(embed);
-	}
-});
-
-/*why do you want to ban the dev of the bot in the first place lol*/
-client.on('guildBanAdd', (guild, user)=> {
-	if(user.id === authorID ) {
-		try{
-			guild.fetchBans().then(bans =>
-				guild.members.unban(user.id),
-			);
-			return;
-		}
-		catch(error) {
-			return console.error(error);
-		}
 	}
 });
 
