@@ -1,6 +1,11 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const {activityLog} = require('../info.json');
+const makeEmbed = require('../embed.js');
+
+
+// all the configuraions are found in "activity.json"
+const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, activityCheckEmoji}= require('./activity.json');
+
 
 module.exports = {
 	name : 'activity',
@@ -10,16 +15,16 @@ module.exports = {
 	execute(message, args) {
 
 
-	const activityLogChannel = message.guild.channels.cache.get(activityLog);
+	const activityLogChannel = message.guild.channels.cache.get(activityLogchannelID);
     const filter = (reaction, user) => user.bot === false;
 
-
-
 //sends the message and reacts with ✅
-	message.channel.send(" activity-check do:white_check_mark: if your online.")
+
+	message.channel.send(activityCheckMessage)
 		.then(msg => {
-			msg.react('✅');
-			const collector = msg.createReactionCollector(filter, {time : 7200000 });
+
+			msg.react(activityCheckEmoji);
+			const collector = msg.createReactionCollector(filter, {time : activityCheckReactionTime });
 
 			let = activePeople = [];
 

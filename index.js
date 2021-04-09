@@ -14,7 +14,7 @@ const commandfiles02 = fs.readdirSync('./Cmoderation/').filter(file =>file.endsW
 const commandfiles03 = fs.readdirSync('./Cothers/').filter(file =>file.endsWith('.js'));
 
 client.once('ready', function() {
-	console.log('bot succesfuly launched');
+	console.log('Bot succesfuly launched.');
 });
 
 
@@ -59,7 +59,7 @@ client.on('message', message =>{
 	if (!client.commands.has(commandName)) return;
 	const command = client.commands.get(commandName);
 
-	// checks if a whiteList property exists in the command and if it does check if the author is on it
+	// checks if a whiteList property exists in the command, and if it does, it checks if the author has the permission
 	function checkWhiteList() {
 		if(!command.whiteList) {
 			try{
@@ -114,22 +114,23 @@ function pickRandom(obj) {
 	}
 
 }
-/*	________
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|	|
-	|       |____________
-	|		    |
-	|		    |
-	|___________________|
+
+/*	 ________						_________________________			_________________________________		
+	|		|						|						|           |								|
+	|		|						|	________________	|			|		_________________		|
+	|	  	|						|	|				|	|			|		|				|		|
+	|		|						|	|				|	|			|		|				|_______|
+	|	  	|						|	|				|	|			|		|						
+	|		|						|	|				|	|			|		|
+	|		|						|	|				|	|			|		|
+	|		|						|	|				|	|			|		|						
+	|		|						|	|				|	|			|		|		_________________
+	|	  	|						|	|				|	|			|		|		|				|
+	|		|						|	|				|	|			|		|		|___________	|
+	|       |____________			|	|				|	|			|		|					|	|
+	|					|			|	|_______________|	|			|		|___________________|	|
+	|					|			|						|			|								|
+	|___________________|			|_______________________|			|_______________________________|			S
 
 
 
