@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
-const prefix = require('../config.json');
-client.client;
+const makeEmbed = require('../embed.js');
+const faliedCommandTO = 4000;
+const failedEmbedTO = 15000;
+
 
 module.exports = {
 	name : 'ban',
@@ -9,79 +10,60 @@ module.exports = {
 	usage:'!ban <@user> <reason> [ delete messages 0-7]',
 	whiteList:['BAN_MEMBERS'],
 	execute(message, args) {
+
+		
+		const time = args[1] * 2 / 2;
+
 		if(!message.mentions.users.first()) {
 			try {
-				const embed = new Discord.MessageEmbed()
-					.setColor('#f7f7f7')
-					.setTitle('invalid username')
-					.setDescription(this.usage);
+				const embed = makeEmbed('invalid username',this.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout :10000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
-				message.delete({ timeout:3000 });
-				return;
-			}
-			catch (error) {
+				return message.delete({ timeout: faliedCommandTO });
+			} catch (error) {
 				console.error(error);
 			}
 		}
+
 		const target = message.guild.members.cache.get(message.mentions.users.first().id);
-		const time = args[1] * 2 / 2;
+
 		if(!target.bannable) {
-			message.channel.send('nope')
-				.then(msg=> msg.delete({ timeout : 7000 }))
-				.catch(console.error);
-			message.delete({ timeout: 3000 })
-				.catch(console.error);
-			return;
-		}
-		if(args.length === 1) {
+			return message.channel.send('nope')
+
+		} else if(args.length === 1) {
 			try {
-				const embed = new Discord.MessageEmbed()
-					.setColor('#f7f7f7')
-					.setTitle('Missing argument : reason')
-					.setDescription(this.usage);
+				const embed = makeEmbed('Missing argument : reason',this.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout :10000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
-				message.delete({ timeout:3000 });
-				return;
-			}
-			catch (error) {
+				return message.delete({ timeout: faliedCommandTO });
+			} catch (error) {
 				console.error(error);
 			}
-		}
-		else if(!isNaN(time)) {
+		} else if(!isNaN(time)) {
 			try {
 				message.channel.send(`The user <@${target.id}> has been banned for ${args.slice(2).join(' ')}`)
-					.then(msg => msg.delete({ timeout: 5000 }))
 					.catch(console.error);
-				message.delete({ timeout: 5000 });
+
+				message.delete({ timeout:  faliedCommandTO });
 				target.ban({ reason:args.slice(2).join(' '), days:time });
-			}
-			catch(error) {
+			} catch(error) {
 				console.error(error);
-				const embed = new Discord.MessageEmbed()
-					.setTitle('ERROR 103')
-					.setColor('FF0000')
-					.setDescription('There was an issue executing the command \ncontact the developer to fix this problem.')
-					.setFooter('developed by crazy4K')
-					.setTimestamp();
+				const embed = makeEmbed('ERROR 103', 'There was an issue executing the command \ncontact the developer to fix this problem.', true, 'FF0000' );
 				message.channel.send(embed);
 			}
 			return;
-		}
-		else if(typeof args[1] === 'string' && target.bannable) {
+		} else if(typeof args[1] === 'string' && target.bannable) {
 			message.channel.send(`The user <@${target.id}> has been banned for :  ${args.slice(1).join(' ')}`);
 
-			message.delete({ timeout:3000 })
+			message.delete({ timeout: faliedCommandTO })
 				.catch(console.error);
-			target.ban({ reason:args.slice(1).join(' ') });
-			return;
+			return target.ban({ reason:args.slice(1).join(' ') });
+
 		} message.channel.send('i couldn\'t ban that user maybe because he had a higher rank than you')
-			.then(msg => msg.delete({ timeout:10000 }))
 			.catch(console.error);
 	},
 
