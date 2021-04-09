@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
-const makeEmbed = require('../embed.js');
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 
 // all the configuraions are found in "activity.json"
@@ -31,7 +30,7 @@ module.exports = {
 			collector.on('collect',(r, u) => activePeople.push(u.tag));
 
 			collector.on('end', collected => {
-				activityLogChannel.send(`People who reacted:\n${activePeople}`);
+				activityLogChannel.send(`People who reacted:\n${activePeople.join(', ')}`);
 			});
 
 		})
@@ -39,13 +38,6 @@ module.exports = {
 
 //deletes the !activity
 		
-	message.delete({ timeout : 4250 })
-		.then(msg => msg.channel)
-		.catch(console.error);
-
-
-        
-
-
+	message.delete({ timeout : faliedCommandTO });
 	},
 };

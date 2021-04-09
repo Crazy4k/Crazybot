@@ -2,9 +2,12 @@
   "prefix": "!",
   "token": "",
   "devToken": "token goes here",
+  "faliedCommandTO" : 4000,
+  "failedEmbedTO" : 15000,
+  "deleteFailedMessaged" : true,
   "bot_info": {
     "name": "crazybot",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "auhtor": "crazy4k",
     "authorID": "573205398526361620"
   }
