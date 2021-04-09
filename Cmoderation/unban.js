@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const makeEmbed = require('../embed.js');
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
+
 
 module.exports = {
 	name : 'unban',
@@ -16,10 +18,10 @@ module.exports = {
 				const embed = makeEmbed('invalid ID',this.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout :10000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
 
-				message.delete({ timeout:4000 });
+				message.delete({ timeout: faliedCommandTO });
 				return;
 			} catch (error) {
 				console.error(error);
@@ -30,9 +32,9 @@ module.exports = {
 				const embed = makeEmbed('Missing reason',thsi.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout :10000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
-				message.delete({ timeout:4000 });
+				message.delete({ timeout: faliedCommandTO });
 
 				return;
 			} catch (error) {

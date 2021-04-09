@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const makeEmbed = require('../embed.js');
-const faliedCommandTO = 4000;
-const failedEmbedTO= 15000;
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 
 module.exports = {

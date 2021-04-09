@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const makeEmbed = require('../embed.js');
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
+
 
 module.exports = {
 	name : 'role-remove',

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const makeEmbed = require('../embed.js');
-
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 
 module.exports = {
@@ -20,30 +20,30 @@ module.exports = {
 			const embed = makeEmbed("Missing channel name", this.usage);
 	
 			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : 15000 }))
+				.then(msg => msg.delete({ timeout : failedEmbedTO }))
 				.catch(console.error);
 
-			message.delete({ timeout: 4000 });
+			message.delete({ timeout: faliedCommandTO });
 			return;
 		} else if(args.legth === 1) {
 
 			const embed = makeEmbed("Missing message", this.usage);
 
 			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : 15000 }))
+				.then(msg => msg.delete({ timeout : failedEmbedTO }))
 				.catch(console.error);
 
-			message.delete({ timeout: 4000 });
+			message.delete({ timeout: faliedCommandTO });
 			return;
 		} else if(!sudoStuff.length) {
 
 			const embed = makeEmbed('Can\'t send an empty message', this.usage);
 
 			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : 15000 }))
+				.then(msg => msg.delete({ timeout : failedEmbedTO }))
 				.catch(console.error);
 	
-			message.delete({ timeout: 4000 });
+			message.delete({ timeout: faliedCommandTO });
 			return;
 		} else if(isNaN(message.guild.channels.cache.get(args[0]) * 1) && args[0] === 'here') {
 
@@ -54,10 +54,10 @@ module.exports = {
 				const embed = makeEmbed('Invalid channel name',this.usage);
 	
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout : 15000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
 
-				message.delete({ timeout: 4000 });
+				message.delete({ timeout: faliedCommandTO });
 			}
 			message.delete();
 
@@ -73,16 +73,16 @@ module.exports = {
 				const embed =makeEmbed ('Invalid channel name',this.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout : 15000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
-				message.delete({ timeout: 4000 });
+				message.delete({ timeout: faliedCommandTO });
 	
 				return;
 			}
 
 			location.send(sudoStuff);
 
-			message.delete({ timeout: 2000 });
+			message.delete();
 
 		} else if(!isNaN(message.guild.channels.cache.get(args[0]) * 1)) {
 
@@ -93,17 +93,17 @@ module.exports = {
 				const embed = makeEmbed('Invalid channel id',this.usage);
 
 				message.channel.send(embed)
-					.then(msg => msg.delete({ timeout : 15000 }))
+					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
 	
-				message.delete({ timeout: 4000 });
+				message.delete({ timeout: faliedCommandTO });
 
 				return;
 			}
 
 			location.send(sudoStuff);
 
-			message.delete({ timeout: 4000 });
+			message.delete();
 		}
 		return;
 
