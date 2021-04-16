@@ -6,8 +6,10 @@ const { prefix,authorID,
 	token, devToken,
 } = require('./config.json');
 const moment = require('moment');
+const keepAlive = require('./server.js');
 
 
+keepAlive();
 client.commands = new Discord.Collection();
 const commandfiles01 = fs.readdirSync('./Cfun/').filter(file =>file.endsWith('.js'));
 const commandfiles02 = fs.readdirSync('./Cmoderation/').filter(file =>file.endsWith('.js'));
