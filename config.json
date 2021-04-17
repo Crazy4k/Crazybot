@@ -1,7 +1,6 @@
 {
   "prefix": "!",
   "token": "",
-  "devToken": "token goes here",
   "faliedCommandTO" : 4000,
   "failedEmbedTO" : 15000,
   "deleteFailedMessaged" : true,
