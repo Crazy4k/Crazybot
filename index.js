@@ -7,6 +7,8 @@ const moment = require('moment');
 const keepAlive = require('./server.js');
 
 
+
+
 keepAlive();
 client.commands = new Discord.Collection();
 const commandfiles01 = fs.readdirSync('./Cfun/').filter(file =>file.endsWith('.js'));
@@ -342,3 +344,5 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 // once everything loads, the bot logs in
 client.login(token);
+
+const mySecret = process.env['Discord token']
