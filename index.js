@@ -2,11 +2,11 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const { type } = require('os');
 const client = new Discord.Client();
-const { prefix,authorID,
-	token, devToken,
-} = require('./config.json');
+const { prefix,authorID,token,} = require('./config.json');
 const moment = require('moment');
 const keepAlive = require('./server.js');
+
+
 
 
 keepAlive();
@@ -344,3 +344,5 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 // once everything loads, the bot logs in
 client.login(token);
+
+const mySecret = process.env['Discord token']
