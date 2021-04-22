@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 const makeEmbed = require('../embed.js');
 const rickRollLinks = [

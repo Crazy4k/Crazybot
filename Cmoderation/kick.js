@@ -1,5 +1,3 @@
-const Discord = require('discord.js');
-const prefix = require('../config.json');
 const makeEmbed = require('../embed.js');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 

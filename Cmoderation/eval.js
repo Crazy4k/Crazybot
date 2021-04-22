@@ -1,20 +1,23 @@
-
+const fs = require("fs");
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 const {bot_info} = require("../config.json");
 const makeEmbed = require('../embed.js');
 const authorID = bot_info.authorID;
+const { hiByeChannel, hiRole, hiByeLog, deleteLog, serverLog, warningLog } = require('../info.json');
+const arrayOfData = require("../servers.json");
 
 module.exports = {
 	name : 'eval',
-	description : 'makes the bot do with code',
+	description : 'makes the bot do stuff with eval();',
 	usage:'!eval ``` code ``',
 	whiteList : ['ADMINISTRATOR'],
 	execute(message, args) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
         if (args.length === 0) return message.channel.send("No code was given");
-        
 
+        const log  = item => message.channel.send(item);
+        
         try {
             let evalString = args.join(" ");
             eval(evalString);

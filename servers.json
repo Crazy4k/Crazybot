@@ -1,0 +1,35 @@
+[
+  {
+    "guildId": "808425970976423956",
+    "hiByeChannel": "",
+    "hiRole": "",
+    "hiByeLog": "831926440650866718",
+    "deleteLog": "831925979676672001",
+    "serverLog": "831926299424849942",
+    "warningLog": "831926178675556393",
+    "deleteMessagesInLogs": true,
+    "deleteFailedCommands": true
+  },
+  {
+    "guildId": "834734044729704508",
+    "hiByeChannel": "",
+    "hiRole": "",
+    "hiByeLog": "834765334895525899",
+    "deleteLog": "834763484155215883",
+    "serverLog": "",
+    "warningLog": "",
+    "deleteMessagesInLogs": true,
+    "deleteFailedCommands": true
+  },
+  {
+    "guildId": "833029965481508875",
+    "hiByeChannel": "",
+    "hiRole": "",
+    "hiByeLog": "834765308082126878",
+    "deleteLog": "834763503319384174",
+    "serverLog": "",
+    "warningLog": "",
+    "deleteMessagesInLogs": true,
+    "deleteFailedCommands": true
+  }
+]
