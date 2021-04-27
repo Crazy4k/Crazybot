@@ -34,9 +34,6 @@ for(const file of commandfiles03) {
 	client.commands.set(command.name, command);
 }
 
-const { hiByeChannel, hiRole, hiByeLog, deleteLog, serverLog, warningLog } = require('./info.json');
-const logChannels = [hiByeLog, deleteLog, serverLog, warningLog];
-
 client.on('guildCreate', guild => {
 
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
@@ -56,7 +53,13 @@ client.on('guildCreate', guild => {
 				serverLog:"",
 				warningLog:"",
 				deleteMessagesInLogs : true,
-				deleteFailedCommands : true	
+				deleteFailedCommands : true	,
+				isSet:false,
+				warningRoles: {
+					firstwarningRole:"",
+					sencondWWanringRole:"",
+					thirdWarningRole:""
+				}
 			};
 			
 			JsonedDB.push(serverObject);
@@ -309,7 +312,7 @@ client.on('channelCreate', (channel) => {
 			const JsonedDB = JSON.parse(config);
 			
 			for( i of JsonedDB) {
-				if (message.guild.id === i.guildId) {
+				if (channel.guild.id === i.guildId) {
 					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
 					if (typeof serverLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()

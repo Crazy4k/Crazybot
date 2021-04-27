@@ -3,7 +3,6 @@ const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../confi
 const {bot_info} = require("../config.json");
 const makeEmbed = require('../embed.js');
 const authorID = bot_info.authorID;
-const { hiByeChannel, hiRole, hiByeLog, deleteLog, serverLog, warningLog } = require('../info.json');
 const arrayOfData = require("../servers.json");
 
 module.exports = {
