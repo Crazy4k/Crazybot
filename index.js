@@ -67,16 +67,43 @@ client.on('guildCreate', guild => {
 			fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
 				
 				if(err) {
-					message.channel.send('There was a problem with the bot:x:,check the console or contact the developer to fix this');
+	
 					console.log(err);
 				} else {
-
-					return console.log(`joined a new server. name: ${guild.name}`);
+					console.log(`joined a new server. name: ${guild.name}`);
 				}
 			});
 		} catch (err) {console.log(err);}
 	})
 });
+
+client.on('guildDelete', guild => {
+
+	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+		
+		try {
+			const JsonedDB = JSON.parse(config);
+			
+			for( i of JsonedDB) {
+				if (guild.id === i.guildId) {
+					JsonedDB.splice(JsonedDB.indexOf(i), 1);
+					
+					fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
+				
+						if(err) {
+							
+							console.log(err);
+						} else {
+							console.log(`Left a server. name: ${guild.name}`);
+						}
+					});
+				}
+			}	
+		} catch (err) {console.log(err);}
+	})
+});
+
+
 
 
 // setting up all the commands
@@ -88,17 +115,19 @@ client.on('message', message =>{
 			const JsonedDB = JSON.parse(config);
 			for( i of JsonedDB) {
 				if (message.guild.id === i.guildId && !message.author.bot){
-
-					switch (message.channel.id) {
-						case i.hiByeLog: 
-						case i.deleteLog: 
-						case i.serverLog: 
-						case i.warningLog: 
-						message.delete().catch(console.error);
-						message.channel.send('You can\'t send a message in the logs :x:')
-							.then(msg=> msg.delete({ timeout:2000 })).catch(console.error);
-						break;
-					}		
+					if(i.deleteMessagesInLogs) {
+						switch (message.channel.id) {
+							case i.hiByeLog: 
+							case i.deleteLog: 
+							case i.serverLog: 
+							case i.warningLog: 
+							message.delete().catch(console.error);
+							message.channel.send('You can\'t send a message in the logs :x:')
+								.then(msg=> msg.delete({ timeout:2000 })).catch(console.error);
+							break;
+						}		
+					}
+					
 				}
 			}
 		} catch (err) {console.log(err);}
@@ -347,7 +376,7 @@ client.on('channelDelete', (channel) => {
 			try {
 			const JsonedDB = JSON.parse(config);
 			for( i of JsonedDB) {
-				if (message.guild.id === i.guildId) {
+				if (channel.guild.id === i.guildId) {
 					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
 					if (typeof serverLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
@@ -386,7 +415,7 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 			const JsonedDB = JSON.parse(config);
 			
 			for( i of JsonedDB) {
-				if (message.guild.id === i.guildId) {
+				if (oldChannel.guild.id === i.guildId) {
 
 					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
 					if(typeof serverLogs !== 'undefined') {
@@ -452,7 +481,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 			const JsonedDB = JSON.parse(config);
 			
 			for( i of JsonedDB) {
-				if (message.guild.id === i.guildId) {
+				if (oldMessage.guild.id === i.guildId) {
 
 					const deleteLogs = oldMessage.channel.guild.channels.cache.get(i.deleteLog);
 					if(typeof deleteLogs !== 'undefined') {
