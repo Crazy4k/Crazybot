@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
 const fs = require("fs");
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 const {bot_info} = require("../config.json");
