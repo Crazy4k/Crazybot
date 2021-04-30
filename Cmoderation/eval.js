@@ -3,10 +3,10 @@ const client = new Discord.Client();
 const fs = require("fs");
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 const {bot_info} = require("../config.json");
-const makeEmbed = require('../embed.js');
+const makeEmbed = require('../functions/embed');
 const authorID = bot_info.authorID;
 const arrayOfData = require("../servers.json");
-
+const checkUseres = require("../functions/checkUser");
 module.exports = {
 	name : 'eval',
 	description : 'makes the bot do stuff with eval();',

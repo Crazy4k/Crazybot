@@ -1,10 +1,11 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const client = new Discord.Client();
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
-const makeEmbed = require('../embed.js');
 
-client.commands = new Discord.Collection();
+
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
+const makeEmbed = require('../functions/embed');
+
+
 const commandfiles01 = fs.readdirSync('./Cothers/').filter(file =>file.endsWith('.js'));
 const commandfiles02 = fs.readdirSync('./Cfun/').filter(file =>file.endsWith('.js'));
 

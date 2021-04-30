@@ -1,4 +1,4 @@
-const makeEmbed = require('../embed.js');
+const makeEmbed = require('../functions/embed');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 

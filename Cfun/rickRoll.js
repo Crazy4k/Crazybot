@@ -1,5 +1,5 @@
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
-const makeEmbed = require('../embed.js');
+const makeEmbed = require('../functions/embed');
 const rickRollLinks = [
 	'<http://www.5z8.info/launchexe_ocym>',
 	'<http://www.5z8.info/xxx_i6d6dg_horse-slaughter>',

@@ -1,4 +1,4 @@
-const makeEmbed = require('../embed.js');
+const makeEmbed = require('../functions/embed');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 const fs = require("fs");
 const { type } = require('os');
@@ -18,7 +18,7 @@ const idleMessage = "Command cancelled due to the user being idle";
     "isSet":false,
     "warningRoles": {
       "firstwarningRole":"",
-      "sencondWWanringRole":"",
+      "secondWarningRole":"",
       "thirdWarningRole":""
     }
  */
@@ -157,9 +157,9 @@ module.exports = {
                                                                                                                                 if(isNaN(parseInt(msg)) && msg.toLowerCase() !=="no")return message.channel.send("Invalid argument, command failed.");
                                                                                                                                 
                                                                                                                                 
-                                                                                                                                    daServer.warningRoles.sencondWWanringRole = msg;
+                                                                                                                                    daServer.warningRoles.secondWarningRole = msg;
                                                                                                                                     
-                                                                                                                                    if(msg.toLowerCase() === "no")daServer.warningRoles.sencondWWanringRole = "";
+                                                                                                                                    if(msg.toLowerCase() === "no")daServer.warningRoles.secondWarningRole = "";
                                                                                                                                     
 
 
@@ -243,6 +243,7 @@ module.exports = {
                                                         }
                                                         daServer.guildId = message.guild.id;
                                                         daServer.isSet = false;
+                                                        daServer.language = "English";
                                                         i = daServer;
                                                         fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
 				

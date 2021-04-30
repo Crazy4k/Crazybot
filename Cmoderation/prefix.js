@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const {prefix} = require('../config.json');
-const makeEmbed = require('../embed.js');
+const makeEmbed = require('../functions/embed');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 module.exports = {

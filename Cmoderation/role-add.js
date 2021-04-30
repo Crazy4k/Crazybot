@@ -1,5 +1,5 @@
-const Discord = require('discord.js');
-const makeEmbed = require('../embed.js');
+const checkUseres = require("../functions/checkUser");
+const makeEmbed = require('../functions/embed');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
 
@@ -14,56 +14,63 @@ module.exports = {
 		if(message.mentions.roles.first()) Trole = message.mentions.roles.first();
 		
 
-		if (args.length === 0) {
-
-			const embed = makeEmbed('Missing argument : User',this.usage);
-
-			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : failedEmbedTO }))
-				.catch(console.error);
-
-			return message.delete({ timeout: faliedCommandTO });
-
-		} else if (args.length === 1) {
-			const embed = makeEmbed('Missing argument : User',this.usage);
+		switch (checkUseres(message, args, 0)) {
+			case "not valid":
+			case "everyone":	
+			case "not useable":
+				try {
 		
-			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : failedEmbedTO }))
-				.catch(console.error);
-			return message.delete({ timeout: faliedCommandTO });
-
-		} else if (typeof message.mentions.users.first() === 'undefined') {
-
-			const embed = makeEmbed('Invalid user',this.usage);
-
-			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : failedEmbedTO }))
-				.catch(console.error);
-
-			return message.delete({ timeout: faliedCommandTO });
-
-		} else if (typeof Trole === 'undefined') {
-			const embed = makeEmbed('Invalid role',this.usage);
-			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : failedEmbedTO }))
-				.catch(console.error);
-			return message.delete({ timeout: faliedCommandTO });
-
-		} 
-
-		const Tmember = message.guild.members.cache.get(message.mentions.users.first().id);
+					const embed = makeEmbed('invalid username',this.usage);
+			
+					message.channel.send(embed)
+						.then(msg => msg.delete({ timeout : failedEmbedTO }))
+						.catch(console.error);
+					return message.delete({ timeout: faliedCommandTO });
+			
+				} catch (error) {
+					console.error(error);
+				}
+				break;
+			case "no args": 
+				const embed = makeEmbed('Missing arguments',this.usage);
 		
-		if(Tmember.roles.cache.has(Trole.id)) {
-			const embed = makeEmbed('That user already has the role', this.usage);
-			message.channel.send(embed)
-				.then(msg => msg.delete({ timeout : failedEmbedTO }))
-				.catch(console.error);
-			return message.delete({ timeout: faliedCommandTO });
+					message.channel.send(embed)
+						.then(msg => msg.delete({ timeout : failedEmbedTO }))
+						.catch(console.error);
+					return message.delete({ timeout: faliedCommandTO });
+				break;
+				
+			default:
+				if (args.length === 1) {
+					const embed = makeEmbed('Missing argument : User',this.usage);
+				
+					message.channel.send(embed)
+						.then(msg => msg.delete({ timeout : failedEmbedTO }))
+						.catch(console.error);
+					return message.delete({ timeout: faliedCommandTO });
+				} else if (typeof Trole === 'undefined') {
+					const embed = makeEmbed('Invalid role',this.usage);
+					message.channel.send(embed)
+						.then(msg => msg.delete({ timeout : failedEmbedTO }))
+						.catch(console.error);
+					return message.delete({ timeout: faliedCommandTO });
+				}
 
-		} else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
-			Tmember.roles.add(Trole).catch(console.error);
-			return message.channel.send('role has been given :white_check_mark:');
-		}
+				const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
+		
+				if(Tmember.roles.cache.has(Trole.id)) {
+				const embed = makeEmbed('That user already has the role', this.usage);
+				message.channel.send(embed)
+					
+				return 
+
+				} else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
+					Tmember.roles.add(Trole).catch(console.error);
+					return message.channel.send('role has been given :white_check_mark:');
+			}
+				break;
+			}
+
 	},
 
 };

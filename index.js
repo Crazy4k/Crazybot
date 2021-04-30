@@ -5,7 +5,7 @@ const client = new Discord.Client();
 const {token,} = require('./config.json');
 const moment = require('moment');
 const keepAlive = require('./server.js');
-const makeEmbed = require('./embed.js');
+const makeEmbed = require('./functions/embed.js');
 const {prefix} = require('./config.json');
 
 
@@ -52,12 +52,13 @@ client.on('guildCreate', guild => {
 				deleteLog:"",
 				serverLog:"",
 				warningLog:"",
+				language:"English",
 				deleteMessagesInLogs : true,
 				deleteFailedCommands : true	,
 				isSet:false,
 				warningRoles: {
 					firstwarningRole:"",
-					sencondWWanringRole:"",
+					secondWarningRole:"",
 					thirdWarningRole:""
 				}
 			};

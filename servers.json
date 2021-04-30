@@ -12,7 +12,7 @@
     "isSet": true,
     "warningRoles": {
       "firstwarningRole": "809084530593366087",
-      "sencondWWanringRole": "809084581437374495",
+      "secondWarningRole": "809084581437374495",
       "thirdWarningRole": "809084670385324073"
     }
   },
@@ -29,25 +29,7 @@
     "isSet": true,
     "warningRoles": {
       "firstwarningRole": "",
-      "sencondWWanringRole": "no",
-      "sencondWWanringRolee": "",
-      "thirdWarningRole": ""
-    }
-  },
-  {
-    "guildId": "833029965481508875",
-    "hiByeChannel": "",
-    "hiRole": "",
-    "hiByeLog": "",
-    "deleteLog": "834765308082126878",
-    "serverLog": "",
-    "warningLog": "",
-    "deleteMessagesInLogs": true,
-    "deleteFailedCommands": true,
-    "isSet": true,
-    "warningRoles": {
-      "firstwarningRole": "",
-      "sencondWWanringRole": "",
+      "secondWarningRole": "no",
       "thirdWarningRole": ""
     }
   }

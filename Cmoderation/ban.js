@@ -1,6 +1,7 @@
-const Discord = require('discord.js');
-const makeEmbed = require('../embed.js');
+
+const makeEmbed = require('../functions/embed');
 const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
+const checkUseres = require("../functions/checkUser");
 
 
 module.exports = {
@@ -13,20 +14,39 @@ module.exports = {
 		
 		const time = args[1] * 2 / 2;
 
-		if(!message.mentions.users.first()) {
+		switch (checkUseres(message, args, 0)) {
+			case "not valid":
+			case "everyone":	
+			case "not useable":
+				try {
+		
+					const embed = makeEmbed('invalid username',this.usage);
+			
+					message.channel.send(embed)
+						.then(msg => msg.delete({ timeout : failedEmbedTO }))
+						.catch(console.error);
+					return message.delete({ timeout: faliedCommandTO });
+			
+				} catch (error) {
+					console.error(error);
+				}
+				break;
+			case "no args": 
 			try {
-				const embed = makeEmbed('invalid username',this.usage);
+
+				const embed = makeEmbed('Missing arguments',this.usage);
 
 				message.channel.send(embed)
 					.then(msg => msg.delete({ timeout : failedEmbedTO }))
 					.catch(console.error);
 				return message.delete({ timeout: faliedCommandTO });
+
 			} catch (error) {
 				console.error(error);
 			}
-		}
-
-		const target = message.guild.members.cache.get(message.mentions.users.first().id);
+				break;
+			default:
+				const target = checkUseres(message, args, 0);
 
 		if(!target.bannable) {
 			return message.channel.send('nope')
@@ -64,6 +84,10 @@ module.exports = {
 
 		} message.channel.send('i couldn\'t ban that user maybe because he had a higher rank than you')
 			.catch(console.error);
+				break;
+		}
+		
+		
 	},
 
 };
