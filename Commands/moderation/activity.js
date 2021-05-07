@@ -1,6 +1,6 @@
-const Discord = require('discord.js');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
 
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+const sendAndDelete = require("../../functions/sendAndDelete");
 
 // all the configuraions are found in "activity.json"
 const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, activityCheckEmoji}= require('./activity.json');
@@ -10,8 +10,8 @@ module.exports = {
 	name : 'activity',
 	description : 'sends the activity check message',
 	usage:'!activity',
-	whiteList : ['ADMINISTRATOR'],
-	execute(message, args) {
+	whiteList :'ADMINISTRATOR',
+	execute(message, args, server) {
 
 
 	const activityLogChannel = message.guild.channels.cache.get(activityLogchannelID);

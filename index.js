@@ -1,19 +1,21 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const { type } = require('os');
-const client = new Discord.Client();
-const {token,} = require('./config.json');
 const moment = require('moment');
-const keepAlive = require('./server.js');
+const client = new Discord.Client();
+const {token} = require('./config.json');
+const checkWhiteList = require("./functions/checkWhiteList");
 const makeEmbed = require('./functions/embed.js');
-const {prefix} = require('./config.json');
+const keepAlive = require('./server.js');
+const server = require('./Commands/moderation/server');
+
 
 
 keepAlive();
 client.commands = new Discord.Collection();
-const commandfiles01 = fs.readdirSync('./Cfun/').filter(file =>file.endsWith('.js'));
-const commandfiles02 = fs.readdirSync('./Cmoderation/').filter(file =>file.endsWith('.js'));
-const commandfiles03 = fs.readdirSync('./Cothers/').filter(file =>file.endsWith('.js'));
+const commandfiles01 = fs.readdirSync('./Commands/fun/').filter(file =>file.endsWith('.js'));
+const commandfiles02 = fs.readdirSync('./Commands/moderation/').filter(file =>file.endsWith('.js'));
+const commandfiles03 = fs.readdirSync('./Commands/others/').filter(file =>file.endsWith('.js'));
 
 client.once('ready', function() {
 	console.log('Bot succesfuly launched.');
@@ -22,15 +24,15 @@ client.once('ready', function() {
 
 // getting all the commands.
 for(const file of commandfiles01) {
-	const command = require(`./Cfun/${file}`);
+	const command = require(`./Commands/fun/${file}`);
 	client.commands.set(command.name, command);
 }
 for(const file of commandfiles02) {
-	const command = require(`./Cmoderation/${file}`);
+	const command = require(`./Commands/moderation/${file}`);
 	client.commands.set(command.name, command);
 }
 for(const file of commandfiles03) {
-	const command = require(`./Cothers/${file}`);
+	const command = require(`./Commands/others/${file}`);
 	client.commands.set(command.name, command);
 }
 
@@ -46,6 +48,16 @@ client.on('guildCreate', guild => {
 			}
 			const serverObject = {
 				guildId: guild.id,
+				logs :{
+					hiByeLog:"",
+					deleteLog:"",
+					serverLog:"",
+					warningLog:"",
+					isSet:false,
+					emptyValue02:"",
+					emptyValue03:"",
+					emptyValue04:"",
+				},
 				hiByeChannel:"",
 				hiRole: "",
 				hiByeLog:"",
@@ -53,6 +65,13 @@ client.on('guildCreate', guild => {
 				serverLog:"",
 				warningLog:"",
 				language:"English",
+				prefix : "!",
+				emptyValue05:"",
+				emptyValue06:"",
+				emptyValue07:"",
+				emptyValue08:"",
+				emptyValue09:"",
+				emptyValue10:"",
 				deleteMessagesInLogs : true,
 				deleteFailedCommands : true	,
 				isSet:false,
@@ -108,69 +127,43 @@ client.on('guildDelete', guild => {
 
 
 // setting up all the commands
-client.on('message', message =>{
-
+client.on('message', message => {
+	if(message.channel.type === "dm")return;
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 		
 		try {
-			const JsonedDB = JSON.parse(config);
-			for( i of JsonedDB) {
-				if (message.guild.id === i.guildId && !message.author.bot){
-					if(i.deleteMessagesInLogs) {
+			let JsonedDB = JSON.parse(config);
+			for(let server of JsonedDB) {
+				if (message.guild.id === server.guildId && !message.author.bot){
+					if(server.deleteMessagesInLogs) {
 						switch (message.channel.id) {
-							case i.hiByeLog: 
-							case i.deleteLog: 
-							case i.serverLog: 
-							case i.warningLog: 
+							case server.logs.hiByeLog: 
+							case server.logs.deleteLog: 
+							case server.logs.serverLog: 
+							case server.logs.warningLog: 
 							message.delete().catch(console.error);
-							message.channel.send('You can\'t send a message in the logs :x:')
-								.then(msg=> msg.delete({ timeout:2000 })).catch(console.error);
+							message.channel.send('You can\'t send a message in the logs ❌')
+								.then(msg=> msg.delete({ timeout:4000 })).catch(console.error);
+								return;
 							break;
-						}		
+						}	
 					}
+					const prefix = server.prefix;
+					if (!message.content.startsWith(prefix) || message.author.bot || message.channel.type === 'dm' && !message.content.startsWith(prefix)) return;
+					const args = message.content.slice(prefix.length).split(/ +/);
+					const commandName = args.shift().toLowerCase();
 					
+					if (!client.commands.has(commandName)) return;
+					const command = client.commands.get(commandName);
+
+					checkWhiteList(command, message, args, server);
+
+
+
 				}
 			}
 		} catch (err) {console.log(err);}
-	})
-
-	if (!message.content.startsWith(prefix) || message.author.bot || message.channel.type === 'dm' && message.content.startsWith(prefix)) return;
-	const args = message.content.slice(prefix.length).split(/ +/);
-	const commandName = args.shift().toLowerCase();
-
-	if (!client.commands.has(commandName)) return;
-	const command = client.commands.get(commandName);
-
-	// checks if a whiteList property exists in the command, and if it does, it checks if the author has the permission
-	function checkWhiteList() {
-		if(!command.whiteList) {
-			try{
-				command.execute(message, args);
-			}
-			catch(error) {
-				console.error(error);
-				const embed = makeEmbed("ERROR 101", 'There was an issue executing the command \ncontact the developer to fix this problem.', true, 'FF0000');
-				message.channel.send(embed);
-			}
-			return;
-		}
-		const dude = message.guild.members.cache.get(message.author.id);
-		try{
-			for(const e of command.whiteList) {
-				if(dude.hasPermission(e)) {
-					command.execute(message, args);
-				}
-			}
-		}
-		catch(error) {
-			console.error(error);
-			const embed = makeEmbed("ERROR 102", 'There was an issue executing the command \ncontact the developer to fix this problem.', true, 'FF0000');
-			message.channel.send(embed);
-		}
-		return;
-	}
-
-	checkWhiteList();
+	})	
 });
 
 
@@ -205,9 +198,9 @@ client.on('guildMemberAdd', (member)=> {
 			for( i of JsonedDB) {
 				if (member.guild.id === i.guildId) {
 
-					const room = member.guild.channels.cache.get(i.hiByeChannel);
+					const room = member.guild.channels.cache.get(i.logs.hiByeChannel);
 					const role = member.guild.roles.cache.get(i.hiRole);
-					const log = member.guild.channels.cache.get(i.hiByeLog);
+					const log = member.guild.channels.cache.get(i.logs.hiByeLog);
 			
 					if (typeof log !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
@@ -254,7 +247,7 @@ client.on('guildMemberRemove', (member) => {
 				if (member.guild.id === i.guildId) {
 
 					const ByeChannel = client.channels.cache.get(i.hiByeChannel);
-					const log = member.guild.channels.cache.get(i.hiByeLog);
+					const log = member.guild.channels.cache.get(i.logs.hiByeLog);
 				
 					if (typeof log !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
@@ -285,7 +278,7 @@ client.on('guildMemberRemove', (member) => {
 
 
 client.on('messageDelete', (message) => {
-	if(message.author.bot || message.content.startsWith(prefix)) return;
+	
 
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 		
@@ -295,13 +288,14 @@ client.on('messageDelete', (message) => {
 			for( i of JsonedDB) {
 				if (message.guild.id === i.guildId) {
 
-					const deleteLogs = message.channel.guild.channels.cache.get(i.deleteLog);
+					const deleteLogs = message.channel.guild.channels.cache.get(i.logs.deleteLog);
 					switch (message.channel.id) {
-						case i.hiByeLog: 
-						case i.deleteLog: 
-						case i.serverLog: 
-						case i.warningLog: return;	
-					}		
+						case i.logs.hiByeLog: 
+						case i.logs.deleteLog: 
+						case i.logs.serverLog: 
+						case i.logs.warningLog: return;	
+					}	
+					if(message.author.bot || message.content.startsWith(i.prefix)) return;	
 					if(typeof deleteLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
 							.setAuthor(message.author.username, message.author.displayAvatarURL())
@@ -343,7 +337,7 @@ client.on('channelCreate', (channel) => {
 			
 			for( i of JsonedDB) {
 				if (channel.guild.id === i.guildId) {
-					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
+					const serverLogs = channel.guild.channels.cache.get(i.logs.serverLog);
 					if (typeof serverLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
 							.setColor('#29C200')
@@ -378,7 +372,7 @@ client.on('channelDelete', (channel) => {
 			const JsonedDB = JSON.parse(config);
 			for( i of JsonedDB) {
 				if (channel.guild.id === i.guildId) {
-					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
+					const serverLogs = channel.guild.channels.cache.get(i.logs.serverLog);
 					if (typeof serverLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
 							.setColor('#DB0000')
@@ -391,7 +385,7 @@ client.on('channelDelete', (channel) => {
 								{ name:'created at', value:`${moment(channel.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`, inline: false },
 								{ name:'ID', value: channel.id, inline: false },
 							);
-					
+						serverLogs.send(embed);
 					}
 				}
 			}
@@ -418,18 +412,17 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 			for( i of JsonedDB) {
 				if (oldChannel.guild.id === i.guildId) {
 
-					const serverLogs = channel.guild.channels.cache.get(i.serverLog);
+					const serverLogs = oldChannel.guild.channels.cache.get(i.logs.serverLog);
 					if(typeof serverLogs !== 'undefined') {
 						try {
 							const tur = [];
 							if(oldChannel.permissionOverwrites.array()[0].deny.bitfield !== newChannel.permissionOverwrites.array()[0].deny.bitfield || oldChannel.permissionOverwrites.array()[0].allow.bitfield !== newChannel.permissionOverwrites.array()[0].allow.bitfield)tur.push('permissionss');
 							if(oldChannel.name !== newChannel.name)tur.push('name');
 							if(oldChannel.parentID !== newChannel.parentID)tur.push('category');
-							// console.log(oldChannel.parentID);
-							// console.log(newChannel.parentID);
+
 							if(oldChannel.nsfw === true && newChannel.nsfw === false || oldChannel.nsfw === false && newChannel.nsfw === true)tur.push('NSFW');
 							if(!tur.length)return;
-							const embed = new Discord.MessageEmbed()
+							let embed = new Discord.MessageEmbed()
 								.setFooter('Developed by Crazy4K')
 								.setTimestamp()
 								.setColor('#02A3F4')
@@ -474,7 +467,7 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 //message update logging
 client.on('messageUpdate', (oldMessage, newMessage) => {
 
-	if(oldMessage.author.bot || oldMessage.content.startsWith(prefix)) return;
+	
 
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 		
@@ -483,8 +476,8 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 			
 			for( i of JsonedDB) {
 				if (oldMessage.guild.id === i.guildId) {
-
-					const deleteLogs = oldMessage.channel.guild.channels.cache.get(i.deleteLog);
+					if(oldMessage.author.bot || oldMessage.content.startsWith(i.prefix)) return;
+					const deleteLogs = oldMessage.channel.guild.channels.cache.get(i.logs.deleteLog);
 					if(typeof deleteLogs !== 'undefined') {
 						const embed = new Discord.MessageEmbed()
 							.setAuthor(oldMessage.author.username, oldMessage.author.displayAvatarURL())

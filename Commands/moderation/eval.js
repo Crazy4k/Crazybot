@@ -1,18 +1,20 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require("fs");
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
-const {bot_info} = require("../config.json");
-const makeEmbed = require('../functions/embed');
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+const {bot_info} = require("../../config.json");
+const makeEmbed = require('../../functions/embed');
 const authorID = bot_info.authorID;
-const arrayOfData = require("../servers.json");
-const checkUseres = require("../functions/checkUser");
+const arrayOfData = require("../../servers.json");
+const checkUseres = require("../../functions/checkUser");
+const sendAndDelete = require("../../functions/sendAndDelete");
+
 module.exports = {
 	name : 'eval',
 	description : 'makes the bot do stuff with eval();',
 	usage:'!eval ``` code ``',
-	whiteList : ['ADMINISTRATOR'],
-	execute(message, args) {
+	whiteList : 'ADMINISTRATOR',
+	execute(message, args, server) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
         if (args.length === 0) return message.channel.send("No code was given");

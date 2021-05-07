@@ -1,9 +1,10 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 
-const checkUseres = require("../functions/checkUser");
-const makeEmbed = require('../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../config.json");
+const checkUseres = require("../../functions/checkUser");
+const makeEmbed = require('../../functions/embed');
+const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+const sendAndDelete = require("../../functions/sendAndDelete");
 
 const warnMessage = 'User has been warned:white_check_mark:';
 const kickMessage = 'User has been banned because he already had 3 warnings:white_check_mark:';
@@ -15,8 +16,8 @@ module.exports = {
 	name : 'warn',
 	description : 'warns a user',
 	usage:'!warn <@user> <reason>',
-	whiteList:['BAN_MEMBERS'],
-	execute(message, args) {
+	whiteList:'BAN_MEMBERS',
+	execute(message, args, server) {
 
 
 		switch (checkUseres(message, args, 0)) {
@@ -27,10 +28,8 @@ module.exports = {
 		
 					const embed = makeEmbed('invalid username',this.usage);
 			
-					message.channel.send(embed)
-						.then(msg => msg.delete({ timeout : failedEmbedTO }))
-						.catch(console.error);
-					return message.delete({ timeout: faliedCommandTO });
+					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					return;
 			
 				} catch (error) {
 					console.error(error);
@@ -39,22 +38,16 @@ module.exports = {
 			case "no args": 
 				const embed = makeEmbed('Missing arguments',this.usage);
 		
-					message.channel.send(embed)
-						.then(msg => msg.delete({ timeout : failedEmbedTO }))
-						.catch(console.error);
-					return message.delete({ timeout: faliedCommandTO });
-						break;
+				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				return;
 				
 			default:
 				if(!args[1]) {
 
 					const embed = makeEmbed("Missing reason", this.usage);
 					
-					message.channel.send(embed)
-						.then(msg => msg.delete({ timeout : failedEmbedTO }))
-						.catch(console.error);
-					
-					return message.delete({ timeout: faliedCommandTO });
+					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					return;
 				}
 				const target = checkUseres(message, args, 0);
 
@@ -74,10 +67,8 @@ module.exports = {
 		
 								if(message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined){
 									const embed = makeEmbed("Error: warning roles haven't been set up","No warning roles have been given, therefore the user hasn't been warned.\nDo `!server` to see your server settings and to set up the roles.", false, "#FC0000");
-									message.channel.send(embed)
-										.then(msg => msg.delete({ timeout : failedEmbedTO }))
-										.catch(console.error);
-									return message.delete({ timeout:faliedCommandTO });
+									sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					return;
 								}
 								if(!target.roles.cache.has(firstWarning) && message.guild.roles.cache.get(firstWarning) !== undefined) {
 			
