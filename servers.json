@@ -7,6 +7,8 @@
     "deleteLog": "831925979676672001",
     "serverLog": "831926299424849942",
     "warningLog": "831926178675556393",
+    "language": "English",
+    "prefix": "!",
     "deleteMessagesInLogs": true,
     "deleteFailedCommands": true,
     "isSet": true,
@@ -18,19 +20,33 @@
   },
   {
     "guildId": "834734044729704508",
-    "hiByeChannel": "",
-    "hiRole": "",
-    "hiByeLog": "",
-    "deleteLog": "",
-    "serverLog": "",
-    "warningLog": "",
+    "logs": {
+      "hiByeLog": "",
+      "deleteLog": "",
+      "serverLog": "",
+      "warningLog": "",
+      "isSet": false,
+      "emptyValue02": "",
+      "emptyValue03": "",
+      "emptyValue04": ""
+    },
+    "hiByeChannel": "123",
+    "hiRole": "123",
+    "language": "English",
+    "prefix": "!",
+    "emptyValue05": "",
+    "emptyValue06": "",
+    "emptyValue07": "",
+    "emptyValue08": "",
+    "emptyValue09": "",
+    "emptyValue10": "",
     "deleteMessagesInLogs": true,
-    "deleteFailedCommands": true,
+    "deleteFailedCommands": false,
     "isSet": true,
     "warningRoles": {
-      "firstwarningRole": "",
-      "secondWarningRole": "no",
-      "thirdWarningRole": ""
+      "firstwarningRole": "123",
+      "secondWarningRole": "123",
+      "thirdWarningRole": "123"
     }
   }
 ]
