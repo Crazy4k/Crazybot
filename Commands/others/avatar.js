@@ -1,7 +1,7 @@
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const makeEmbed = require("../../functions/embed");
-const {faliedCommandTO ,failedEmbedTO} = require("../../config.json");
+
 module.exports = {
 	name : 'avatar',
 	description : 'sends the avatar of the user',
@@ -15,9 +15,9 @@ module.exports = {
 			case "not useable":
 				try {
 		
-					const embed = makeEmbed('invalid username',this.usage);
+					const embed = makeEmbed('invalid username',this.usage, server);
 			
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {

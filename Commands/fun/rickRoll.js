@@ -1,4 +1,4 @@
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
@@ -24,8 +24,8 @@ module.exports = {
 			case "everyone":	
 			case "not useable":
 				try {
-					const embed = makeEmbed('invalid username',this.usage);
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					const embed = makeEmbed('invalid username',this.usage, server);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {
@@ -45,25 +45,25 @@ module.exports = {
 
 		if(message.author.id === reciver.id) {
 			message.channel.send('wtf');	
-			const embed = makeEmbed('imagine Rick rolling yourself', pickRandom(rickRollLinks));
+			const embed = makeEmbed('imagine Rick rolling yourself', pickRandom(rickRollLinks), server);
 
 			return reciver.send(embed);
 		}
 		// if the reciver is the owner
 		else if (reciver.id === message.guild.owner.id) {
-			sendAndDelete(message,'you can\'t rick roll the owner of the server', server, faliedCommandTO, failedEmbedTO);
-			return 
+			sendAndDelete(message,'you can\'t rick roll the owner of the server', server);
+			return;
 		} else {
 
-			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL');
+			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', server);
 
-			const embed = makeEmbed(`${sender}     sent you this link`, pickRandom(rickRollLinks));
+			const embed = makeEmbed(`${sender}  sent you this link`, pickRandom(rickRollLinks), server);
 
 			message.channel.send(embedToPublic)
-				.then(Dmsg => Dmsg.delete({ timeout : faliedCommandTO }))
+				.then(Dmsg => Dmsg.delete({ timeout :  server.deleteFailedMessagedAfter}))
 				.catch(console.error);
 
-			message.delete({ timeout : faliedCommandTO });
+			message.delete({ timeout : server.deleteFailedMessagedAfter });
 
 			reciver.send(embed);
 		}

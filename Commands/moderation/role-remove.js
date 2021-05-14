@@ -1,6 +1,6 @@
 
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const checkRoles = require("../../functions/checkRoles");
@@ -24,8 +24,8 @@ module.exports = {
 			case "not useable":
 				try {
 		
-					const embed = makeEmbed('invalid username',this.usage);
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					const embed = makeEmbed('invalid username',this.usage, server);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {
@@ -33,8 +33,8 @@ module.exports = {
 				}
 				break;
 			case "no args": 
-				const embed = makeEmbed('Missing arguments',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				const embed = makeEmbed('Missing arguments',this.usage, server);
+				sendAndDelete(message,embed, server);
 				return;
 				
 			default:
@@ -44,8 +44,8 @@ module.exports = {
 					case "everyone":	
 					case "not useable":
 						try {
-							const embed = makeEmbed('Invalid role',this.usage);
-							sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+							const embed = makeEmbed('Invalid role',this.usage, server);
+							sendAndDelete(message,embed, server);
 							return;
 					
 						} catch (error) {
@@ -55,8 +55,8 @@ module.exports = {
 					case "no args": 
 					try {
 		
-						const embed = makeEmbed('Missing argument',this.usage);
-						sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+						const embed = makeEmbed('Missing argument',this.usage, server);
+						sendAndDelete(message,embed, server);
 						return;
 		
 					} catch (error) {
@@ -69,16 +69,16 @@ module.exports = {
 				
 						 if(!Tmember.roles.cache.has(Trole.id)) {
 				
-							const embed = makeEmbed('User doesn\'t have that role\n Use`!role-add` instead',this.usage);
-							sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+							const embed = makeEmbed('User doesn\'t have that role\n Use`!role-add` instead',this.usage, server);
+							sendAndDelete(message,embed, server);
 							return;
 				
 						} else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
 				
 							Tmember.roles.remove(Trole).then(m => message.channel.send('role has been removed :white_check_mark:'))
 							.catch( e => {
-								const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to give.");
-								sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+								const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to give.", server);
+								sendAndDelete(message,embed, server);
 							});
 							return;
 						}

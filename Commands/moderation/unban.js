@@ -1,6 +1,6 @@
 
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
@@ -19,9 +19,9 @@ module.exports = {
 			case "not useable":
 				try {
 		
-					const embed = makeEmbed('invalid username',this.usage);
+					const embed = makeEmbed('invalid username',this.usage, server);
 			
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {
@@ -29,18 +29,18 @@ module.exports = {
 				}
 				break;
 			case "no args": 
-			const embed = makeEmbed('Missing arguments',this.usage);
+			const embed = makeEmbed('Missing arguments',this.usage, server);
 
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+			sendAndDelete(message,embed, server);
 					return;
 				break;
 			default:
 				const target = checkUseres(message, args, 0);
 				if(args.length === 1) {
 					try {
-						const embed = makeEmbed('Missing reason',thsi.usage);
+						const embed = makeEmbed('Missing reason',thsi.usage, server);
 		
-						sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+						sendAndDelete(message,embed, server);
 					return;
 					} catch (error) {
 						console.error(error);

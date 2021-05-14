@@ -1,11 +1,9 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const fs = require("fs");
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
 const {bot_info} = require("../../config.json");
 const makeEmbed = require('../../functions/embed');
 const authorID = bot_info.authorID;
-const arrayOfData = require("../../servers.json");
+const serversDotJson = require("../../servers.json");
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 
@@ -24,11 +22,11 @@ module.exports = {
         try {
             let evalString = args.join(" ");
             eval(evalString);
-            const embed1 = makeEmbed("Succes ✅", "Command executed succesfuly.", false, "24D900");
+            const embed1 = makeEmbed("Succes ✅", "Command executed succesfuly.", "24D900");
             message.channel.send(embed1);
 
         } catch (error) {
-            const embed2 = makeEmbed("Error!", error, false, "CF1300",);
+            const embed2 = makeEmbed("Error!", error, "CF1300",);
             message.channel.send(embed2);
             console.error(error);
         }

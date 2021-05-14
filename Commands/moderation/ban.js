@@ -1,6 +1,6 @@
 
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 
@@ -19,8 +19,8 @@ module.exports = {
 			case "everyone":	
 			case "not useable":
 				try {
-					const embed = makeEmbed('invalid username',this.usage);
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					const embed = makeEmbed('invalid username',this.usage, server);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {
@@ -30,8 +30,8 @@ module.exports = {
 			case "no args": 
 			try {
 
-				const embed = makeEmbed('Missing arguments',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				const embed = makeEmbed('Missing arguments',this.usage, server);
+				sendAndDelete(message,embed, server );
 				return;
 
 			} catch (error) {
@@ -46,8 +46,8 @@ module.exports = {
 
 		} else if(args.length === 1) {
 			try {
-				const embed = makeEmbed('Missing argument : reason',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				const embed = makeEmbed('Missing argument : reason',this.usage, server);
+				sendAndDelete(message,embed, server );
 				return;
 			} catch (error) {
 				console.error(error);
@@ -58,14 +58,15 @@ module.exports = {
 				target.ban({ reason:args.slice(2).join(' '), days:time });
 			} catch(error) {
 				console.error(error);
-				const embed = makeEmbed('ERROR 103', 'There was an issue executing the command \ncontact the developer to fix this problem.', true, 'FF0000' );
+				const embed = makeEmbed('ERROR 103', 'There was an issue executing the command \ncontact the developer to fix this problem.', "#FF0000");
+				
 				message.channel.send(embed);
 			}
 			return;
 		} else if(typeof args[1] === 'string' && target.bannable) {
 			message.channel.send(`The user <@${target.id}> has been banned for :  ${args.slice(1).join(' ')}`);
 
-			message.delete({ timeout: faliedCommandTO })
+			message.delete({ timeout: server.deleteFailedMessagedAfter })
 				.catch(console.error);
 			return target.ban({ reason:args.slice(1).join(' ') });
 

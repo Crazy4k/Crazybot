@@ -1,13 +1,12 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const { type } = require('os');
 const moment = require('moment');
 const client = new Discord.Client();
-const {token} = require('./config.json');
+const {token, testGuildId} = require('./config.json');
 const checkWhiteList = require("./functions/checkWhiteList");
 const makeEmbed = require('./functions/embed.js');
 const keepAlive = require('./server.js');
-const server = require('./Commands/moderation/server');
+
 
 
 
@@ -16,11 +15,7 @@ client.commands = new Discord.Collection();
 const commandfiles01 = fs.readdirSync('./Commands/fun/').filter(file =>file.endsWith('.js'));
 const commandfiles02 = fs.readdirSync('./Commands/moderation/').filter(file =>file.endsWith('.js'));
 const commandfiles03 = fs.readdirSync('./Commands/others/').filter(file =>file.endsWith('.js'));
-
-client.once('ready', function() {
-	console.log('Bot succesfuly launched.');
-});
-
+const commandfiles04 = fs.readdirSync("./Commands/Server configurations/").filter(file =>file.endsWith('.js'));
 
 // getting all the commands.
 for(const file of commandfiles01) {
@@ -35,7 +30,12 @@ for(const file of commandfiles03) {
 	const command = require(`./Commands/others/${file}`);
 	client.commands.set(command.name, command);
 }
-
+for(const file of commandfiles04) {
+	const command = require(`./Commands/Server configurations/${file}`);
+	client.commands.set(command.name, command);
+}
+//server object creator ./servers.json
+//this basically creates an object for whenever the bot joins a guild, and saves that object in an array in ./servers.json
 client.on('guildCreate', guild => {
 
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
@@ -70,8 +70,8 @@ client.on('guildCreate', guild => {
 				emptyValue06:"",
 				emptyValue07:"",
 				emptyValue08:"",
-				emptyValue09:"",
-				emptyValue10:"",
+				defaultEmbedColor:"#f7f7f7",
+				deleteFailedMessagedAfter: 10000,
 				deleteMessagesInLogs : true,
 				deleteFailedCommands : true	,
 				isSet:false,
@@ -94,9 +94,13 @@ client.on('guildCreate', guild => {
 				}
 			});
 		} catch (err) {console.log(err);}
-	})
+	})//I hate running into errors and crashing the bot so you gotta spam catch() a bit
 });
 
+
+
+//serevr object destroyer servers.json
+//finds the index of that server object and splices it aka deletes it
 client.on('guildDelete', guild => {
 
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
@@ -126,16 +130,20 @@ client.on('guildDelete', guild => {
 
 
 
-// setting up all the commands
+//command handler|prefix based
+//i like to devide this into multiple pieces since it's a bit weird
 client.on('message', message => {
 	if(message.channel.type === "dm")return;
+
+	//first step is to find the server object in the servers.json file
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		
 		try {
 			let JsonedDB = JSON.parse(config);
 			for(let server of JsonedDB) {
+				//once it finds the server, it checks if deleteMessagesInLogs in turned on
 				if (message.guild.id === server.guildId && !message.author.bot){
 					if(server.deleteMessagesInLogs) {
+						// if so, it instantly deletes the message if it was sent inside a log channel
 						switch (message.channel.id) {
 							case server.logs.hiByeLog: 
 							case server.logs.deleteLog: 
@@ -148,18 +156,20 @@ client.on('message', message => {
 							break;
 						}	
 					}
+					// then the declaration of the most important variables
 					const prefix = server.prefix;
-					if (!message.content.startsWith(prefix) || message.author.bot || message.channel.type === 'dm' && !message.content.startsWith(prefix)) return;
+					if (!message.content.startsWith(prefix) || message.author.bot)return;
 					const args = message.content.slice(prefix.length).split(/ +/);
 					const commandName = args.shift().toLowerCase();
-					
+					//break if the command given was invalid
 					if (!client.commands.has(commandName)) return;
+					//then finally after all of the checks, the commands executes 
+					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName);
-
 					checkWhiteList(command, message, args, server);
 
 
-
+					break;
 				}
 			}
 		} catch (err) {console.log(err);}
@@ -218,14 +228,17 @@ client.on('guildMemberAdd', (member)=> {
 				
 						log.send(embed);
 					}
-				
-					if (typeof role !== 'undefined' ) {
-						member.roles.add(role).catch(console.error);
+					if(!member.bot){
+						if (typeof role !== 'undefined' ) {
+							member.roles.add(role).catch(console.error);
+						}
+						if (typeof room !== 'undefined'){
+							room.send(`:green_circle:  Welcome <@${member.id}> to the server, have a great time :+1:`);
+						}
 					}
-					if (typeof room !== 'undefined'){
-						room.send(`:green_circle:  Welcome <@${member.id}> to the server, have a great time :+1:`);
-					}
-			}}
+					break;
+				}
+			}
 		}catch (err) {console.log(err);}
 	})
 })
@@ -268,7 +281,9 @@ client.on('guildMemberRemove', (member) => {
 					if (typeof ByeChannel !== 'undefined'){
 						ByeChannel.send(`:red_circle:  <@${member.id}>  just left the server, bye bye :wave:`);
 					}
-			}}
+					break;
+				}
+			}
 		}catch (err) {console.log(err);}
 	})
 });
@@ -313,6 +328,7 @@ client.on('messageDelete', (message) => {
 					if (typeof ByeChannel !== 'undefined'){
 						ByeChannel.send(`:red_circle:  <@${member.id}>  just left the server, bye bye :wave:`);
 					}
+					break;
 				}
 			}
 			
@@ -352,6 +368,7 @@ client.on('channelCreate', (channel) => {
 							);
 						serverLogs.send(embed);
 					}
+					break;
 					//statments here
 				}
 			}
@@ -387,10 +404,10 @@ client.on('channelDelete', (channel) => {
 							);
 						serverLogs.send(embed);
 					}
+					break;
 				}
-			}
-			
-			
+				
+			}	
 		}catch (err) {console.log(err);}
 	})
 	
@@ -400,7 +417,7 @@ client.on('channelDelete', (channel) => {
 
 
 
-//channel update logging(still under development)
+//channel update logging(still under development and will probably still be for ever lol. It's just i cant figure this shit out)
 client.on('channelUpdate', (oldChannel, newChannel)=> {
 	if(oldChannel.type === 'dm') return;
 
@@ -411,15 +428,13 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 			
 			for( i of JsonedDB) {
 				if (oldChannel.guild.id === i.guildId) {
-
-					const serverLogs = oldChannel.guild.channels.cache.get(i.logs.serverLog);
+					const serverLogs = oldChannel.guild.channels.cache.get(i.logs.serverLog);		
 					if(typeof serverLogs !== 'undefined') {
 						try {
 							const tur = [];
 							if(oldChannel.permissionOverwrites.array()[0].deny.bitfield !== newChannel.permissionOverwrites.array()[0].deny.bitfield || oldChannel.permissionOverwrites.array()[0].allow.bitfield !== newChannel.permissionOverwrites.array()[0].allow.bitfield)tur.push('permissionss');
 							if(oldChannel.name !== newChannel.name)tur.push('name');
 							if(oldChannel.parentID !== newChannel.parentID)tur.push('category');
-
 							if(oldChannel.nsfw === true && newChannel.nsfw === false || oldChannel.nsfw === false && newChannel.nsfw === true)tur.push('NSFW');
 							if(!tur.length)return;
 							let embed = new Discord.MessageEmbed()
@@ -428,8 +443,8 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 								.setColor('#02A3F4')
 								.setTitle('Channel edited')
 								.addFields(
+									{ name:'Channel', value:`<#${oldChannel.id}>`, inline:true },
 									{ name:'ID', value:oldChannel.id, inline:true },
-									{ name:'', value:oldChannel.id, inline:true },
 								);
 
 							for (const e of tur) {
@@ -444,20 +459,17 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 								}
 							}
 							serverLogs.send(embed);
-						}
-						catch(error) {
+						} catch(error) {
 							console.error;
 						}
-					//statments here
+					}
+					break;
 				}
-				}
-			
-			
-		}}catch (err) {console.log(err);}
-	})
+			}
+		}catch (err) {console.log(err);}
+	});
 	
-	}
-);
+});
 
 
 
@@ -492,6 +504,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 							);
 						deleteLogs.send(embed);
 					}
+					break;
 					//statments here
 				}
 			}
@@ -502,6 +515,88 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	
 	
 });
+client.on("emojiCreate", async emoji =>{
+	const maker = await emoji.fetchAuthor();
+	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+		try {
+			const JsonedDB = JSON.parse(config);
+			for( i of JsonedDB) {
+				if (emoji.guild.id === i.guildId) {
+					const log = emoji.guild.channels.cache.get(i.logs.serverLog);
+					if(typeof log !== 'undefined') {
+						let embed = makeEmbed("Emoji created", "", "3EFF00", true);
+						embed.addFields(
+							{name:"Emoji name:", value:`${emoji.name}`, inline:true},
+							{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
+							{name:"Created by:", value:`<@${maker.id}>`, inline:true},
+							{name:"Created at:", value:`${emoji.createdAt}`, inline:true},
+						);
+						log.send(embed).then(m=>m.react(emoji.id));
+					}
+					break;					
+				}
+			}		
+		}catch (err) {console.log(err)}
+	})
+});
+client.on("emojiDelete", async emoji =>{
+	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+		try {
+			const JsonedDB = JSON.parse(config);
+			for( i of JsonedDB) {
+				if (emoji.guild.id === i.guildId) {
+					const log = emoji.guild.channels.cache.get(i.logs.serverLog);
+					if(typeof log !== 'undefined') {
+						let embed = makeEmbed("Emoji deleted", "", "FF0000", true);
+						embed.addFields(
+							{name:"Emoji name:", value:`${emoji.name}`, inline:true},
+							{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
+							{name:"Created at:", value:`${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
+						);
+						log.send(embed);
+					}
+					break;					
+				}
+			}		
+		}catch (err) {console.log(err)}
+	})
+});
 
-// once everything loads, the bot logs in
+
+
+client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
+
+	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+		try {
+			const JsonedDB = JSON.parse(config);
+			for( i of JsonedDB) {
+				if (oldEmoji.guild.id === i.guildId) {
+					const log = oldEmoji.guild.channels.cache.get(i.logs.serverLog);
+					if(typeof log !== 'undefined') {
+						let embed = makeEmbed("Emoji edited", "", "02A3F4", true);
+						embed.addFields(
+							{name:"Old emoji name:", value:`${oldEmoji.name}`, inline:true},
+							{name:"New emoji name:", value:`${newEmoji.name}`, inline:true},
+							{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
+						);
+						log.send(embed).then(m=>m.react(newEmoji.id));
+					}	
+					break;				
+				}
+			}		
+		}catch (err) {console.log(err)}
+	})
+});
+
+
+
+
+
+
+
+
 client.login(token);
+client.once('ready', async() => {
+	console.log('Bot succesfuly launched.');
+
+});
