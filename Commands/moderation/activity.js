@@ -1,5 +1,3 @@
-
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
 
 // all the configuraions are found in "activity.json"
@@ -38,6 +36,6 @@ module.exports = {
 
 //deletes the !activity
 		
-	message.delete({ timeout : faliedCommandTO });
+	message.delete({ timeout : 10000 });
 	},
 };

@@ -1,6 +1,6 @@
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
 const checkUseres = require("../../functions/checkUser");
+const sendAndDelete = require('../../functions/sendAndDelete');
 const im = ["i'm","im","i am", "i m", "Im", "I'm", "I am"];
 const insults = ["ugly","fat","dumb", "noob"];
 
@@ -18,23 +18,19 @@ module.exports = {
             case "not useable":
                 try {
         
-                    const embed = makeEmbed('invalid username',this.usage);
-            
-                    message.channel.send(embed)
-                        .then(msg => msg.delete({ timeout : failedEmbedTO }))
-                        .catch(console.error);
-                    return message.delete({ timeout: faliedCommandTO });
+                    const embed = makeEmbed('invalid username',this.usage, server);
+                    sendAndDelete(message, embed,server);
+                    return 
             
                 } catch (error) {
                     console.error(error);
                 }
                 break;
             case "no args": 
-                const embed = makeEmbed('Missing arguments',this.usage);
-                message.channel.send(embed)
-                    .then(msg => msg.delete({ timeout : failedEmbedTO }))
-                    .catch(console.error);
-                return message.delete({ timeout: faliedCommandTO });                
+                const embed = makeEmbed('Missing arguments',this.usage, server);
+                sendAndDelete(message, embed,server);
+                break;
+                               
             default:
                 message.channel.send("ok");
                 const number = checkUseres(message, args, 0);
@@ -60,7 +56,7 @@ module.exports = {
                     if(agrs.length === 2  && tureflase[0] && tureflase[1]){
                         collector.stop();
                         return;
-                    } else m.channel.send(m.content);
+                    } else m.channel.send(m.content);console.log(m.content);
                 })
                 collector.on("end", m =>message.channel.send("lol"));
             break;

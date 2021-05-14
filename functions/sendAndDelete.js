@@ -1,11 +1,11 @@
-module.exports = function sendAndDelete(message, msgToSend, server, faliedCommandTO, failedEmbedTO) {
+module.exports = function sendAndDelete(message, msgToSend, server) {
 
     message.channel.send(msgToSend)
         .then(m => {
             if(server.deleteFailedCommands) {
-                m.delete({ timeout : failedEmbedTO })
+                m.delete({ timeout : server.deleteFailedMessagedAfter })
                     .catch(console.error);
-                message.delete({timeout: faliedCommandTO})
+                message.delete({timeout: server.deleteFailedMessagedAfter})
                     .catch(console.error);
                 return;
             }

@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const sendAndDelete = require("../../functions/sendAndDelete");
 
 const warnMessage = 'User has been warned:white_check_mark:';
@@ -26,9 +26,9 @@ module.exports = {
 			case "not useable":
 				try {
 		
-					const embed = makeEmbed('invalid username',this.usage);
+					const embed = makeEmbed('invalid username',this.usage, server);
 			
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					sendAndDelete(message,embed, server);
 					return;
 			
 				} catch (error) {
@@ -36,17 +36,17 @@ module.exports = {
 				}
 				break;
 			case "no args": 
-				const embed = makeEmbed('Missing arguments',this.usage);
+				const embed = makeEmbed('Missing arguments',this.usage, server);
 		
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				sendAndDelete(message,embed, server);
 				return;
 				
 			default:
 				if(!args[1]) {
 
-					const embed = makeEmbed("Missing reason", this.usage);
+					const embed = makeEmbed("Missing reason", this.usage, server);
 					
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+					sendAndDelete(message,embed, server);
 					return;
 				}
 				const target = checkUseres(message, args, 0);
@@ -66,8 +66,8 @@ module.exports = {
 		
 		
 								if(message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined){
-									const embed = makeEmbed("Error: warning roles haven't been set up","No warning roles have been given, therefore the user hasn't been warned.\nDo `!server` to see your server settings and to set up the roles.", false, "#FC0000");
-									sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+									const embed = makeEmbed("Error: warning roles haven't been set up","No warning roles have been given, therefore the user hasn't been warned.\nDo `!server` to see your server settings and to set up the roles.","#FC0000");
+									sendAndDelete(message,embed, server);
 					return;
 								}
 								if(!target.roles.cache.has(firstWarning) && message.guild.roles.cache.get(firstWarning) !== undefined) {

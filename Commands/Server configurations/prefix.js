@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+const {} = require("../../config.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
 
 
@@ -14,20 +14,20 @@ module.exports = {
 
 
 		if (args.length === 0) {
-			const embed = makeEmbed('Missing argument : prefix',this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+			const embed = makeEmbed('Missing argument : prefix',this.usage, server);
+			sendAndDelete(message,embed, server);
 			return;
 		} else if (args.length > 1) {
-			const embed = makeEmbed('Prefix too long',this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+			const embed = makeEmbed('Prefix too long',this.usage, server);
+			sendAndDelete(message,embed, server);
 			return;
 		} else if (args[0].length > 4) {
-			const embed = makeEmbed('Prefix too long',this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+			const embed = makeEmbed('Prefix too long',this.usage, server);
+			sendAndDelete(message,embed, server);
 			return;
 		} else if(args[0] === server.prefix) {
-			const embed = makeEmbed('Invalid prefix \nSame as before',this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+			const embed = makeEmbed('Invalid prefix \nSame as before',this.usage, server);
+			sendAndDelete(message,embed, server);
 			return;
 		}
 

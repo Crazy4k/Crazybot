@@ -1,19 +1,15 @@
-module.exports = function checkRoles(message, args, num = 1) {
+module.exports = function checkChannels(message, args, num = 0) {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){
-            if(message.guild.roles.cache.get(args[num])) {
+            if(message.guild.channels.cache.get(args[num])) {
                 return args[num];
             } else return "not valid";
             
-        } else if(message.mentions.roles.first()){
-            return message.mentions.roles.first().id;
-		}else if (isNaN(parseInt(args[num]) && args[num].length >= 2 && args[num].length <= 32)) {
-			let Trole = message.guild.roles.cache.find(role => role.name === args.slice(num).join(' '));
-			if(Trole === undefined)return "not valid";
-			return Trole.id;
-
-        }else if(message.mentions.everyone) {
-            return "everyone";
+        } else if(message.mentions.channels.first()){
+            return message.mentions.channels.first().id;
+		}else if(args[num].toLowerCase() === "here"){
+            return message.channel.id;
+        
         }else return "not useable";
     } else return "no args";
 }
@@ -21,12 +17,11 @@ module.exports = function checkRoles(message, args, num = 1) {
 
 
 /*
-switch (checkRoles(message, args, 1)) {
+switch (checkChannels(message, args, 1)) {
 			case "not valid":
-			case "everyone":	
 			case "not useable":
 				try {
-					const embed = makeEmbed('invalid username',this.usage);
+					const embed = makeEmbed('invalid Channel',this.usage);
 					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
 					return;
 			

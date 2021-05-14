@@ -1,6 +1,7 @@
 const makeEmbed = require('../../functions/embed');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const sendAndDelete = require("../../functions/sendAndDelete");
+const checkChannels = require('../../functions/checkChannels');
 
 module.exports = {
 	name : 'sudo',
@@ -13,71 +14,53 @@ module.exports = {
 
 		const sudoStuff = args.slice(1).join(' ');
 
-
-		if (args.length === 0) {
-
-			const embed = makeEmbed("Missing channel name", this.usage);
-	
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-			return;
-		} else if(args.legth === 1) {
-
-			const embed = makeEmbed("Missing message", this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-			return;
-		} else if(!sudoStuff.length) {
-
-			const embed = makeEmbed('Can\'t send an empty message', this.usage);
-			sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-			return;
-		} else if(isNaN(message.guild.channels.cache.get(args[0]) * 1) && args[0] === 'here') {
-
-			const location = message.channel;
-
-			if (typeof location === 'undefined') {
-
-				const embed = makeEmbed('Invalid channel name',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-				return;
-			}
-			message.delete();
-
-			location.send(sudoStuff);
-
-			return;
-		} else if(isNaN(message.guild.channels.cache.get(args[0]) * 1)) {
-
-			const location = message.guild.channels.cache.find(channel=>channel.name === args[0]);
-	
-			if (typeof location === 'undefined') {
-
-				const embed =makeEmbed ('Invalid channel name',this.usage);
-
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-				return;
-			}
-
-			location.send(sudoStuff);
-
-			message.delete();
-
-		} else if(!isNaN(message.guild.channels.cache.get(args[0]) * 1)) {
-
-			const location = message.guild.channels.cache.get((args[0]));
-
-			if (typeof location === 'undefined') {
-
-				const embed = makeEmbed('Invalid channel id',this.usage);
-
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+		switch (checkChannels(message, args, 0)) {
+			case "not valid":
+			case "not useable":
+				try {
+					const embed = makeEmbed('invalid Channel',this.usage, server);
+					sendAndDelete(message,embed, server);
 					return;
+			
+				} catch (error) {
+					console.error(error);
+				}
+				break;
+			case "no args": 
+			try {
+
+				const embed = makeEmbed("Missing channel name", this.usage, server);
+				sendAndDelete(message,embed, server );
+				return;
+
+			} catch (error) {
+				console.error(error);
 			}
-
-			location.send(sudoStuff);
-
-			message.delete();
+				break;
+			default:
+				if(args.legth === 1) {
+		
+					const embed = makeEmbed("Missing message", this.usage, server);
+					sendAndDelete(message,embed, server);
+					return;
+				} else if(!sudoStuff.length) {
+		
+					const embed = makeEmbed('Can\'t send an empty message', this.usage, server);
+					sendAndDelete(message,embed, server);
+					return;
+				}
+				const location = message.guild.channels.cache.get(checkChannels(message,args, 0));
+				 
+					message.delete();
+		
+					location.send(sudoStuff);
+		
+					return;
+				
+				return;
+				break;
 		}
-		return;
+		
 
 	},
 };

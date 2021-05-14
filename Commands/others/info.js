@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const {faliedCommandTO ,failedEmbedTO, deleteFailedMessaged} = require("../../config.json");
+
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
 
@@ -23,9 +23,9 @@ module.exports = {
 
 			try {
 
-				const embed = makeEmbed('Missing command',this.usage);
+				const embed = makeEmbed('Missing command',this.usage, server);
 
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+				sendAndDelete(message,embed, server);
 					return;
 
 			} catch (error) {
@@ -34,16 +34,12 @@ module.exports = {
 		}
 		for(const file of commandfiles01) {
 
-			const command = require(`../Cothers/${file}`);
+			const command = require(`../others/${file}`);
 
 			if(command.name === args[0]) {
 				try {
-					const embed = new Discord.MessageEmbed()
-						.setColor('#f7f7f7')
-						.setTitle('Info !')
-						.setFooter('Developed by Crazy4k')
-						.setTimestamp()
-						.addFields(
+					const embed = makeEmbed("Info!",`Information regarding ${server.prefix}${command.name}`, server,true);
+						embed.addFields(
 							{ name:'usage', value:command.usage, inline: false },
 							{ name:'description', value:command.description, inline:false },
 						);
@@ -56,18 +52,14 @@ module.exports = {
 		}
 		for(const file of commandfiles02) {
 	
-			const command = require(`../Cfun/${file}`);
+			const command = require(`../fun/${file}`);
 
 			if(command.name === args[0]) {
 	
 				try {
 	
-					const embed = new Discord.MessageEmbed()
-						.setColor('#f7f7f7')
-						.setTitle('Info !')
-						.setFooter('Developed by Crazy4k')
-						.setTimestamp()
-						.addFields(
+					const embed = makeEmbed("Info!",`Information regarding ${server.prefix}${command.name}`, server,true);
+						embed.addFields(
 							{ name:'usage', value:command.usage, inline: false },
 							{ name:'description', value:command.description, inline:false },
 						);
@@ -78,11 +70,8 @@ module.exports = {
 				} return;
 			}
 		}
-		message.channel.send('Couldn\'t find any command with that name')
-			.then(msg => msg.delete({ timeout: failedEmbedTO }))
-			.catch(console.error);
-
-		return message.delete({ timeout : faliedCommandTO });
+		sendAndDelete(message,'Couldn\'t find any command with that name', server);
+		return;
 
 
 	},
