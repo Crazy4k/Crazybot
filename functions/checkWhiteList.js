@@ -1,11 +1,28 @@
 const makeEmbed = require("./embed");
-//makeEmbed is just a function that i made that makes embeds just to make writing embeds easier 
+const sendAndDelete = require("./sendAndDelete");
+const moment = require('moment');
+//makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 
-module.exports = function checkWhiteList(command, message, args, server) {
+module.exports = function checkWhiteList(command, message, args, server, recentlyRan) {
 	//this checks if the property "whitlist" in a command exists and if does check if the author of the message is able to execute the command.
+	const cooldownString = `${message.guild.id}-${message.author.id}-${command.name}`;
+	let = cooldownTime = 0.5;
+	if(command.cooldown) cooldownTime = command.cooldown;
+	
 	if(!command.whiteList) {
 		try{
-			command.execute(message, args, server);
+			if(command.cooldown && recentlyRan.includes(cooldownString)){
+				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nCooldown duration: ${cooldownTime} seconds`, server);
+				sendAndDelete(message, embed,server);
+				return false;
+			}
+			const booly =command.execute(message, args, server);
+			if(booly) {
+			recentlyRan.push(cooldownString);
+			setTimeout(() =>{
+				recentlyRan.splice(recentlyRan.indexOf(cooldownString), 1);
+			}, cooldownTime * 1000);
+			}	
 		}
 		catch(error) {
 			console.error(error);
@@ -16,9 +33,20 @@ module.exports = function checkWhiteList(command, message, args, server) {
 	}
 	const dude = message.guild.members.cache.get(message.author.id);
 	try{
-		const e = command.whiteList;
-		if(dude.hasPermission(e)) {
-			command.execute(message, args, server);
+		
+		if(dude.hasPermission(command.whiteList)) {
+			if(command.cooldown && recentlyRan.includes(cooldownString)){
+				const embed = makeEmbed("Slow down there !", `Wait for the cooldown to end.\nCooldown duration: ${cooldownTime} seconds`, server);
+				sendAndDelete(message, embed,server);
+				return false;
+			}
+			const booly =command.execute(message, args, server);
+			if(booly) {
+			recentlyRan.push(cooldownString);
+			setTimeout(() =>{
+				recentlyRan.splice(recentlyRan.indexOf(cooldownString), 1);
+			}, cooldownTime * 1000);
+			}	
 		}
 		
 	}

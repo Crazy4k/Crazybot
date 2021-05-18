@@ -13,6 +13,7 @@ module.exports = {
 	name : 'logs',
 	description : 'modifies the logs of the server',
 	usage:'!logs',
+    cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
 	execute(message, args, server) {
         let embed = makeEmbed("Server Settings", `${type0Message}**Enter of your members logging channel.**`, server);
@@ -32,10 +33,13 @@ module.exports = {
                                                 case "not valid":
                                                 case "no args": 
                                                 case "not useable":              
-                                                    return message.channel.send(invalidargMessage);
+                                                     
+                                                    message.channel.send(invalidargMessage);
+                                                    return false;
                                                     break;
                                                 case "cancel":
-                                                    return message.channel.send(cancerCultureMessage);
+                                                    message.channel.send(cancerCultureMessage);
+                                                    return false;
                                                     break;
                                                 case "no":
                                                     daServer.logs.hiByeLog = "";
@@ -43,7 +47,7 @@ module.exports = {
                                                 default:
                                                     daServer.logs.hiByeLog = checkChannels(a);
                                                     break;
-                                            }
+                                                }
                                             embed.setDescription(`${type0Message} **Enter of your messages logging channel.**`);
                                             m.edit(embed);
                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -53,10 +57,12 @@ module.exports = {
                                                         case "not valid":
                                                         case "no args": 
                                                         case "not useable":              
-                                                            return message.channel.send(invalidargMessage);
+                                                            message.channel.send(invalidargMessage);
+                                                            return false;
                                                             break;
                                                         case "cancel":
-                                                            return message.channel.send(cancerCultureMessage);
+                                                            message.channel.send(cancerCultureMessage);
+                                                            return false;
                                                             break;
                                                         case "no":
                                                             daServer.logs.deleteLog = "";
@@ -75,10 +81,12 @@ module.exports = {
                                                                 case "not valid":
                                                                 case "no args": 
                                                                 case "not useable":              
-                                                                    return message.channel.send(invalidargMessage);
+                                                                    message.channel.send(invalidargMessage);
+                                                                    return false;
                                                                     break;
                                                                 case "cancel":
-                                                                    return message.channel.send(cancerCultureMessage);
+                                                                    message.channel.send(cancerCultureMessage);
+                                                                    return false;
                                                                     break;
                                                                 case "no":
                                                                     daServer.logs.serverLog = "";
@@ -95,10 +103,12 @@ module.exports = {
                                                                         case "not valid":
                                                                         case "no args": 
                                                                         case "not useable":              
-                                                                            return message.channel.send(invalidargMessage);
+                                                                            message.channel.send(invalidargMessage);
+                                                                            return false;
                                                                             break;
                                                                         case "cancel":
-                                                                            return message.channel.send(cancerCultureMessage);
+                                                                            message.channel.send(cancerCultureMessage);
+                                                                            return false;
                                                                             break;
                                                                         case "no":
                                                                             daServer.logs.warningLog = "";
@@ -137,16 +147,15 @@ module.exports = {
                                                                             }else{
                                                                                 embed2.addField("Warn logs :hammer:", `Empty`, true)
                                                                             }
-                                                                            return message.channel.send(embed2);
+                                                                             message.channel.send(embed2);
+                                                                            return true;
                                                                         }
                                                                     });
-                                        
-    
-                                                                }).catch(e => message.channel.send(idleMessage))
-                                                            }).catch(e => message.channel.send(idleMessage))
-                                                    }).catch(e => message.channel.send(idleMessage))
-                                                })
-                                    }).catch(e => message.channel.send(idleMessage))
+                                                            }).catch(e => {message.channel.send(idleMessage)});
+                                                    }).catch(e => {message.channel.send(idleMessage)});
+                                            }).catch(e => {message.channel.send(idleMessage)});
+                                        })
+                                    }).catch(e => {message.channel.send(idleMessage)});
                         } else {
                             const embed = makeEmbed("Server settings", `Your server logging channels are this:\nType \`reset\` to reset it.`, server);
                             if(daServer.logs.hiByeLog){
@@ -195,7 +204,7 @@ module.exports = {
                                                                     console.log(err);
                                                                 } else {
                                                                     message.channel.send("Logs have been reset");
-                                                                    return;
+                                                                    return true;
                                                                 }
                                                             });
                                                         }

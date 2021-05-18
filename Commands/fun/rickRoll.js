@@ -15,6 +15,7 @@ const rickRollLinks = [
 module.exports = {
 	name : 'rr',
 	description : 'sends a dm with a Rick roll',
+	cooldown: 60 * 1,
 	usage:'!rr <@user>',
 	execute(message, args, server) {
 
@@ -26,7 +27,7 @@ module.exports = {
 				try {
 					const embed = makeEmbed('invalid username',this.usage, server);
 					sendAndDelete(message,embed, server);
-					return;
+					return false;
 			
 				} catch (error) {
 					console.error(error);
@@ -34,7 +35,8 @@ module.exports = {
 				break;
 			case "no args": 
 		
-				return message.channel.send('should i rick roll you or what ?');
+				message.channel.send('should i rick roll you or what ?');
+				return false;
 
 			default:
 
@@ -47,12 +49,13 @@ module.exports = {
 			message.channel.send('wtf');	
 			const embed = makeEmbed('imagine Rick rolling yourself', pickRandom(rickRollLinks), server);
 
-			return reciver.send(embed);
+			reciver.send(embed);
+			return true;
 		}
 		// if the reciver is the owner
 		else if (reciver.id === message.guild.owner.id) {
 			sendAndDelete(message,'you can\'t rick roll the owner of the server', server);
-			return;
+			return false;
 		} else {
 
 			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', server);
@@ -66,14 +69,10 @@ module.exports = {
 			message.delete({ timeout : server.deleteFailedMessagedAfter });
 
 			reciver.send(embed);
+			return true;
 		}
-				break;
 		}
 
-
-		
-
-		
 	},
 
 };

@@ -22,66 +22,51 @@ module.exports = {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-		
-					const embed = makeEmbed('invalid username',this.usage, server);
-					sendAndDelete(message,embed, server);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed1, server);
+				return false;	
 				break;
 			case "no args": 
-				const embed = makeEmbed('Missing arguments',this.usage, server);
-				sendAndDelete(message,embed, server);
-				return;
-				
+				const embed2 = makeEmbed('Missing arguments',this.usage, server);
+				sendAndDelete(message,embed2, server);
+				return false;
+				break;
 			default:
 
 				switch (checkRoles(message, args, 1)) {
 					case "not valid":
 					case "everyone":	
 					case "not useable":
-						try {
-							const embed = makeEmbed('Invalid role',this.usage, server);
-							sendAndDelete(message,embed, server);
-							return;
-					
-						} catch (error) {
-							console.error(error);
-						}
+						const embed3 = makeEmbed('Invalid role',this.usage, server);
+						sendAndDelete(message,embed3, server);
+						return false;
 						break;
-					case "no args": 
-					try {
-		
-						const embed = makeEmbed('Missing argument',this.usage, server);
-						sendAndDelete(message,embed, server);
-						return;
-		
-					} catch (error) {
-						console.error(error);
-					}
+					case "no args": 			
+						const embed4 = makeEmbed('Missing argument',this.usage, server);
+						sendAndDelete(message,embed4, server);
+						return false;
 						break;
 					default:
 						const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
 						const Trole = message.guild.roles.cache.get(checkRoles(message, args, 1));
 				
-						 if(!Tmember.roles.cache.has(Trole.id)) {
+						if(!Tmember.roles.cache.has(Trole.id)) {
 				
 							const embed = makeEmbed('User doesn\'t have that role\n Use`!role-add` instead',this.usage, server);
 							sendAndDelete(message,embed, server);
-							return;
+							return false;
 				
-						} else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
+						} else if(!Tmember.manageable){
+							const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to manage.", server);
+							sendAndDelete(message,embed, server);
+							return false;
+						}else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
 				
-							Tmember.roles.remove(Trole).then(m => message.channel.send('role has been removed :white_check_mark:'))
-							.catch( e => {
-								const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to give.", server);
-								sendAndDelete(message,embed, server);
-							});
-							return;
-						}
+							Tmember.roles.remove(Trole)
+							.then(m => message.channel.send('role has been removed :white_check_mark:'))
+							.catch( e => console.log(e));
+							return true;
+						};
 						break;
 					}
 				

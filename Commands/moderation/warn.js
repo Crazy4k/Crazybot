@@ -18,39 +18,25 @@ module.exports = {
 	usage:'!warn <@user> <reason>',
 	whiteList:'BAN_MEMBERS',
 	execute(message, args, server) {
-
-
 		switch (checkUseres(message, args, 0)) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-		
-					const embed = makeEmbed('invalid username',this.usage, server);
-			
-					sendAndDelete(message,embed, server);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);			
+				sendAndDelete(message,embed1, server);
+				return false;
 				break;
 			case "no args": 
-				const embed = makeEmbed('Missing arguments',this.usage, server);
-		
-				sendAndDelete(message,embed, server);
-				return;
-				
+				const embed2 = makeEmbed('Missing arguments',this.usage, server);		
+				sendAndDelete(message,embed2, server);
+				return false;				
 			default:
 				if(!args[1]) {
-
-					const embed = makeEmbed("Missing reason", this.usage, server);
-					
+					const embed = makeEmbed("Missing reason", this.usage, server);	
 					sendAndDelete(message,embed, server);
-					return;
+					return false;
 				}
-				const target = checkUseres(message, args, 0);
-
+				const target = message.guild.members.cache.get(checkUseres(message, args, 0));
 				fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 					try {
 						const JsonedDB = JSON.parse(config);	
@@ -62,13 +48,11 @@ module.exports = {
 								const secondWarning = i.warningRoles.secondWarningRole;
 								const thirdWarning = i.warningRoles.thirdWarningRole;
 								const log = i.warningLog;
-		
-		
-		
+														
 								if(message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined){
 									const embed = makeEmbed("Error: warning roles haven't been set up","No warning roles have been given, therefore the user hasn't been warned.\nDo `!server` to see your server settings and to set up the roles.","#FC0000");
 									sendAndDelete(message,embed, server);
-					return;
+									return false;
 								}
 								if(!target.roles.cache.has(firstWarning) && message.guild.roles.cache.get(firstWarning) !== undefined) {
 			
@@ -90,8 +74,9 @@ module.exports = {
 												{ name:'reason', value:args.slice(1), inline:true },
 											);
 										logging.send(embed);
-									} return message.channel.send(warnMessage);
-						
+									}  
+									message.channel.send(warnMessage);
+									return true;
 								} else if(target.roles.cache.has(firstWarning) && !target.roles.cache.has(secondWarning)) {
 						
 									target.roles.add(secondWarning).catch(console.error);
@@ -113,7 +98,9 @@ module.exports = {
 						
 										logging.send(embed);
 						
-									} return message.channel.send(warnMessage);
+									}
+									message.channel.send(warnMessage);
+									return true;
 						
 								} else if(target.roles.cache.has(secondWarning) && !target.roles.cache.has(thirdWarning)) {
 						
@@ -138,40 +125,46 @@ module.exports = {
 						
 									}
 						
-									return message.channel.send(warnMessage);
-						
+									message.channel.send(warnMessage);
+									return true;
 						
 								} else if(target.roles.cache.has(thirdWarning)) {
+									if(!target.kickable){
+										const embed = makeEmbed('Missing Permissions',"That user had 3 warnings already, but they unbannable by the bot.", server);
+										sendAndDelete(message,embed, server);
+										return false;
+									}else {
+										target.ban();
 						
-									target.ban();
+										if(message.guild.channels.cache.get(log)) {
 						
-									if(message.guild.channels.cache.get(log)) {
+											const logging = message.guild.channels.cache.get(log);
 						
-										const logging = message.guild.channels.cache.get(log);
-						
-										const embed = new Discord.MessageEmbed()
-											.setTitle("warning")
-											.setAuthor(target.user.tag, target.user.displayAvatarURL())
-											.setColor('#ff0000')
-											.setFooter('Developed by Crazy4k')
-											.addFields(
-												{ name:"Warning count", value:'3', inline:true },
-												{ name:'Warned by: ', value:message.author, inline:true },
-												{ name:'Reason', value:args.slice(1), inline:true },
-											);
-										logging.send(embed);
-										return message.channel.send(kickMessage);
+											const embed = new Discord.MessageEmbed()
+												.setTitle("warning")
+												.setAuthor(target.user.tag, target.user.displayAvatarURL())
+												.setColor('#ff0000')
+												.setFooter('Developed by Crazy4k')
+												.addFields(
+													{ name:"Warning count", value:'3', inline:true },
+													{ name:'Warned by: ', value:message.author, inline:true },
+													{ name:'Reason', value:args.slice(1), inline:true },
+												);
+											logging.send(embed);
+											message.channel.send(kickMessage);
+											return true;
+										}
 									}
 								} 
 							}
 						}
 						
 						
-					}catch (err) {console.log(err);}
+					}catch (err) {console.log(err);return false;}
 				})
 				break;
 		}
-
+		return true;
 		
 
 		

@@ -5,6 +5,7 @@ module.exports = {
 	usage:'!pick <option 1> <option 2> [option 3..4..5..]',
 	execute(message, args, server) {
 		message.channel.send(`i picked ${pickRandom(args)}`);
+		return true;
 	},
 
 };

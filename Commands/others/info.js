@@ -20,17 +20,9 @@ module.exports = {
 	execute(message, args, server) {
 
 		if(args.length === 0) {
-
-			try {
-
-				const embed = makeEmbed('Missing command',this.usage, server);
-
-				sendAndDelete(message,embed, server);
-					return;
-
-			} catch (error) {
-				console.error(error);
-			} return;
+			const embed = makeEmbed('Missing command',this.usage, server);
+			sendAndDelete(message,embed, server);
+			return false;
 		}
 		for(const file of commandfiles01) {
 
@@ -44,10 +36,11 @@ module.exports = {
 							{ name:'description', value:command.description, inline:false },
 						);
 					message.channel.send(embed);
-					return;
+					return true;
 				} catch (error) {
 					console.error(error);
-				} return;
+					return false;
+				} 
 			}
 		}
 		for(const file of commandfiles02) {
@@ -64,14 +57,15 @@ module.exports = {
 							{ name:'description', value:command.description, inline:false },
 						);
 					message.channel.send(embed);
-					return;
+					return true;
 				} catch (error) {
 					console.error(error);
-				} return;
+					return false;
+				} 
 			}
 		}
 		sendAndDelete(message,'Couldn\'t find any command with that name', server);
-		return;
+		return false;
 
 
 	},

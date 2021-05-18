@@ -127,7 +127,8 @@ client.on('guildDelete', guild => {
 	})
 });
 
-
+let recentlyRan = [];
+// guildID-authorID-commandname
 
 
 //command handler|prefix based
@@ -166,7 +167,7 @@ client.on('message', message => {
 					//then finally after all of the checks, the commands executes 
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName);
-					checkWhiteList(command, message, args, server);
+					checkWhiteList(command, message, args, server, recentlyRan);
 
 
 					break;

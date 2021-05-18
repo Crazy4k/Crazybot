@@ -7,6 +7,7 @@ const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, act
 module.exports = {
 	name : 'activity',
 	description : 'sends the activity check message',
+	cooldown: 60 * 10,
 	usage:'!activity',
 	whiteList :'ADMINISTRATOR',
 	execute(message, args, server) {
@@ -37,5 +38,6 @@ module.exports = {
 //deletes the !activity
 		
 	message.delete({ timeout : 10000 });
+	return true;
 	},
 };

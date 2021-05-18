@@ -4,6 +4,7 @@ module.exports = {
 	usage:'!ping',
 	execute(message, args, server) {
 		message.channel.send('pong!');
+		return true;
 	},
 
 };

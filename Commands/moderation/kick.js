@@ -13,54 +13,35 @@ module.exports = {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-
-					const embed = makeEmbed('invalid username',this.usage, server);
-					sendAndDelete(message,embed, server );
-					return;
-	
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed1, server );
+				return false;	
 				break;
 			case "no args": 
-			try {
-
-				const embed = makeEmbed('Missing arguments',this.usage, server);
-				sendAndDelete(message,embed, server );
-				return;
-
-			} catch (error) {
-				console.error(error);
-			}
-			break;
+				const embed2 = makeEmbed('Missing arguments',this.usage, server);
+				sendAndDelete(message,embed2, server );
+				return false;	
 				break;
 			default:
-				const target = checkUseres(message, args, 0);
-
-				if(!target.kickable) {
-					return message.channel.send('nope')
-				} else if(args.length === 1) {
-					try {
-
-						const embed = makeEmbed('Missing argument : reason',this.usage, server);
-						sendAndDelete(message,embed, server);
-						return;
-					} catch (error) {
-						console.error(error);
+				const target = message.guild.members.cache.get(checkUseres(message, args, 0));
+				if(args.length === 1) {
+					const embed3 = makeEmbed('Missing argument : reason',this.usage, server);
+					sendAndDelete(message,embed3, server);
+					return false;			
+				} else if(!target.kickable){
+					const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to kick.", server);
+					sendAndDelete(message,embed, server);
+					return false;
+				}else {
+					target.kick({ reason:args.slice(1).join(' ') })
+						.then( e => {
+							message.channel.send(`The user <@${target.id}> has been kicked from the server for "${args.slice(1).join(' ')}"`);
+							return true;
+						})
+						.catch(e =>{ console.log(e)}); 
+						return true;
 					}
-				} else if(typeof args[1] === 'string' && target.kickable) {
-					message.channel.send(`The user <@${target.id}> has been kicked from the server for:  ${args.slice(1).join(' ')}`);
-					target.kick({ reason:args.slice(1).join(' ') });
-					message.delete({ timeout: server.deleteFailedMessagedAfter })
-						.catch(console.error);
-					return;
-				}return message.channel.send('i couldn\'t kick that user maybe because he had a higher rank than you')
-					.then(msg => msg.delete({ timeout: server.deleteFailedMessagedAfter  }))
-					.catch(console.error);
-			
 		}
-		
 	},
 
 };
