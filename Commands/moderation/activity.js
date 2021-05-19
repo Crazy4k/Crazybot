@@ -6,6 +6,7 @@ const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, act
 
 module.exports = {
 	name : 'activity',
+	aliases: ["acti", "activity-check"],
 	description : 'sends the activity check message',
 	cooldown: 60 * 10,
 	usage:'!activity',

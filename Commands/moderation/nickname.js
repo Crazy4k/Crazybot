@@ -5,6 +5,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 
 module.exports = {
 	name : 'nick',
+	aliases: ["nickname","change-nick"],
 	description : 'Changes the nickname of the user.',
 	cooldown: 1,
 	usage:'!nick <user> "name"',

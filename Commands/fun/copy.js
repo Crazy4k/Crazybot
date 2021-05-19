@@ -6,6 +6,7 @@ const insults = ["ugly","fat","dumb", "noob"];
 
 module.exports = {
 	name : 'copy',
+    aliases: ["lol","annoy"],
 	description : 'Makes the bot copy every message that the <user> says',
     cooldown: 60 * 3,
 	usage:'!copy <user>',

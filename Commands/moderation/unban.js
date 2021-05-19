@@ -5,6 +5,7 @@ const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'unban',
+	aliases: ["remove-ban","ban-remove","ban-"],
 	description : 'unbans any one who was banned before (id is used))',
 	usage:'!unban <ID> <reason>',
 	whiteList:'BAN_MEMBERS',

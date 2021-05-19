@@ -2,6 +2,7 @@ const pickRandom = require("../../functions/pickRandom");
 
 module.exports = {
 	name : 'sus',
+	aliases: ["easter-egg"],
 	description : 'sus',
 	cooldown: 2,
 	usage:'!sus',

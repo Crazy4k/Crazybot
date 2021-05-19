@@ -163,13 +163,11 @@ client.on('message', message => {
 					const args = message.content.slice(prefix.length).split(/ +/);
 					const commandName = args.shift().toLowerCase();
 					//break if the command given was invalid
-					if (!client.commands.has(commandName)) return;
+					//if (!client.commands.has(commandName)) return;
 					//then finally after all of the checks, the commands executes 
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
-					const command = client.commands.get(commandName);
-					checkWhiteList(command, message, args, server, recentlyRan);
-
-
+					const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
+					if(command)checkWhiteList(command, message, args, server, recentlyRan);
 					break;
 				}
 			}

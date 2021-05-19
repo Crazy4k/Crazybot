@@ -14,6 +14,7 @@ const rickRollLinks = [
 
 module.exports = {
 	name : 'rr',
+	aliases: ["rick-roll","rickroll","send-rick-roll","2008"],
 	description : 'sends a dm with a Rick roll',
 	cooldown: 60 * 1,
 	usage:'!rr <@user>',

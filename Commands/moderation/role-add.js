@@ -4,6 +4,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 const checkRoles = require("../../functions/checkRoles");
 module.exports = {
 	name : 'role-add',
+	aliases: ["role-give","role","roleA","roleG","role+"],
 	description : 'gives a role to a user',
 	usage:'!role-add <@user> <role name>',
 	whiteList:'MANAGE_ROLES',

@@ -4,6 +4,7 @@ const axios = require('axios');
 
 module.exports = {
 	name : 'cat',
+	aliases: ["meow","pussy","furr","kitty"],
 	description : 'sends a random cat gif or picture',
 	usage:'!cat',
 	cooldown: 3,
