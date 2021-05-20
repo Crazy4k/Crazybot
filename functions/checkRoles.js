@@ -1,4 +1,4 @@
-module.exports = function checkRoles(message, args, num = 1) {
+module.exports = (message, args, num = 1) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){
             if(message.guild.roles.cache.get(args[num])) {

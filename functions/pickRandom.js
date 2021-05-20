@@ -1,4 +1,4 @@
-module.exports= function pickRandom(argument) {
+module.exports= (argument) => {
 	if (typeof argument === 'number') {
 		return Math.floor(Math.random() * Math.floor(argument)) + 1;
 	}

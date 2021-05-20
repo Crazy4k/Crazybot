@@ -6,6 +6,7 @@ const authorID = bot_info.authorID;
 const serversDotJson = require("../../servers.json");
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
+const client = require("../../index");
 
 module.exports = {
 	name : 'eval',

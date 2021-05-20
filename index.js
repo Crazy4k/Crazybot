@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const moment = require('moment');
 const client = new Discord.Client();
+module.exports = client;
 const {token, testGuildId} = require('./config.json');
 const checkWhiteList = require("./functions/checkWhiteList");
 const makeEmbed = require('./functions/embed.js');
@@ -16,6 +17,7 @@ const commandfiles01 = fs.readdirSync('./Commands/fun/').filter(file =>file.ends
 const commandfiles02 = fs.readdirSync('./Commands/moderation/').filter(file =>file.endsWith('.js'));
 const commandfiles03 = fs.readdirSync('./Commands/others/').filter(file =>file.endsWith('.js'));
 const commandfiles04 = fs.readdirSync("./Commands/Server configurations/").filter(file =>file.endsWith('.js'));
+const commandfiles05 = fs.readdirSync("./Commands/points/").filter(file =>file.endsWith('.js'));
 
 // getting all the commands.
 for(const file of commandfiles01) {
@@ -32,6 +34,10 @@ for(const file of commandfiles03) {
 }
 for(const file of commandfiles04) {
 	const command = require(`./Commands/Server configurations/${file}`);
+	client.commands.set(command.name, command);
+}
+for(const file of commandfiles05) {
+	const command = require(`./Commands/points/${file}`);
 	client.commands.set(command.name, command);
 }
 //server object creator ./servers.json
@@ -69,11 +75,11 @@ client.on('guildCreate', guild => {
 				emptyValue05:"",
 				emptyValue06:"",
 				emptyValue07:"",
-				emptyValue08:"",
+				pointsEnabled: false,
 				defaultEmbedColor:"#f7f7f7",
 				deleteFailedMessagedAfter: 10000,
 				deleteMessagesInLogs : true,
-				deleteFailedCommands : true	,
+				deleteFailedCommands : false,
 				isSet:false,
 				warningRoles: {
 					firstwarningRole:"",
@@ -93,6 +99,23 @@ client.on('guildCreate', guild => {
 					console.log(`joined a new server. name: ${guild.name}`);
 				}
 			});
+			const lol = { 
+				guildID: guild.id,
+				isSet: false,
+				members:{},
+			}
+			fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
+				if(err){
+					console.log(err);
+					return false;
+				}
+				const readable = JSON.parse(e);
+				readable.push(lol);
+				fs.writeFile("./Commands/points/points.json", JSON.stringify(readable, null, 2), err => {				
+					if(err) console.log(err);					
+				});
+			});
+			
 		} catch (err) {console.log(err);}
 	})//I hate running into errors and crashing the bot so you gotta spam catch() a bit
 });
@@ -108,7 +131,7 @@ client.on('guildDelete', guild => {
 		try {
 			const JsonedDB = JSON.parse(config);
 			
-			for( i of JsonedDB) {
+			for(let i of JsonedDB) {
 				if (guild.id === i.guildId) {
 					JsonedDB.splice(JsonedDB.indexOf(i), 1);
 					
@@ -121,7 +144,27 @@ client.on('guildDelete', guild => {
 							console.log(`Left a server. name: ${guild.name}`);
 						}
 					});
+					break;
 				}
+				fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
+					if(err){
+						console.log(err);
+						return false;
+					}
+					const readable = JSON.parse(e);
+					for(const server1 of readable){
+						if(guild.id === server1.guildID){
+							readable.splice(readable.indexOf(server1), 1);
+
+							fs.writeFile("./Commands/points/points.json", JSON.stringify(readable, null, 2), err => {
+								if(err) console.log(err);
+							});
+							break;
+						}
+					}
+					
+					
+				});
 			}	
 		} catch (err) {console.log(err);}
 	})
@@ -227,6 +270,23 @@ client.on('guildMemberAdd', (member)=> {
 				
 						log.send(embed);
 					}
+					fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
+						if(err){
+							console.log(err);
+							return false;
+						}
+						const readable = JSON.parse(e);
+						for(const server1 of readable){
+							if(member.guild.id === server1.guildID){
+								server1.members[member.id] = 0;
+	
+								fs.writeFile("./Commands/points/points.json", JSON.stringify(readable, null, 2), err => {
+									if(err) console.log(err);	
+								});
+								break;
+							}
+						}
+					});
 					if(!member.bot){
 						if (typeof role !== 'undefined' ) {
 							member.roles.add(role).catch(console.error);
@@ -278,7 +338,7 @@ client.on('guildMemberRemove', (member) => {
 					
 					}
 					if (typeof ByeChannel !== 'undefined'){
-						ByeChannel.send(`:red_circle:  <@${member.id}>  just left the server, bye bye :wave:`);
+						ByeChannel.send(`:red_circle:  <@${member.nickname}>  just left the server, bye bye :wave:`);
 					}
 					break;
 				}
@@ -538,53 +598,16 @@ client.on("emojiCreate", async emoji =>{
 		}catch (err) {console.log(err)}
 	})
 });
+const emojiDelete = require("./logs/emojiDelete");
 client.on("emojiDelete", async emoji =>{
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		try {
-			const JsonedDB = JSON.parse(config);
-			for( i of JsonedDB) {
-				if (emoji.guild.id === i.guildId) {
-					const log = emoji.guild.channels.cache.get(i.logs.serverLog);
-					if(typeof log !== 'undefined') {
-						let embed = makeEmbed("Emoji deleted", "", "FF0000", true);
-						embed.addFields(
-							{name:"Emoji name:", value:`${emoji.name}`, inline:true},
-							{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
-							{name:"Created at:", value:`${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
-						);
-						log.send(embed);
-					}
-					break;					
-				}
-			}		
-		}catch (err) {console.log(err)}
-	})
+	emojiDelete(emoji);
+	
 });
 
 
-
+const emojiUpdate = require("./logs/emojiUpdate");
 client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
-
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		try {
-			const JsonedDB = JSON.parse(config);
-			for( i of JsonedDB) {
-				if (oldEmoji.guild.id === i.guildId) {
-					const log = oldEmoji.guild.channels.cache.get(i.logs.serverLog);
-					if(typeof log !== 'undefined') {
-						let embed = makeEmbed("Emoji edited", "", "02A3F4", true);
-						embed.addFields(
-							{name:"Old emoji name:", value:`${oldEmoji.name}`, inline:true},
-							{name:"New emoji name:", value:`${newEmoji.name}`, inline:true},
-							{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
-						);
-						log.send(embed).then(m=>m.react(newEmoji.id));
-					}	
-					break;				
-				}
-			}		
-		}catch (err) {console.log(err)}
-	})
+	emojiUpdate(oldEmoji,newEmoji);
 });
 
 

@@ -1,4 +1,4 @@
-module.exports = function checkChannels(message, args, num = 0) {
+module.exports = (message, args, num = 0) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){
             if(message.guild.channels.cache.get(args[num])) {

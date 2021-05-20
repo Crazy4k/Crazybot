@@ -1,4 +1,4 @@
-module.exports = function checkRoles(respnse,num = 0) {
+module.exports = (respnse,num = 0)  =>{
     let args  = respnse.first().content.split(/ +/);
     
     if(args[num]) {
