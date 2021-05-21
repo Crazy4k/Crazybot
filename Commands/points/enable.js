@@ -10,6 +10,7 @@ module.exports = {
     cooldown: 60 * 1,
     aliases:["p-enable","enable-points","enable-points"],
 	usage:'!points-enable',
+    whiteList:'ADMINISTRATOR',
 	execute(message, args, server) { 
  
         fs.readFile("./Commands/points/points.json", (err,response) =>{

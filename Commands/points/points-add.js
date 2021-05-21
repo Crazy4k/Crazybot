@@ -8,6 +8,7 @@ module.exports = {
 	description : "Adds points to a member in the server",
     aliases:["p-add","p+","points+","points-give","p-give"],
     cooldown: 5,
+    whiteList:'ADMINISTRATOR',
 	usage:'!points-add <@user> <number>',
 	execute(message, args, server) { 
         const target = checkUseres(message, args, 0);

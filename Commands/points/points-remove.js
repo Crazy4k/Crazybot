@@ -9,6 +9,7 @@ module.exports = {
     aliases:["p-remove","p-","points-","points-delete","p-delete"],
     cooldown: 5,
 	usage:'!points-remove <@user> <number>',
+    whiteList:'ADMINISTRATOR',
 	execute(message, args, server) { 
         const target = checkUseres(message, args, 0);
         switch (target) {

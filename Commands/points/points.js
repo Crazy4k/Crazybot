@@ -8,6 +8,7 @@ module.exports = {
 	description : "shows your total points",
     aliases:["p"],
     cooldown: 5,
+    whiteList:'ADMINISTRATOR',
 	usage:'!points <@user>',
 	execute(message, args, server) { 
         const target = checkUseres(message, args, 0);

@@ -60,7 +60,10 @@ module.exports = {
 						} else if (typeof Trole !== 'undefined' && !typeof Tmember !== 'undefined') {
 							Tmember.roles.add(Trole)
 							.then(m => message.channel.send('role has been given :white_check_mark:'))
-							.catch( e => console.log(e));
+							.catch( e => {
+								makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to give.", server);
+								sendAndDelete(message,embed, server);
+							});
 							return true;
 						}
 						break;
