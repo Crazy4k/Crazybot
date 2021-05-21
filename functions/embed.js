@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-module.exports = function makeEmbed(title, description, server, timestamp = false ,footer = "developed by Crazy4k", ) {
+module.exports = (title, description, server, timestamp = false ,footer = "developed by Crazy4k", ) => {
     let color;
     if(typeof server === "object")color =server.defaultEmbedColor;
     if(typeof server === "string")color = server;

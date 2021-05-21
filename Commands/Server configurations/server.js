@@ -12,6 +12,7 @@ module.exports = {
 	description : 'modifies the settings of the server',
 	usage:'!server',
 	whiteList:'ADMINISTRATOR',
+    cooldown: 60 * 5,
 	execute(message, args, server) {
         
         let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.**`, server);
@@ -33,10 +34,12 @@ module.exports = {
                                                 case "not valid":
                                                 case "no args": 
                                                 case "not useable":              
-                                                    return message.channel.send("Invalid argument, command failed.");
+                                                    message.channel.send("Invalid argument, command failed.");
+                                                    return false;
                                                     break;
                                                 case "cancel":
-                                                    return message.channel.send(cancerCultureMessage);
+                                                    message.channel.send(cancerCultureMessage);
+                                                    return false;
                                                     break;
                                                 case "no":
                                                     daServer.hiByeChannel = "";
@@ -54,10 +57,12 @@ module.exports = {
                                                         case "not valid":
                                                         case "not useable":
                                                         case "no args":               
-                                                            return message.channel.send("Invalid argument, command failed.");
+                                                            message.channel.send("Invalid argument, command failed.");
+                                                            return false;
                                                             break;
                                                         case "cancel":
-                                                            return message.channel.send(cancerCultureMessage);
+                                                            message.channel.send(cancerCultureMessage);
+                                                            return false;
                                                             break;
                                                         case "no":
                                                             daServer.hiRole = "";
@@ -75,10 +80,12 @@ module.exports = {
                                                                         case "not valid":
                                                                         case "not useable":
                                                                         case "no args":               
-                                                                            return message.channel.send("Invalid argument, command failed.");
+                                                                            message.channel.send("Invalid argument, command failed.");
+                                                                            return false;
                                                                             break;
                                                                         case "cancel":
-                                                                            return message.channel.send(cancerCultureMessage);
+                                                                            message.channel.send(cancerCultureMessage);
+                                                                            return false;
                                                                             break;
                                                                         case "no":
                                                                             daServer.warningRoles.firstwarningRole = "";
@@ -97,10 +104,12 @@ module.exports = {
                                                                                     case "not valid":
                                                                                     case "not useable":
                                                                                     case "no args":               
-                                                                                        return message.channel.send("Invalid argument, command failed.");
+                                                                                        message.channel.send("Invalid argument, command failed.");
+                                                                                        return false;
                                                                                         break;
                                                                                     case "cancel":
-                                                                                        return message.channel.send(cancerCultureMessage);
+                                                                                        message.channel.send(cancerCultureMessage);
+                                                                                        return false;
                                                                                         break;
                                                                                     case "no":
                                                                                         daServer.warningRoles.secondWarningRole = "";
@@ -121,10 +130,12 @@ module.exports = {
                                                                                             case "not valid":
                                                                                             case "not useable":
                                                                                             case "no args":               
-                                                                                                return message.channel.send("Invalid argument, command failed.");
+                                                                                                message.channel.send("Invalid argument, command failed.");
+                                                                                                return false;
                                                                                                 break;
                                                                                             case "cancel":
-                                                                                                return message.channel.send(cancerCultureMessage);
+                                                                                                message.channel.send(cancerCultureMessage);
+                                                                                                return false;
                                                                                                 break;
                                                                                             case "no":
                                                                                                 daServer.warningRoles.thirdWarningRole = "";
@@ -151,7 +162,8 @@ module.exports = {
                                                                                                                 daServer.deleteMessagesInLogs = false;
                                                                                                                 break;
                                                                                                             default:
-                                                                                                                return message.channel.send(cancerCultureMessage);
+                                                                                                                message.channel.send(cancerCultureMessage);
+                                                                                                                return false;
                                                                                                                 break;
                                                                                                         }
                                                                                                         m.reactions.removeAll();
@@ -171,7 +183,8 @@ module.exports = {
                                                                                                                                 daServer.deleteFailedCommands = false;
                                                                                                                                 break;
                                                                                                                             default:
-                                                                                                                                return message.channel.send(cancerCultureMessage);
+                                                                                                                                message.channel.send(cancerCultureMessage);
+                                                                                                                                return false;
                                                                                                                                 break;
                                                                                                                         }
 
@@ -217,26 +230,22 @@ module.exports = {
                                                                                                                                     {name:'Prefix :information_source:', value:`${daServer.prefix}`, inline:true},
                                                                                                                                     {name:'Default embed color :white_large_square:', value:`${daServer.defaultEmbedColor}`, inline:true}
                                                                                                                                 );
-                                                                                                                                return message.channel.send(embed2);
+                                                                                                                                message.channel.send(embed2);
+                                                                                                                                return true;
                                                                                                                             }
                                                                                                                         });
-                                                                                                                    }).catch(e => message.channel.send(idleMessage));
-                                                                                                            }).catch(e => message.channel.send(idleMessage));
+                                                                                                                    }).catch(e => {message.channel.send(idleMessage)});
+                                                                                                            }).catch(e => {message.channel.send(idleMessage)});
 
                                                                                                         
                                                                                                     })
-                                                                                                    .catch(e => {message.channel.send(idleMessage)})
-                                                                                            }).catch(e => {message.channel.send(idleMessage)})
-
-                                                                                     
-                                                                            }).catch(e => message.channel.send(idleMessage))
-                                                                }).catch(e => message.channel.send(idleMessage))
-                                                                    
-                                                                    
-                                                                }).catch(e => message.channel.send(idleMessage))                          
-                                                        }).catch(e => message.channel.send(idleMessage))   
-                                    
-                                }).catch(e => {message.channel.send(idleMessage)})   
+                                                                                                    .catch(e => {message.channel.send(idleMessage)});
+                                                                                            }).catch(e => {message.channel.send(idleMessage)});
+                                                                            }).catch(e => {message.channel.send(idleMessage)});
+                                                                }).catch(e => {message.channel.send(idleMessage)});                                                                    
+                                                                }).catch(e => {message.channel.send(idleMessage)});
+                                                        }).catch(e => {message.channel.send(idleMessage)});
+                                }).catch(e => {message.channel.send(idleMessage)});
                                 });
                         } else {
                             const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType \`reset\` to reset it.`, server);
@@ -299,7 +308,7 @@ module.exports = {
                                                                 console.log(err);
                                                             } else {
                                                                 message.channel.send("Server configuration have been reset✅.\nType `!server` again to reconfigure your server.");
-                                                                return;
+                                                                return true;
                                                             }
                                                         });
                                                     }

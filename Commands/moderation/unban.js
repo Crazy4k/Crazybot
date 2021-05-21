@@ -5,6 +5,7 @@ const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'unban',
+	aliases: ["remove-ban","ban-remove","ban-"],
 	description : 'unbans any one who was banned before (id is used))',
 	usage:'!unban <ID> <reason>',
 	whiteList:'BAN_MEMBERS',
@@ -17,34 +18,21 @@ module.exports = {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-		
-					const embed = makeEmbed('invalid username',this.usage, server);
-			
-					sendAndDelete(message,embed, server);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed1, server);
+				return false;
 				break;
 			case "no args": 
-			const embed = makeEmbed('Missing arguments',this.usage, server);
-
-			sendAndDelete(message,embed, server);
-					return;
+				const embed2 = makeEmbed('Missing arguments',this.usage, server);
+				sendAndDelete(message,embed2, server);
+				return false;
 				break;
 			default:
 				const target = checkUseres(message, args, 0);
-				if(args.length === 1) {
-					try {
-						const embed = makeEmbed('Missing reason',thsi.usage, server);
-		
-						sendAndDelete(message,embed, server);
-					return;
-					} catch (error) {
-						console.error(error);
-					} return;
+				if(args.length === 1) {	
+					const embed3 = makeEmbed('Missing reason',thsi.usage, server);
+					sendAndDelete(message,embed3, server);
+					return false;	
 				}
 				if(typeof args[1] === 'string') {
 		
@@ -52,16 +40,17 @@ module.exports = {
 		
 						message.guild.fetchBans().then( bans => message.guild.members.unban(target) );
 		
-						return message.channel.send(`The user <@${target}> has been unbanned for ${args.slice(1).join(' ')}`);
+					 	message.channel.send(`The user <@${target}> has been unbanned for ${args.slice(1).join(' ')}`);
+					 	return true;
 					} catch(error) {
-						return console.error(error);
+						console.error(error);
+						return false;
 					}
-				} return message.channel.send('i couldn\'t unban that user maybe because he had a higher rank than you');
+				}
+				message.channel.send('i couldn\'t unban that user maybe because he had a higher rank than you');
+				return false;
 				break;
 		}
-
-		
-		
 	},
 
 };

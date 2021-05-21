@@ -9,6 +9,7 @@ module.exports = {
 	name : 'prefix',
 	description : 'changes the prefix of the bot',
 	usage:'!preifx <new prefix>',
+	cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
 	execute(message, args, server) {
 
@@ -16,19 +17,19 @@ module.exports = {
 		if (args.length === 0) {
 			const embed = makeEmbed('Missing argument : prefix',this.usage, server);
 			sendAndDelete(message,embed, server);
-			return;
+			return false;
 		} else if (args.length > 1) {
 			const embed = makeEmbed('Prefix too long',this.usage, server);
 			sendAndDelete(message,embed, server);
-			return;
+			return false;
 		} else if (args[0].length > 4) {
 			const embed = makeEmbed('Prefix too long',this.usage, server);
 			sendAndDelete(message,embed, server);
-			return;
+			return false;
 		} else if(args[0] === server.prefix) {
 			const embed = makeEmbed('Invalid prefix \nSame as before',this.usage, server);
 			sendAndDelete(message,embed, server);
-			return;
+			return false;
 		}
 
 		fs.readFile("./servers.json", 'utf-8', (err, config)=>{
@@ -57,18 +58,13 @@ module.exports = {
 									.setFooter('developed by crazy4K')
 									.setTimestamp()
 									.setDescription('The prefix has been changed succesfuly :white_check_mark:.');
-
-								return message.channel.send(embed);
+								message.channel.send(embed);
+								return true;
 							}
 						});
-
-				
-						
-	
-	
 					}
 				}
-			} catch (err) {console.log(err);}
+			} catch (err) {console.log(err);return false;}
 			
 			
 		});

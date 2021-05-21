@@ -5,8 +5,10 @@ const checkChannels = require('../../functions/checkChannels');
 
 module.exports = {
 	name : 'sudo',
+	aliases: ["say","tell"],
 	description : 'makes the bot say whatever you want wherever you want',
 	usage:'!sudo <Channel ID or name> <Message>',
+	cooldown: 5,
 	whiteList :'ADMINISTRATOR',
 
 	execute(message, args, server) {
@@ -20,10 +22,11 @@ module.exports = {
 				try {
 					const embed = makeEmbed('invalid Channel',this.usage, server);
 					sendAndDelete(message,embed, server);
-					return;
+					return false;
 			
 				} catch (error) {
 					console.error(error);
+					return false;
 				}
 				break;
 			case "no args": 
@@ -31,10 +34,11 @@ module.exports = {
 
 				const embed = makeEmbed("Missing channel name", this.usage, server);
 				sendAndDelete(message,embed, server );
-				return;
+				return false;
 
 			} catch (error) {
 				console.error(error);
+				return false;
 			}
 				break;
 			default:
@@ -42,12 +46,12 @@ module.exports = {
 		
 					const embed = makeEmbed("Missing message", this.usage, server);
 					sendAndDelete(message,embed, server);
-					return;
+					return false;
 				} else if(!sudoStuff.length) {
 		
 					const embed = makeEmbed('Can\'t send an empty message', this.usage, server);
 					sendAndDelete(message,embed, server);
-					return;
+					return false;
 				}
 				const location = message.guild.channels.cache.get(checkChannels(message,args, 0));
 				 
@@ -55,10 +59,7 @@ module.exports = {
 		
 					location.send(sudoStuff);
 		
-					return;
-				
-				return;
-				break;
+					return true;
 		}
 		
 

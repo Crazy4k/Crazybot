@@ -1,4 +1,4 @@
-module.exports = function sendAndDelete(message, msgToSend, server) {
+module.exports = (message, msgToSend, server) => {
 
     message.channel.send(msgToSend)
         .then(m => {

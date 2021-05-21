@@ -6,7 +6,9 @@ const insults = ["ugly","fat","dumb", "noob"];
 
 module.exports = {
 	name : 'copy',
+    aliases: ["lol","annoy"],
 	description : 'Makes the bot copy every message that the <user> says',
+    cooldown: 60 * 3,
 	usage:'!copy <user>',
 	whiteList : ['ADMINISTRATOR'],
 
@@ -20,15 +22,17 @@ module.exports = {
         
                     const embed = makeEmbed('invalid username',this.usage, server);
                     sendAndDelete(message, embed,server);
-                    return 
+                    return false;
             
                 } catch (error) {
                     console.error(error);
+                    return false;
                 }
                 break;
             case "no args": 
                 const embed = makeEmbed('Missing arguments',this.usage, server);
                 sendAndDelete(message, embed,server);
+                return false;
                 break;
                                
             default:
@@ -43,7 +47,7 @@ module.exports = {
                     im.forEach(element => {
                         if(agrs[0] === element) {
                             tureflase[0] = true;
-                            return;   
+                            return; 
                         }   
                     });
                     insults.forEach(element => {
@@ -55,10 +59,11 @@ module.exports = {
                     
                     if(agrs.length === 2  && tureflase[0] && tureflase[1]){
                         collector.stop();
-                        return;
-                    } else m.channel.send(m.content);console.log(m.content);
+                        return true;
+                    } else m.channel.send(m.content);
                 })
                 collector.on("end", m =>message.channel.send("lol"));
+                return true;
             break;
         }
     },

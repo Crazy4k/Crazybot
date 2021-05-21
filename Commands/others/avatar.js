@@ -13,32 +13,21 @@ module.exports = {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-		
-					const embed = makeEmbed('invalid username',this.usage, server);
-			
-					sendAndDelete(message,embed, server);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);			
+				sendAndDelete(message,embed1, server);
+				return false;
 				break;
 			case "no args": 
-			try {
 				const image = message.author.displayAvatarURL();
 				message.channel.send(image);
-				break;
-			} catch (error) {
-				console.log(error);
-			}
-				
-				
+				return true;
+				break;	
 			default:
 				const dude = message.guild.members.cache.get(checkUseres(message, args, 0));
 			    const guy = dude.user;
-				const image = guy.displayAvatarURL();
-				message.channel.send(image);
+				const image1 = guy.displayAvatarURL();
+				message.channel.send(image1);
+				return true;
 				break;
 		}
 		

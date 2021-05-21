@@ -1,4 +1,4 @@
-module.exports = function checkUseres(message, args, num = 0) {
+module.exports = (message, args, num = 0) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){
             if(message.guild.members.cache.get(args[num])) {
@@ -16,31 +16,23 @@ module.exports = function checkUseres(message, args, num = 0) {
 }
 
 /*
-switch (checkUseres(message, args, 0)) {
+const target = checkUseres(message, args, 0);
+switch (target) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-					const embed = makeEmbed('invalid username',this.usage, server);
-					sendAndDelete(message,embed, server);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				
+				const embed1 = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed1, server);
+				return false;
 				break;
 			case "no args": 
-			try {
-
-				const embed = makeEmbed('Missing arguments',this.usage, server);
-				sendAndDelete(message,embed, server);
-				return;
-
-			} catch (error) {
-				console.error(error);
-			}
+			const embed2 = makeEmbed('Missing arguments',this.usage, server);
+			sendAndDelete(message,embed2, server);
+			return false;		
 				break;
 			default:
+				return true;
 				break;
 		}
 
