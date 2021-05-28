@@ -102,6 +102,7 @@ client.on('guildCreate', guild => {
 			const lol = { 
 				guildID: guild.id,
 				isSet: false,
+				whiteListedRole:"",
 				members:{},
 			}
 			fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
@@ -258,9 +259,10 @@ client.on('guildMemberRemove', (member) => {
 
 
 // message deletion logs
-
+const checkGhostPing = require("./Features/ghostPingDetector");
 const messageDelete = require("./logs/messageDelete");
 client.on('messageDelete', (message) => {
+	checkGhostPing(message);
 	messageDelete(message);
 });
 

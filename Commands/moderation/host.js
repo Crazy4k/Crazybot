@@ -8,7 +8,7 @@ const client = require("../.././index");
 
 const dltTime = 1000 * 60 * 1;
 
-
+const role = "847812366506000384";
 
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
     whiteList:'ADMINISTRATOR',
 
 	execute(message, args, server) { 
-
+        if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(role)){
         let eventType = args[0];
         let supervisor = checkUseres(message, args, 1);
         switch (supervisor) {
@@ -59,6 +59,6 @@ module.exports = {
                     .then(collected => m.delete().catch(e=>console.log(e)))
                     .catch(console.error);
             });
-               
+        } else return false;       
     }
 };

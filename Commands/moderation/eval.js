@@ -12,7 +12,6 @@ module.exports = {
 	name : 'eval',
 	description : 'makes the bot do stuff with eval();',
 	usage:'!eval ``` code ``',
-	whiteList : 'ADMINISTRATOR',
 	execute(message, args, server) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);

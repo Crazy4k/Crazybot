@@ -1,6 +1,7 @@
 const fs = require("fs");
 const moment = require('moment');
 const Discord = require('discord.js');
+const client = require("../index");
 
 module.exports = (member) => {
 

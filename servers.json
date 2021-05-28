@@ -50,7 +50,7 @@
     "emptyValue05": "",
     "emptyValue06": "",
     "emptyValue07": "",
-    "pointsEnabled": false,
+    "pointsEnabled": true,
     "defaultEmbedColor": "#f7f7f7",
     "deleteFailedMessagedAfter": 10000,
     "deleteMessagesInLogs": true,

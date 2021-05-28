@@ -8,7 +8,6 @@ module.exports = {
 	description : "shows your total points",
     aliases:["p"],
     cooldown: 5,
-    whiteList:'ADMINISTRATOR',
 	usage:'!points <@user>',
 	execute(message, args, server) { 
         const target = checkUseres(message, args, 0);
@@ -36,6 +35,7 @@ module.exports = {
                         for(let servery of readableRespnse){
                             if(servery.guildID === message.guild.id){
                                 if(server.pointsEnabled){
+                                    const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
                                     message.channel.send(servery.members[target]);                                    
                                     return true;
                                 } else{
