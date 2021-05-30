@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const client = new Discord.Client();
 module.exports = client;
-const {token} = require('./config.json');
+const token = process.env.DISCORD_BOT_TOKEN;
 const checkWhiteList = require("./functions/checkWhiteList");
 const keepAlive = require('./server.js');
 
@@ -75,6 +75,19 @@ client.on('guildCreate', guild => {
 				emptyValue05:"",
 				emptyValue06:"",
 				emptyValue07:"",
+				emptyValue08:"",
+				emptyValue09:"",
+				emptyValue10:"",
+				emptyValue11:"",
+				emptyValue12:"",
+				emptyValue13:"",
+				emptyValue14:"",
+				emptyValue15:"",
+				emptyValue16:"",
+				emptyValue17:"",
+				emptyValue18:"",
+				emptyValue19:"",
+				emptyValue20:"",
 				pointsEnabled: false,
 				defaultEmbedColor:"#f7f7f7",
 				deleteFailedMessagedAfter: 10000,
@@ -184,9 +197,9 @@ client.on('message', message => {
 	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 		try {
 			let JsonedDB = JSON.parse(config);
-			for(let server of JsonedDB) {
-				//once it finds the server, it checks if deleteMessagesInLogs in turned on
-				if (message.guild.id === server.guildId && !message.author.bot){
+			let server = JsonedDB.find(e => e.guildId === message.guild.id);
+			
+				if (server && !message.author.bot){
 					if(server.deleteMessagesInLogs) {
 						// if so, it instantly deletes the message if it was sent inside a log channel
 						switch (message.channel.id) {
@@ -212,9 +225,9 @@ client.on('message', message => {
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
 					if(command)checkWhiteList(command, message, args, server, recentlyRan);
-					break;
+					
 				}
-			}
+			
 		} catch (err) {console.log(err);}
 	})	
 });
