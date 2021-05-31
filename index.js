@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+require("dotenv").config();
 const fs = require('fs');
 const client = new Discord.Client();
 module.exports = client;
@@ -8,7 +9,6 @@ const keepAlive = require('./server.js');
 
 
 keepAlive();
-
 
 
 client.commands = new Discord.Collection();
@@ -330,7 +330,7 @@ client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
 
 
 
-client.login(token);
+client.login(token);	
 client.once('ready', async() => {
 	console.log('Bot succesfuly launched.');
 
