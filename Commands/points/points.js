@@ -1,15 +1,25 @@
-const { response } = require("express");
-const fs = require("fs");
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
+let cache = require("./cache");
+const mongo = require("../../mongo");
+const pointsSchema = require("../../schemas/points-schema");
+
+
 module.exports = {
 	name : 'points',
 	description : "shows your total points",
     aliases:["p"],
     cooldown: 5,
 	usage:'!points <@user>',
-	execute(message, args, server) { 
+	async execute(message, args, server) { 
+
+        if(!server.pointsEnabled){
+            const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
+            sendAndDelete(message, embed, server);
+            return false;
+        }
+
         const target = checkUseres(message, args, 0);
         switch (target) {
                 case "not valid":
@@ -26,31 +36,28 @@ module.exports = {
                 return false;		
                     break;
                 default:
-                    fs.readFile("./Commands/points/points.json", (err,response) =>{
-                        if(err){
-                            console.log(err);
-                            return false;
-                        }
-                        const readableRespnse = JSON.parse(response);
-                        for(let servery of readableRespnse){
-                            if(servery.guildID === message.guild.id){
-                                if(server.pointsEnabled){
-                                    const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
-                                    message.channel.send(servery.members[target]);                                    
-                                    return true;
-                                } else{
-                                    const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
-                                    sendAndDelete(message, embed, server);
-                                    return false;
-                                }
+
+                    let servery = cache[message.guild.id];
+
+                    if(!servery){
+                        await mongo().then(async (mongoose) =>{
+                            try{
+                                const data = await pointsSchema.findOne({_id:message.guild.id});
+                                cache[message.guild.id] = servery = data;
                             }
-                        }
-                        
-                        return false;
-                    });
+                            finally{
+                                    
+                                console.log("FETCHED FROM DATABASE");
+                                mongoose.connection.close();
+                            }
+                        })
+                    }
+                
+                    const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
+                    message.channel.send(emb);                                    
                     return true;
-                    break;
-            }
+ 
+                }
         
 		
 	},

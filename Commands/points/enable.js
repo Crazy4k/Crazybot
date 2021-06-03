@@ -1,10 +1,12 @@
-const { response } = require("express");
 const fs = require("fs");
-const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
-const sendAndDelete = require("../../functions/sendAndDelete");
 const client = require("../.././index");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
+const mongo = require("../../mongo");
+const pointsSchema = require("../../schemas/points-schema");
+let cache = require("./cache");
+
+
 module.exports = {
 	name : 'points-enable',
 	description : "Enables the ~points~ plugin.",
@@ -12,16 +14,24 @@ module.exports = {
     aliases:["p-enable","enable-points","enable-points"],
 	usage:'!points-enable',
     whiteList:'ADMINISTRATOR',
-	execute(message, args, server) { 
- 
-        fs.readFile("./Commands/points/points.json", (err,response) =>{
-            if(err){
-                console.log(err);
-                return false;
+	async execute(message, args, server) { 
+
+            let servery = cache[message.guild.id];
+
+            if(!servery){
+                await mongo().then(async (mongoose) =>{
+                    try{
+                        const data = await pointsSchema.findOne({_id:message.guild.id});
+                        servery = data;
+                    }
+                    finally{
+                            
+                        console.log("FETCHED FROM DATABASE");
+                        mongoose.connection.close();
+                    }
+                })
             }
-            const readableRespnse = JSON.parse(response);
-            for(let servery of readableRespnse){
-                if(servery.guildID === message.guild.id){
+            
                     if(!server.pointsEnabled){
 
                         let arrayOfIds = [];
@@ -29,8 +39,8 @@ module.exports = {
 
                         servery.members = {};
                         arrayOfIds.forEach(i => servery.members[i] = 0);
-                        servery.isSet = true;
-                        const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to modify points.\nType \`no\` for no one except admins.`, server)
+                        const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to modify points.\nType \`no\` for no one except admins.`, server);
+                    
                         message.channel.send(embed)
                             const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -46,57 +56,54 @@ module.exports = {
                                     case "cancel":
                                     case "no":
                                        servery.whiteListedRole = "";
-                                        break;
-                                    default:
-                                        
+                                    default:     
                                         servery.whiteListedRole = checkedRole;
+                                        break;
+                                    }                                        
 
-                                        fs.writeFile("./Commands/points/points.json", JSON.stringify(readableRespnse, null, 2), err => {
-				
-                                            if(err) {
-                                
-                                                console.log(err);
-                                                return false;
-                                            } else {
-                                                const embed = makeEmbed(`Your server points plugin has  been activated ✅.`,``, server,false,"");
-                                                message.channel.send(embed);
+
+                                    mongo().then(async (mongoose) =>{
+                                        try{
+                                            await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                _id:message.guild.id,
+                                                whiteListedRole:servery.whiteListedRole,
+                                                members:servery.members    
+                                            },{upsert:true});
+                                        } finally{
+                                            console.log("WROTE TO DATABASE");
+                                            mongoose.connection.close();
+                                        }
+                                    })
+                                    cache[message.guild.id] = servery;
+
+                                    fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+                                        if(err){
+                                            console.log(err);
+                                            return false;
+                                        }
+                                        const readableR = JSON.parse(config);
+                                        for( const ser of readableR){
+                                            if(ser.guildId === message.guild.id){
+                                                ser.pointsEnabled = true;
+                                                fs.writeFile("./servers.json", JSON.stringify(readableR, null, 2), err => {
+                                                    if(err){
+                                                        console.log(err);
+                                                        return false;
+                                                     }else  return true;
+                                                  
+                                                    });
                                                 return true;
                                             }
-                                        });
-                                        fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-                                            if(err){
-                                                console.log(err);
-                                                return false;
-                                            }
-                                            const readableR = JSON.parse(config);
-                                            for( const ser of readableR){
-                                                if(ser.guildId === message.guild.id){
-                                                    ser.pointsEnabled = true;
-                                                    fs.writeFile("./servers.json", JSON.stringify(readableR, null, 2), err => {
-                                                        if(err){
-                                                            console.log(err);
-                                                            return false;
-                                                        }else  return true;
-                                                        
-                                                    });
-                                                    return true;
-                                                }
-                                            }
-                                        });
-                                        break;
-                                }
+                                        }
+                                    });
+                                
                             });
                         return true;
+                    
                     } else{
                         const embed = makeEmbed(`Your server points plugin has already been activated.`,`Do "${server.prefix}points" instead.`, server);
                         message.channel.send(embed);
                         return false;
-                    }
-                }
-            }
-                    
-            return false;
-        });
-        return true;             
+                    }           
     }
 };

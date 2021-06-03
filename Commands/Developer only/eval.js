@@ -7,6 +7,7 @@ const serversDotJson = require("../../servers.json");
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const client = require("../../index");
+const moment = require("moment");
 
 module.exports = {
 	name : 'eval',

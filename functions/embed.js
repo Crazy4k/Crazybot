@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
-
-module.exports = (title, description, server, timestamp = false ,footer = "developed by Crazy4k", ) => {
+let creator = "developed by Crazy4k";
+const moment = require("moment");
+if(moment().format("MMMM DD") === "July 02")creator = "developed by Crazy4k 🎂🎉";
+module.exports = (title, description, server, timestamp = false ,footer = creator, ) => {
     let color;
     if(typeof server === "object")color =server.defaultEmbedColor;
     if(typeof server === "string")color = server;

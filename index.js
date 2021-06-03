@@ -6,40 +6,28 @@ module.exports = client;
 const token = process.env.DISCORD_BOT_TOKEN;
 const checkWhiteList = require("./functions/checkWhiteList");
 const keepAlive = require('./server.js');
-
+const mongo = require("./mongo");
 
 keepAlive();
 
 
 client.commands = new Discord.Collection();
 
-const commandfiles01 = fs.readdirSync('./Commands/fun/').filter(file =>file.endsWith('.js'));
-const commandfiles02 = fs.readdirSync('./Commands/moderation/').filter(file =>file.endsWith('.js'));
-const commandfiles03 = fs.readdirSync('./Commands/others/').filter(file =>file.endsWith('.js'));
-const commandfiles04 = fs.readdirSync("./Commands/Server configurations/").filter(file =>file.endsWith('.js'));
-const commandfiles05 = fs.readdirSync("./Commands/points/").filter(file =>file.endsWith('.js'));
 
-// getting all the commands.
-for(const file of commandfiles01) {
-	const command = require(`./Commands/fun/${file}`);
-	client.commands.set(command.name, command);
+const bigcommandfile = fs.readdirSync("./Commands/");
+
+for(let category of bigcommandfile){
+
+	const smallCommandFile = fs.readdirSync(`./Commands/${category}/`).filter(file =>file.endsWith('.js'));
+
+	for(const file of smallCommandFile) {
+
+		const command = require(`./Commands/${category}/${file}`);
+
+		client.commands.set(command.name, command);
+	}
 }
-for(const file of commandfiles02) {
-	const command = require(`./Commands/moderation/${file}`);
-	client.commands.set(command.name, command);
-}
-for(const file of commandfiles03) {
-	const command = require(`./Commands/others/${file}`);
-	client.commands.set(command.name, command);
-}
-for(const file of commandfiles04) {
-	const command = require(`./Commands/Server configurations/${file}`);
-	client.commands.set(command.name, command);
-}
-for(const file of commandfiles05) {
-	const command = require(`./Commands/points/${file}`);
-	client.commands.set(command.name, command);
-}
+const pointsSchema = require("./schemas/points-schema");
 //server object creator ./servers.json
 //this basically creates an object for whenever the bot joins a guild, and saves that object in an array in ./servers.json
 client.on('guildCreate', guild => {
@@ -112,24 +100,19 @@ client.on('guildCreate', guild => {
 					console.log(`joined a new server. name: ${guild.name}`);
 				}
 			});
-			const lol = { 
-				guildID: guild.id,
-				isSet: false,
-				whiteListedRole:"",
-				members:{},
-			}
-			fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
-				if(err){
-					console.log(err);
-					return false;
+			mongo().then(async (mongoose) =>{
+				try{
+					await pointsSchema.findOneAndUpdate({_id:guild.id},{
+						_id:guild.id,
+						whiteListedRole:"",
+						members:{}   
+					},{upsert:true});
+				} finally{
+					
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
 				}
-				const readable = JSON.parse(e);
-				readable.push(lol);
-				fs.writeFile("./Commands/points/points.json", JSON.stringify(readable, null, 2), err => {				
-					if(err) console.log(err);					
-				});
-			});
-			
+			});			
 		} catch (err) {console.log(err);}
 	})//I hate running into errors and crashing the bot so you gotta spam catch() a bit
 });
@@ -272,10 +255,8 @@ client.on('guildMemberRemove', (member) => {
 
 
 // message deletion logs
-const checkGhostPing = require("./Features/ghostPingDetector");
 const messageDelete = require("./logs/messageDelete");
 client.on('messageDelete', (message) => {
-	checkGhostPing(message);
 	messageDelete(message);
 });
 
@@ -330,8 +311,21 @@ client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
 
 
 
-client.login(token);	
+	
 client.once('ready', async() => {
+
+	await mongo().then(mongoose =>{
+		try{
+			console.log("Connected to mongo.");
+		}catch(e){
+			console.log("Failed to Connect to mongo.");
+		}
+		finally
+		{
+			mongoose.connection.close();
+		}
+	})
 	console.log('Bot succesfuly launched.');
 
 });
+client.login(token);

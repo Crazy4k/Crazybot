@@ -12,7 +12,7 @@ module.exports = (member)=> {
 			for( i of JsonedDB) {
 				if (member.guild.id === i.guildId) {
 
-					const room = member.guild.channels.cache.get(i.logs.hiByeChannel);
+					const room = member.guild.channels.cache.get(i.hiByeChannel);
 					const role = member.guild.roles.cache.get(i.hiRole);
 					const log = member.guild.channels.cache.get(i.logs.hiByeLog);
 			
