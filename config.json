@@ -1,5 +1,4 @@
 {
-  "mongoPath":"mongodb://localhost:27017/discord-bot",
   "bot_info": {
     "name": "crazybot",
     "version": "0.4.0",

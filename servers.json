@@ -76,7 +76,7 @@
     "emptyValue18": "",
     "emptyValue19": "",
     "emptyValue20": "",
-    "pointsEnabled": true,
+    "pointsEnabled": false,
     "defaultEmbedColor": "#f7f7f7",
     "deleteFailedMessagedAfter": 10000,
     "deleteMessagesInLogs": true,
