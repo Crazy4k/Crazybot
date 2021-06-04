@@ -14,7 +14,6 @@ const kickMessage = 'User has been banned because he already had 3 warnings:whit
 module.exports = {
 
 	name : 'warn',
-	aliases: ["mute"],
 	description : 'warns a user',
 	usage:'!warn <@user> <reason>',
 	whiteList:'BAN_MEMBERS',

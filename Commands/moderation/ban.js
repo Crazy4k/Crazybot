@@ -1,6 +1,4 @@
-
 const makeEmbed = require('../../functions/embed');
-
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 

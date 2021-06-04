@@ -72,6 +72,30 @@ module.exports = {
                                                             daServer.hiRole = checkRoles(a);
                                                             break;
                                                     }
+                                                    embed.setDescription(`${type0Message} **Enter your mute role.**`);
+                                                    m.edit(embed);
+
+                                            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                                .then(a => {
+                                                    switch (checkRoles(a)) {
+                                                        case "not valid":
+                                                        case "not useable":
+                                                        case "no args":               
+                                                            message.channel.send("Invalid argument, command failed.");
+                                                            return false;
+                                                            break;
+                                                        case "cancel":
+                                                            message.channel.send(cancerCultureMessage);
+                                                            return false;
+                                                            break;
+                                                        case "no":
+                                                            daServer.muteRole = "";
+                                                            break;
+                                                        default:
+                                                            
+                                                            daServer.muteRole = checkRoles(a);
+                                                            break;
+                                                    }
                                                         embed.setDescription(`${type0Message} **Enter your first warning role.**`);
                                                             m.edit(embed);
                                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -210,6 +234,11 @@ module.exports = {
                                                                                                                                 } else {
                                                                                                                                     embed2.addField('Welcome role :wave:',  `Empty`,true);
                                                                                                                                 }
+                                                                                                                                if(daServer.muteRole){
+                                                                                                                                    embed2.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
+                                                                                                                                } else {
+                                                                                                                                    embed2.addField('Mute role :mute:',  `Empty`,true);
+                                                                                                                                }
                                                                                                     
                                                                                                                                 if(daServer.warningRoles.firstwarningRole && daServer.warningRoles.secondWarningRole && daServer.warningRoles.thirdWarningRole){
                                                                                                                                     embed2.addFields(
@@ -237,7 +266,7 @@ module.exports = {
                                                                                                                     }).catch(e => {message.channel.send(idleMessage)});
                                                                                                             }).catch(e => {message.channel.send(idleMessage)});
 
-                                                                                                        
+                                                                                                        }).catch(e => {message.channel.send(idleMessage)});
                                                                                                     })
                                                                                                     .catch(e => {message.channel.send(idleMessage)});
                                                                                             }).catch(e => {message.channel.send(idleMessage)});
@@ -258,6 +287,11 @@ module.exports = {
                                 embed.addField('Welcome role :wave:', `<@&${server.hiRole}>`, true);
                             } else {
                                 embed.addField('Welcome role :wave:',  `Empty`,true);
+                            }
+                            if(daServer.muteRole){
+                                embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
+                            } else {
+                                embed.addField('Mute role :mute:',  `Empty`,true);
                             }
 
                             if(server.warningRoles.firstwarningRole && server.warningRoles.secondWarningRole && server.warningRoles.thirdWarningRole){

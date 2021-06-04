@@ -1,10 +1,7 @@
-
-const { response } = require("express");
-const fs = require("fs");
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-const client = require("../.././index");
+
 
 const dltTime = 1000 * 60 * 1;
 
