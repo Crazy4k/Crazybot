@@ -148,8 +148,8 @@ client.on('message', async (message) => {
 			if(server === null){
 				await mongo().then(async (mongoose) =>{
 					try{ 
-						await serversSchema.findOneAndUpdate({_id:guild.id},{
-							_id: guild.id,
+						await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+							_id: message.guild.id,
 							hiByeChannel:"",
 							hiRole:"",
 							language:"English",
