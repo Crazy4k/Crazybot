@@ -7,11 +7,11 @@ module.exports = async(oldChannel, newChannel)=> {
 	if(oldChannel.type === 'dm') return;
 	
 	try {
-		let i = guildsCache[channel.guild.id];
+		let i = guildsCache[oldChannel.guild.id];
 		if(!i){
 			await mongo().then(async (mongoose) =>{
 				try{ 
-					guildsCache[channel.guild.id] =i= await serversSchema.findOne({_id:channel.guild.id});
+					guildsCache[oldChannel.guild.id] =i= await serversSchema.findOne({_id:oldChannel.guild.id});
 				} finally{
 					console.log("FETCHED FROM DATABASE");
 					mongoose.connection.close();
