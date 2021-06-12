@@ -1,17 +1,24 @@
-const fs = require("fs");
 const Discord = require('discord.js');
+const mongo = require("../mongo");
+let guildsCache = require("../caches/guildsCache");
+const serversSchema = require("../schemas/servers-schema");
 
-module.exports = (oldChannel, newChannel)=> {
+module.exports = async(oldChannel, newChannel)=> {
 	if(oldChannel.type === 'dm') return;
-
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		
-		try {
-			const JsonedDB = JSON.parse(config);
-			
-			for( i of JsonedDB) {
-				if (oldChannel.guild.id === i.guildId) {
-					const serverLogs = oldChannel.guild.channels.cache.get(i.logs.serverLog);		
+	
+	try {
+		let i = guildsCache[channel.guild.id];
+		if(!i){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[channel.guild.id] =i= await serversSchema.findOne({_id:channel.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
+				}
+			});
+		}
+		const serverLogs = oldChannel.guild.channels.cache.get(i.logs.serverLog);		
 					if(typeof serverLogs !== 'undefined') {
 						try {
 							const tur = [];
@@ -46,10 +53,8 @@ module.exports = (oldChannel, newChannel)=> {
 							console.error;
 						}
 					}
-					break;
-				}
-			}
+					
 		}catch (err) {console.log(err);}
-	});
+	
 	
 }

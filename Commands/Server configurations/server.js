@@ -1,11 +1,12 @@
 const makeEmbed = require('../../functions/embed');
-const fs = require("fs");
-const sendAndDelete = require("../../functions/sendAndDelete");
 const type0Message = "(type `0` to cancel / type \"`no`\" for none)\n"; 
 const idleMessage = "Command cancelled due to the user being idle";
 const cancerCultureMessage = "Command cancelled successfully";
 const checkChannels = require("../../functions/Response based Checkers/checkChannels");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
+const mongo = require("../../mongo");
+let guildsCache = require("../../caches/guildsCache");
+const serversSchema = require("../../schemas/servers-schema");
 
 module.exports = {
 	name : 'server',
@@ -18,62 +19,59 @@ module.exports = {
         let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.**`, server);
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
         const reactionFilter = (react, noob) => noob.id === message.author.id && !noob.bot;
-        fs.readFile("./servers.json", 'utf-8', (err, config)=>{
 		
-            try {
-                const JsonedDB = JSON.parse(config);
-                for( i of JsonedDB) {
-                    if (message.guild.id === i.guildId){
-                        let daServer = i;
-                        if(!i.isSet){
-                            message.channel.send(embed)
-                                .then(m => {
-                                      message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                        .then(a => {      
-                                            switch (checkChannels(a)) {
-                                                case "not valid":
-                                                case "no args": 
-                                                case "not useable":              
-                                                    message.channel.send("Invalid argument, command failed.");
-                                                    return false;
-                                                    break;
-                                                case "cancel":
-                                                    message.channel.send(cancerCultureMessage);
-                                                    return false;
-                                                    break;
-                                                case "no":
-                                                    daServer.hiByeChannel = "";
-                                                    break;
-                                                default:
-                                                    daServer.hiByeChannel = checkChannels(a);
-                                                    break;
-                                            }
-                                            embed.setDescription(`${type0Message} **Enter your welcoming role.**`);
-                                            m.edit(embed);
+        try {
+                
+            let daServer = server;
+            if(!daServer.isSet){
+                message.channel.send(embed)
+                    .then(m => {
+                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                            .then(a => {      
+                                switch (checkChannels(a)) {
+                                    case "not valid":
+                                    case "no args": 
+                                    case "not useable":              
+                                        message.channel.send("Invalid argument, command failed.");
+                                        return false;
+                                        break;
+                                    case "cancel":
+                                        message.channel.send(cancerCultureMessage);
+                                        return false;
+                                        break;
+                                    case "no":
+                                        daServer.hiByeChannel = "";
+                                        break;
+                                    default:
+                                        daServer.hiByeChannel = checkChannels(a);
+                                        break;
+                                }
+                                embed.setDescription(`${type0Message} **Enter your welcoming role.**`);
+                                m.edit(embed);
 
-                                            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                .then(a => {
-                                                    switch (checkRoles(a)) {
-                                                        case "not valid":
-                                                        case "not useable":
-                                                        case "no args":               
-                                                            message.channel.send("Invalid argument, command failed.");
-                                                            return false;
-                                                            break;
-                                                        case "cancel":
-                                                            message.channel.send(cancerCultureMessage);
-                                                            return false;
-                                                            break;
-                                                        case "no":
-                                                            daServer.hiRole = "";
-                                                            break;
-                                                        default:
+                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                    .then(a => {
+                                        switch (checkRoles(a)) {
+                                            case "not valid":
+                                            case "not useable":
+                                            case "no args":               
+                                                message.channel.send("Invalid argument, command failed.");
+                                                return false;
+                                                break;
+                                            case "cancel":
+                                                message.channel.send(cancerCultureMessage);
+                                                    return false;
+                                                break;
+                                            case "no":
+                                                 daServer.hiRole = "";
+                                                break;
+                                            default:
                                                             
-                                                            daServer.hiRole = checkRoles(a);
-                                                            break;
-                                                    }
-                                                    embed.setDescription(`${type0Message} **Enter your mute role.**`);
-                                                    m.edit(embed);
+                                                 daServer.hiRole = checkRoles(a);
+                                                break;
+                                        }
+                                        embed.setDescription(`${type0Message} **Enter your mute role.**`);
+                                        m.edit(embed);
 
                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
                                                 .then(a => {
@@ -197,7 +195,7 @@ module.exports = {
                                                                                                                 m.react("✅");
                                                                                                                 m.react("❌");
                                                                                                                 m.awaitReactions(reactionFilter, { max : 1,time: 120000, errors : ["time"] })
-                                                                                                                    .then(a =>{
+                                                                                                                    .then( async (a) =>{
                                                                                                                         
                                                                                                                         switch (a.first().emoji.name) {
                                                                                                                             case "✅":
@@ -214,15 +212,30 @@ module.exports = {
 
 
                                                                                                                         daServer.isSet = true;
-                                                                                                                        i = daServer
-                
-                                                                                                                        fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
-                                
-                                                                                                                            if(err) {
-                                                                                                                            message.channel.send('There was a problem with the bot:x:,check the console or contact the developer to fix this');
-                                                                                                                            console.log(err);
-                                                                                                                            } else {
-                
+                                                                                                                        await mongo().then(async (mongoose) =>{
+                                                                                                                            try{ 
+                                                                                                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                                                                                                    hiByeChannel: daServer.hiByeChannel,
+                                                                                                                                    hiRole: daServer.hiRole,
+                                                                                                                                    muteRole: daServer.muteRole,
+                                                                                                                                    warningRoles: {
+                                                                                                                                        firstwarningRole:daServer.warningRoles.firstwarningRole,
+                                                                                                                                        secondWarningRole: daServer.warningRoles.secondWarningRole,
+                                                                                                                                        thirdWarningRole: daServer.warningRoles.thirdWarningRole
+                                                                                                                                    },
+                                                                                                                                    deleteMessagesInLogs: daServer.deleteMessagesInLogs,
+                                                                                                                                    deleteFailedCommands: daServer.deleteFailedCommands,
+                                                                                                                                    isSet: daServer.isSet
+                                                                                                                                    
+
+                                                                                                                                },{upsert:false});
+                                                                                                                                guildsCache[message.guild.id] = daServer;
+                                                                                                                            } finally{
+                                                                                                                                console.log("WROTE TO DATABASE");
+                                                                                                                                mongoose.connection.close();
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                                        
                                                                                                                                 const embed2 = makeEmbed("Server configurations", `Done ✅.Your server configuration look like:`, server);
                                                                                                                                 if(daServer.hiByeChannel){
                                                                                                                                     embed2.addField('Welcome channel :wave:', `<#${daServer.hiByeChannel}>`, true);
@@ -261,8 +274,8 @@ module.exports = {
                                                                                                                                 );
                                                                                                                                 message.channel.send(embed2);
                                                                                                                                 return true;
-                                                                                                                            }
-                                                                                                                        });
+                                                                                                                            
+                                                                                                                        
                                                                                                                     }).catch(e => {message.channel.send(idleMessage)});
                                                                                                             }).catch(e => {message.channel.send(idleMessage)});
 
@@ -316,51 +329,40 @@ module.exports = {
                             message.channel.send(embed);
                             const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
                             message.channel.awaitMessages(gayFilter,{max: 1, time : 10000, errors: ['time']})
-                                .then(j => {   
+                                .then( async(j) => {   
 
                                     if (j.first().content === "reset"){
-                                        fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-                                            try {
-                                                const JsonedDB = JSON.parse(config);
-                                                for( i of JsonedDB) {
-                                                    if (message.guild.id === i.guildId){
-                                                        let daServer = i;
-                                                        for (const elememt in daServer) {
-                                                            if(typeof daServer[elememt] === "string") daServer[elememt] = "";
-                                                        }
-                                                        daServer.guildId = message.guild.id;
-                                                        daServer.isSet = false;
-                                                        daServer.language = "English";
-                                                        daServer.prefix = "!";
-                                                        daServer.defaultEmbedColor = "#f7f7f7";
-                                                        
-                                                        i = daServer;
-                                                        fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
-				
-                                                            if(err) {
-                                                                message.channel.send('There was a problem with the bot:x:,check the console or contact the developer to fix this');
-                                                                console.log(err);
-                                                            } else {
-                                                                message.channel.send("Server configuration have been reset✅.\nType `!server` again to reconfigure your server.");
-                                                                return true;
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                            catch (err) {console.log(err);}
-                                        })
+                                        await mongo().then(async (mongoose) =>{
+                                            try{ 
+                                                
+                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                    hiByeChannel:"",
+                                                    hiRole:"",
+                                                    muteRole:"",
+                                                    defaultEmbedColor:"#f7f7f7",
+                                                    deleteFailedMessagedAfter:10000,
+                                                    deleteMessagesInLogs:true,
+                                                    deleteFailedCommands:false,
+                                                    isSet:false,
+                                                    pointsEnabled:server.pointsEnabled,
+                                                    warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},      
+                                                },{upsert:false});
+                                                guildsCache[message.guild.id].hiByeChannel = "";guildsCache[message.guild.id].hiRole = "";guildsCache[message.guild.id].muteRole = "";guildsCache[message.guild.id].defaultEmbedColor = "#f7f7f7";
+                                                guildsCache[message.guild.id].deleteMessagesInLogs = true;guildsCache[message.guild.id].deleteFailedCommands = false; guildsCache[message.guild.id].isSet= false;
+                                                guildsCache[message.guild.id].pointsEnabled = server.pointsEnabled;guildsCache[message.guild.id].warningRoles = {firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""};
+                                            } catch(e){console.log(e);}
+                                            finally{
+                                                console.log("WROTE TO DATABASE");
+                                                mongoose.connection.close();
+                                            }      
+                                            message.channel.send("Server configuration have been reset✅.\nType `!server` again to reconfigure your server.");
+                                            return true;
+                                        });
                                     }
                             }).catch(e => e);
 
                         }
-                        	
-                    }
-                }
             } catch (err) {console.log(err);}
-        })
-        
-       
 
 	},
 

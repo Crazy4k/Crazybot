@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const fs = require("fs");
 
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require('../../functions/embed');
@@ -37,18 +36,13 @@ module.exports = {
 					return false;
 				}
 				const target = message.guild.members.cache.get(checkUseres(message, args, 0));
-				fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-					try {
-						const JsonedDB = JSON.parse(config);	
-						for( i of JsonedDB) {
-		
-							if (message.guild.id === i.guildId) {
-			
-								const firstWarning = i.warningRoles.firstwarningRole;
-								const secondWarning = i.warningRoles.secondWarningRole;
-								const thirdWarning = i.warningRoles.thirdWarningRole;
-								const log = i.warningLog;
-														
+
+								const firstWarning = server.warningRoles.firstwarningRole;
+								const secondWarning = server.warningRoles.secondWarningRole;
+								const thirdWarning = server.warningRoles.thirdWarningRole;
+								const log = server.warningLog;
+								const logging = message.guild.channels.cache.get(log);
+
 								if(message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined || message.guild.roles.cache.get(firstWarning) === undefined){
 									const embed = makeEmbed("Error: warning roles haven't been set up","No warning roles have been given, therefore the user hasn't been warned.\nDo `!server` to see your server settings and to set up the roles.","#FC0000");
 									sendAndDelete(message,embed, server);
@@ -58,10 +52,8 @@ module.exports = {
 			
 									target.roles.add(firstWarning).catch(console.error);
 									console.log(3);
-									if(message.guild.channels.cache.get(log)) {
+									if(logging) {
 									
-										const logging = message.guild.channels.cache.get(log);
-						
 										const embed = new Discord.MessageEmbed()
 						
 											.setTitle("Warning")
@@ -81,9 +73,7 @@ module.exports = {
 						
 									target.roles.add(secondWarning).catch(console.error);
 						
-									if(message.guild.channels.cache.get(log)) {
-						
-										const logging = message.guild.channels.cache.get(log);
+									if(logging) {
 						
 										const embed = new Discord.MessageEmbed()
 											.setTitle("Warning")
@@ -106,10 +96,7 @@ module.exports = {
 						
 									target.roles.add(thirdWarning).catch(console.error);
 						
-									if(message.guild.channels.cache.get(log)) {
-						
-										const logging = message.guild.channels.cache.get(log);
-						
+									if(logging) {	
 										const embed = new Discord.MessageEmbed()
 						
 											.setTitle('Warning')
@@ -122,7 +109,6 @@ module.exports = {
 												{ name:'Reason', value:args.slice(1), inline:true },
 											);
 										logging.send(embed);
-						
 									}
 						
 									message.channel.send(warnMessage);
@@ -156,31 +142,12 @@ module.exports = {
 										}
 									}
 								} 
-							}
-						}
+							
 						
-						
-					}catch (err) {console.log(err);return false;}
-				})
 				break;
 		}
 		return true;
 		
-
-		
-		
-
-		
-
-
-		
-
-		
-
-		
-
-		
-
 
 	},
 

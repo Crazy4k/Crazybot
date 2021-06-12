@@ -1,16 +1,17 @@
-const fs = require("fs");
 const makeEmbed = require("../../functions/embed");
 const client = require("../.././index");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 let cache = require("./cache");
+let guildsCache = require("../../caches/guildsCache");
+const serversSchema= require("../../schemas/servers-schema");
 
 
 module.exports = {
 	name : 'points-enable',
 	description : "Enables the ~points~ plugin.",
-    cooldown: 60 * 1,
+    cooldown: 60 * 2,
     aliases:["p-enable","enable-points","enable-points"],
 	usage:'!points-enable',
     whiteList:'ADMINISTRATOR',
@@ -31,7 +32,26 @@ module.exports = {
                     }
                 })
             }
-            
+            if(servery === null){
+                await mongo().then(async (mongoose) =>{
+                    try{
+                        await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
+                            _id:message.guild.id,
+                            whiteListedRole:"",
+                            members:{}   
+                        },{upsert:true});
+                        servery = cache[message.guild.id] = {
+                            _id:message.guild.id,
+                            whiteListedRole:"",
+                            members:{}  
+                        }
+                    } finally{
+                        
+                        console.log("WROTE TO DATABASE");
+                        mongoose.connection.close();
+                    }
+                });	
+            }
                     if(!server.pointsEnabled){
 
                         let arrayOfIds = [];
@@ -44,7 +64,7 @@ module.exports = {
                         message.channel.send(embed)
                             const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                            .then(a => {
+                            .then(async (a) => {
                                 let checkedRole = checkRoles(a);
                                 switch (checkedRole) {
                                     case "not valid":
@@ -76,27 +96,19 @@ module.exports = {
                                     })
                                     cache[message.guild.id] = servery;
 
-                                    fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-                                        if(err){
-                                            console.log(err);
-                                            return false;
-                                        }
-                                        const readableR = JSON.parse(config);
-                                        for( const ser of readableR){
-                                            if(ser.guildId === message.guild.id){
-                                                ser.pointsEnabled = true;
-                                                fs.writeFile("./servers.json", JSON.stringify(readableR, null, 2), err => {
-                                                    if(err){
-                                                        console.log(err);
-                                                        return false;
-                                                     }else  return true;
-                                                  
-                                                    });
-                                                return true;
-                                            }
+                                    await mongo().then(async (mongoose) =>{
+                                        try{ 
+                                            await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                pointsEnabled:true,  
+                                            },{upsert:false});
+                                            guildsCache[message.guild.id].pointsEnabled = true;
+                                        } finally{
+                                            console.log("WROTE TO DATABASE");
+                                            mongoose.connection.close();
                                         }
                                     });
-                                
+                                    const embed = makeEmbed(`✅ Your server points plugin has been activated.`,`No you can access all of the points commands`, "#24D900");
+                                    message.channel.send(embed);
                             });
                         return true;
                     

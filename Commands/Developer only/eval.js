@@ -3,7 +3,6 @@ const fs = require("fs");
 const {bot_info} = require("../../config.json");
 const makeEmbed = require('../../functions/embed');
 const authorID = bot_info.authorID;
-const serversDotJson = require("../../servers.json");
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const client = require("../../index");

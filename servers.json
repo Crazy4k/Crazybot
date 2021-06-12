@@ -84,53 +84,5 @@
       "secondWarningRole": "809084581437374495",
       "thirdWarningRole": "809084670385324073"
     }
-  },
-  {
-    "guildId": "850093604848664687",
-    "logs": {
-      "hiByeLog": "",
-      "deleteLog": "",
-      "serverLog": "",
-      "warningLog": "",
-      "isSet": false,
-      "adminLog": "",
-      "emptyValue03": "",
-      "emptyValue04": ""
-    },
-    "hiByeChannel": "",
-    "hiRole": "",
-    "hiByeLog": "",
-    "deleteLog": "",
-    "serverLog": "",
-    "warningLog": "",
-    "language": "English",
-    "prefix": "!",
-    "muteRole": "",
-    "emptyValue06": "",
-    "emptyValue07": "",
-    "emptyValue08": "",
-    "emptyValue09": "",
-    "emptyValue10": "",
-    "emptyValue11": "",
-    "emptyValue12": "",
-    "emptyValue13": "",
-    "emptyValue14": "",
-    "emptyValue15": "",
-    "emptyValue16": "",
-    "emptyValue17": "",
-    "emptyValue18": "",
-    "emptyValue19": "",
-    "emptyValue20": "",
-    "pointsEnabled": true,
-    "defaultEmbedColor": "#f7f7f7",
-    "deleteFailedMessagedAfter": 10000,
-    "deleteMessagesInLogs": true,
-    "deleteFailedCommands": false,
-    "isSet": false,
-    "warningRoles": {
-      "firstwarningRole": "",
-      "secondWarningRole": "",
-      "thirdWarningRole": ""
-    }
   }
 ]

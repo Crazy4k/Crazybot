@@ -7,6 +7,9 @@ const token = process.env.DISCORD_BOT_TOKEN;
 const checkWhiteList = require("./functions/checkWhiteList");
 const keepAlive = require('./server.js');
 const mongo = require("./mongo");
+const pointsSchema = require("./schemas/points-schema");
+const serversSchema = require("./schemas/servers-schema");
+let guildsCache = require("./caches/guildsCache");
 
 keepAlive();
 
@@ -27,75 +30,52 @@ for(let category of bigcommandfile){
 		client.commands.set(command.name, command);
 	}
 }
-const pointsSchema = require("./schemas/points-schema");
-//server object creator ./servers.json
-//this basically creates an object for whenever the bot joins a guild, and saves that object in an array in ./servers.json
-client.on('guildCreate', guild => {
 
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+client.on('guildCreate', async (guild)  => {
 		
-		try {
-			const JsonedDB = JSON.parse(config);
-			
-			for( i of JsonedDB) {
-				if (guild.id === i.guildId) return;
-			}
-			const serverObject = {
-				guildId: guild.id,
-				logs :{
-					hiByeLog:"",
-					deleteLog:"",
-					serverLog:"",
-					warningLog:"",
-					isSet:false,
-					adminLog:"",
-					emptyValue03:"",
-					emptyValue04:"",
-				},
-				hiByeChannel:"",
-				hiRole: "",
-				language:"English",
-				prefix : "!",
-				muteRole:"",
-				emptyValue06:"",
-				emptyValue07:"",
-				emptyValue08:"",
-				emptyValue09:"",
-				emptyValue10:"",
-				emptyValue11:"",
-				emptyValue12:"",
-				emptyValue13:"",
-				emptyValue14:"",
-				emptyValue15:"",
-				emptyValue16:"",
-				emptyValue17:"",
-				emptyValue18:"",
-				emptyValue19:"",
-				emptyValue20:"",
-				pointsEnabled: false,
-				defaultEmbedColor:"#f7f7f7",
-				deleteFailedMessagedAfter: 10000,
-				deleteMessagesInLogs : true,
-				deleteFailedCommands : false,
-				isSet:false,
-				warningRoles: {
-					firstwarningRole:"",
-					secondWarningRole:"",
-					thirdWarningRole:""
-				}
-			};
-			
-			JsonedDB.push(serverObject);
+	try {
+		const serverObject = {
+			guildId: guild.id,
+			hiByeChannel:"",
+			hiRole: "",
+			language:"English",
+			prefix : "!",
+			muteRole:"",
+			defaultEmbedColor:"#f7f7f7",
+			deleteFailedMessagedAfter: 10000,
+			deleteMessagesInLogs : true,
+			deleteFailedCommands : false,
+			isSet:false,
+			pointsEnabled: false,
+			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+			warningRoles: {	firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""}
+		};
 
-			fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
-				
-				if(err) {
-	
-					console.log(err);
-				} else {
-					console.log(`joined a new server. name: ${guild.name}`);
-				}
-			});
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				await serversSchema.findOneAndUpdate({_id:guild.id},{
+					_id: guild.id,
+					hiByeChannel:"",
+					hiRole:"",
+					language:"English",
+					prefix:"!",
+					muteRole:"",
+					defaultEmbedColor:"#f7f7f7",
+					deleteFailedMessagedAfter:10000,
+					deleteMessagesInLogs:true,
+					deleteFailedCommands:false,
+					isSet:false,
+					pointsEnabled:false,
+					logs:{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+					warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},    
+				},{upsert:true});
+				guildsCache[guild.id] = serverObject;
+			} finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});
+
 			mongo().then(async (mongoose) =>{
 				try{
 					await pointsSchema.findOneAndUpdate({_id:guild.id},{
@@ -108,79 +88,92 @@ client.on('guildCreate', guild => {
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();
 				}
-			});			
+			});	
+			console.log(`joined a new server. name: ${guild.name}`);
 		} catch (err) {console.log(err);}
-	})//I hate running into errors and crashing the bot so you gotta spam catch() a bit
+	
+
 });
 
 
+client.on('guildDelete', async (guild) => {
 
-//serevr object destroyer servers.json
-//finds the index of that server object and splices it aka deletes it
-client.on('guildDelete', guild => {
+	guildsCache[guild.id] = null;
+	try {
 
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				await serversSchema.findOneAndDelete({_id:guild.id});
+			} finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});
+
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				await pointsSchema.findOneAndDelete({_id:guild.id});
+			} finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});			
 		
-		try {
-			const JsonedDB = JSON.parse(config);
 			
-			for(let i of JsonedDB) {
-				if (guild.id === i.guildId) {
-					JsonedDB.splice(JsonedDB.indexOf(i), 1);
-					
-					fs.writeFile("./servers.json", JSON.stringify(JsonedDB, null, 2), err => {
-				
-						if(err) {
-							
-							console.log(err);
-						} else {
-							console.log(`Left a server. name: ${guild.name}`);
-						}
-					});
-					break;
-				}
-				fs.readFile("./Commands/points/points.json", 'utf-8', (err, e)=>{
-					if(err){
-						console.log(err);
-						return false;
-					}
-					const readable = JSON.parse(e);
-					for(const server1 of readable){
-						if(guild.id === server1.guildID){
-							readable.splice(readable.indexOf(server1), 1);
-
-							fs.writeFile("./Commands/points/points.json", JSON.stringify(readable, null, 2), err => {
-								if(err) console.log(err);
-							});
-							break;
-						}
-					}
-					
-					
-				});
-			}	
-		} catch (err) {console.log(err);}
-	})
+	} catch (err) {console.log(err);}
 });
 
 let recentlyRan = [];
 // guildID-authorID-commandname
+//recentlyRan handles the cooldown mechanic
+
 
 
 //command handler|prefix based
 //i like to devide this into multiple pieces since it's a bit weird
-client.on('message', message => {
+client.on('message', async (message) => {
 	if(message.channel.type === "dm")return;
-
-	//first step is to find the server object in the servers.json file
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
+	if(!guildsCache[message.guild.id]){
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				guildsCache[message.guild.id] = await serversSchema.findOne({_id:message.guild.id});
+			} finally{
+				console.log("FETCHED FROM DATABASE");
+				mongoose.connection.close();
+			}
+		});
+	}
 		try {
-			let JsonedDB = JSON.parse(config);
-			let server = JsonedDB.find(e => e.guildId === message.guild.id);
+			let server = guildsCache[message.guild.id];
+			if(server === null){
+				await mongo().then(async (mongoose) =>{
+					try{ 
+						await serversSchema.findOneAndUpdate({_id:guild.id},{
+							_id: guild.id,
+							hiByeChannel:"",
+							hiRole:"",
+							language:"English",
+							prefix:"!",
+							muteRole:"",
+							defaultEmbedColor:"#f7f7f7",
+							deleteFailedMessagedAfter:10000,
+							deleteMessagesInLogs:true,
+							deleteFailedCommands:false,
+							isSet:false,
+							pointsEnabled:false,
+							logs:{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+							warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},    
+						},{upsert:true});
+					} finally{
+						console.log("WROTE TO DATABASE");
+						mongoose.connection.close();
+					}
+				});
+			}
 			
-				if (server && !message.author.bot){
+				if (!message.author.bot){
 					if(server.deleteMessagesInLogs) {
-						// if so, it instantly deletes the message if it was sent inside a log channel
+						// if the "server.deleteMessagesInLogs" is set to true, it instantly deletes the message if it was sent inside a log channel
 						switch (message.channel.id) {
 							case server.logs.hiByeLog: 
 							case server.logs.deleteLog: 
@@ -208,7 +201,6 @@ client.on('message', message => {
 				}
 			
 		} catch (err) {console.log(err);}
-	})	
 });
 
 

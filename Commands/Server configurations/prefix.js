@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
-const fs = require('fs');
 const makeEmbed = require('../../functions/embed');
-const {} = require("../../config.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
-
+const mongo = require("../../mongo");
+let guildsCache = require("../../caches/guildsCache");
+const serversSchema = require("../../schemas/servers-schema");
 
 module.exports = {
 	name : 'prefix',
@@ -11,7 +11,7 @@ module.exports = {
 	usage:'!preifx <new prefix>',
 	cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
-	execute(message, args, server) {
+	async execute(message, args, server) {
 
 
 		if (args.length === 0) {
@@ -32,40 +32,32 @@ module.exports = {
 			return false;
 		}
 
-		fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-			if(err) return console.log(err);
-			try {
-				let JsonedDB = JSON.parse(config);
-				for(let servero of JsonedDB) {
-					if (message.guild.id === servero.guildId && !message.author.bot){
-						const prefixString = args[0];
-						
-						servero.prefix = prefixString;
 
-						fs.writeFile('./servers.json', JSON.stringify(JsonedDB, null, 2), err => {
-					
-							if(err) {
-								message.channel.send('There was a problem with the bot:x:,check the console or contact the developer to fix this');
-								console.log(err);
-							} else {
+		try {
+			const prefixString = args[0];
 
-								
-
-								const embed = new Discord.MessageEmbed()
-									.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png')
-									.setTitle(`Prefix changed from ${server.prefix} to ${args[0]}`)
-									.setColor('2EFF00')
-									.setFooter('developed by crazy4K')
-									.setTimestamp()
-									.setDescription('The prefix has been changed succesfuly :white_check_mark:.');
-								message.channel.send(embed);
-								return true;
-							}
-						});
-					}
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+						prefix:prefixString,  
+					},{upsert:false});
+					guildsCache[message.guild.id].prefix = prefixString;
+				} finally{
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
 				}
-			} catch (err) {console.log(err);return false;}
+				const embed = new Discord.MessageEmbed()
+						.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png')
+						.setTitle(`Prefix changed from ${server.prefix} to ${args[0]}`)
+						.setColor('2EFF00')
+						.setFooter('developed by crazy4K')
+						.setTimestamp()
+						.setDescription('The prefix has been changed succesfuly :white_check_mark:.');
+					message.channel.send(embed);
+					return true;
+			});
+				
 			
-			
-		});
-	} };
+		} catch (err) {console.log(err);return false;}
+	} 
+};

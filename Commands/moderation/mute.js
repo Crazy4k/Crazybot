@@ -20,7 +20,7 @@ module.exports = {
 			sendAndDelete(message,embed1, server);
 			return false;
         }
-
+        const muteLog = message.guild.channels.cache.get(server.logs.warningLog);
         let toCheck =checkUseres(message,args,0);
         switch (toCheck) {
 			case "not valid":
@@ -54,7 +54,7 @@ module.exports = {
 				    return false;
                 }  
                 muteTime = parseInt(args[1]);
-                if(isNaN(muteTime)){
+                if(isNaN(parseInt(args[1]))){
                     const embed = makeEmbed('Invalid time was provided',this.usage, server);
 				    sendAndDelete(message,embed, server);
 				    return false;
@@ -64,16 +64,36 @@ module.exports = {
                     if(rolee[1].id !== member.guild.id)hisRoles.push(rolee[1].id);
                 }
                 hisRoles.reverse();
-                	member.roles.remove(member.roles.cache, "mute").then(e=> {
-                        member.roles.add(muteRole.id);
-                        const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${args[1]}`, server);
-                        message.channel.send(embed1);
-                        client.setTimeout(()=>{
-                            member.roles.add(hisRoles);
-                            member.roles.remove(muteRole.id);
+                try {
+                    if(member.manageable){
+                        member.roles.remove(member.roles.cache, "mute").then(e=> {
+                            member.roles.add(muteRole.id);
+                            const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${args[1]}`, server);
+                            message.channel.send(embed1);
+                            client.setTimeout(()=>{
+                                member.roles.add(hisRoles);
+                                member.roles.remove(muteRole.id);
 
-                        },muteTime * multi);
-                        }).catch(e=> console.log(e));
+                                const logEmbed = makeEmbed("User warned","","7289DA",true);
+                                logEmbed.addFields(
+                                    { name:'Duration', value:args[1], inline:true },
+                                    { name:'Muted by: ', value:message.author, inline:true },
+                                );
+                                if(muteLog)muteLog.send(logEmbed);
+                            },muteTime * multi);
+                        }).catch(e=>{
+                            console.log(e);
+                            const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
+				            sendAndDelete(message,embed1, server);
+				            return false;
+                        });
+                    }
+                } catch (error) {
+                    const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
+				    sendAndDelete(message,embed1, server);
+				    return false;	
+                }
+                	
                 	
         }
 		

@@ -4,10 +4,7 @@ const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const pickRandom = require("../../functions/pickRandom");
 const rickRollLinks = [
-	'<http://www.5z8.info/launchexe_ocym>',
-	'<http://www.5z8.info/xxx_i6d6dg_horse-slaughter>',
-	'<http://www.5z8.info/linked-in-of-sex_i3s9ri_best-russian-sites-for-bootleg-everything>',
-	'<http://www.5z8.info/nazi_lido>',
+	"<https://www.youtube.com/watch?v=dQw4w9WgXcQ>"
 
 ];
 // those are links that end up here ==> https://www.youtube.com/watch?v=dQw4w9WgXcQ

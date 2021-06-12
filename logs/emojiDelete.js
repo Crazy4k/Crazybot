@@ -1,26 +1,35 @@
-const fs = require("fs");
 const makeEmbed = require("../functions/embed");
 const moment = require('moment');
+const mongo = require("../mongo");
+let guildsCache = require("../caches/guildsCache");
+const serversSchema = require("../schemas/servers-schema");
 
-module.exports = async emoji =>{
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		try {
-			const JsonedDB = JSON.parse(config);
-			for( i of JsonedDB) {
-				if (emoji.guild.id === i.guildId) {
-					const log = emoji.guild.channels.cache.get(i.logs.serverLog);
-					if(typeof log !== 'undefined') {
-						let embed = makeEmbed("Emoji deleted", "", "FF0000", true);
-						embed.addFields(
-							{name:"Emoji name:", value:`${emoji.name}`, inline:true},
-							{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
-							{name:"Created at:", value:`${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
-						);
-						log.send(embed);
-					}
-					break;					
+module.exports = async (emoji) =>{
+
+	try {
+			
+		let i = guildsCache[emoji.guild.id];
+		if(!i){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[emoji.guild.id] =i= await serversSchema.findOne({_id:emoji.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
 				}
-			}		
-		}catch (err) {console.log(err)}
-	})
+			});
+		}
+		const log = emoji.guild.channels.cache.get(i.logs.serverLog);
+		if(typeof log !== 'undefined') {
+			let embed = makeEmbed("Emoji deleted", "", "FF0000", true);
+			embed.addFields(
+				{name:"Emoji name:", value:`${emoji.name}`, inline:true},
+				{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
+				{name:"Created at:", value:`${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
+			);
+			log.send(embed);
+		}
+							
+	}catch (err) {console.log(err)}
+
 }

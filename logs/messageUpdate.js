@@ -1,13 +1,24 @@
-const fs = require("fs");
 const Discord = require('discord.js');
+const mongo = require("../mongo");
+let guildsCache = require("../caches/guildsCache");
+const serversSchema = require("../schemas/servers-schema");
 
-module.exports = (oldMessage, newMessage) => {
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{		
-		try {
-			const JsonedDB = JSON.parse(config);
-			let i = JsonedDB.find(e=>e.guildId === oldMessage.guild.id);			
-			
-				if(oldMessage.author.bot) return;
+module.exports = async(oldMessage, newMessage) => {
+
+		try{			
+			if(oldMessage.author.bot) return;
+
+			let i = guildsCache[oldMessage.guild.id];
+			if(!i){
+				await mongo().then(async (mongoose) =>{
+					try{ 
+						guildsCache[oldMessage.guild.id] =i= await serversSchema.findOne({_id:oldMessage.guild.id});
+					} finally{
+						console.log("FETCHED FROM DATABASE");
+						mongoose.connection.close();
+					}
+				});
+			}
 
 				const deleteLogs = oldMessage.channel.guild.channels.cache.get(i.logs.deleteLog);
 
@@ -56,7 +67,7 @@ module.exports = (oldMessage, newMessage) => {
 			
 			
 		}catch (err) {console.log(err);}
-	})
+
 	
 	
 }

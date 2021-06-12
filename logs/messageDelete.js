@@ -1,22 +1,29 @@
-const fs = require("fs");
 const Discord = require('discord.js');
 const client = require("../index");
+const mongo = require("../mongo");
+let guildsCache = require("../caches/guildsCache");
+const serversSchema = require("../schemas/servers-schema");
 
-
-module.exports = (message) => {
+module.exports =async (message) => {
 	
-	let isCommand = false;
+	let isCommand = false;	
+	try {
 
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		
-		try {
-			const JsonedDB = JSON.parse(config);
-			let i = JsonedDB.find(e=>e.guildId === message.guild.id);
-		
-				if (i && !message.author.bot) {
+		let i = guildsCache[message.guild.id];
+		if(!i){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[message.guild.id] =i= await serversSchema.findOne({_id:message.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
+				}
+			});
+		}
+		if (!message.author.bot) {
 
-					const args = message.content.slice(i.prefix.length).split(/ +/);
-					const commandName = args.shift().toLowerCase();
+			const args = message.content.slice(i.prefix.length).split(/ +/);
+			const commandName = args.shift().toLowerCase();
 					if(client.commands.get(commandName)) isCommand = true;
 
 					const deleteLogs = message.channel.guild.channels.cache.get(i.logs.deleteLog);
@@ -73,5 +80,5 @@ module.exports = (message) => {
 			
 			
 		}catch (err) {console.log(err);}
-	})
+
 }

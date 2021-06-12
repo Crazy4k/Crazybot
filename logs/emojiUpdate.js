@@ -1,27 +1,37 @@
-const fs = require("fs");
+
 const makeEmbed = require("../functions/embed");
 const moment = require('moment');
+const mongo = require("../mongo");
+let guildsCache = require("../caches/guildsCache");
+const serversSchema = require("../schemas/servers-schema");
+
 
 module.exports = async (oldEmoji, newEmoji) =>{
 
-	fs.readFile("./servers.json", 'utf-8', (err, config)=>{
-		try {
-			const JsonedDB = JSON.parse(config);
-			for( i of JsonedDB) {
-				if (oldEmoji.guild.id === i.guildId) {
-					const log = oldEmoji.guild.channels.cache.get(i.logs.serverLog);
-					if(typeof log !== 'undefined') {
-						let embed = makeEmbed("Emoji edited", "", "02A3F4", true);
-						embed.addFields(
-							{name:"Old emoji name:", value:`${oldEmoji.name}`, inline:true},
-							{name:"New emoji name:", value:`${newEmoji.name}`, inline:true},
-							{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
-						);
-						log.send(embed).then(m=>m.react(newEmoji.id));
-					}	
-					break;				
+
+	try {
+		let i = guildsCache[oldEmoji.guild.id];
+		if(!i){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[oldEmoji.guild.id] =i= await serversSchema.findOne({_id:oldEmoji.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
 				}
-			}		
-		}catch (err) {console.log(err)}
-	})
+			});
+		}
+			
+		const log = oldEmoji.guild.channels.cache.get(i.logs.serverLog);
+		if(typeof log !== 'undefined') {
+			let embed = makeEmbed("Emoji edited", "", "02A3F4", true);
+			embed.addFields(
+				{name:"Old emoji name:", value:`${oldEmoji.name}`, inline:true},
+				{name:"New emoji name:", value:`${newEmoji.name}`, inline:true},
+				{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
+			);
+			log.send(embed).then(m=>m.react(newEmoji.id));
+		}			
+	}catch (err) {console.log(err)}
+
 }
