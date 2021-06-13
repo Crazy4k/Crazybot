@@ -145,32 +145,6 @@ client.on('message', async (message) => {
 	}
 		try {
 			let server = guildsCache[message.guild.id];
-			if(server === null){
-				await mongo().then(async (mongoose) =>{
-					try{ 
-						await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-							_id: message.guild.id,
-							hiByeChannel:"",
-							hiRole:"",
-							language:"English",
-							prefix:"!",
-							muteRole:"",
-							defaultEmbedColor:"#f7f7f7",
-							deleteFailedMessagedAfter:10000,
-							deleteMessagesInLogs:true,
-							deleteFailedCommands:false,
-							isSet:false,
-							pointsEnabled:false,
-							logs:{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
-							warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},    
-						},{upsert:true});
-					} finally{
-						console.log("WROTE TO DATABASE");
-						mongoose.connection.close();
-					}
-				});
-			}
-			
 				if (!message.author.bot){
 					if(server.deleteMessagesInLogs) {
 						// if the "server.deleteMessagesInLogs" is set to true, it instantly deletes the message if it was sent inside a log channel
