@@ -27,10 +27,11 @@ module.exports = {
 	name : 'points-remove',
 	description : "Removes points from a user in a server.",
     aliases:["p-remove","p-","points-","points-delete","p-delete"],
-    cooldown: 60 * 1,
+    cooldown: 30 ,
 	usage:'!points-remove <@user> [@user2] [@user3]... <number>',
     whiteList:'ADMINISTRATOR',
     async execute(message, args, server)  { 
+        try{
              
         const pointsToGive= args[args.length - 1];
             
@@ -125,7 +126,9 @@ module.exports = {
             } return true;
             
         
-		
+		} catch (error) {
+            console.log(error);
+        }
 		
 	},
 

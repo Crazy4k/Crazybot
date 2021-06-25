@@ -290,46 +290,46 @@ module.exports = {
                                 }).catch(e => {message.channel.send(idleMessage)});
                                 });
                         } else {
-                            const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType \`reset\` to reset it.`, server);
+                            const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType ${server.prefix}server \`value\` to edit a selected option.`, server);
                             if(server.hiByeChannel){
-                                embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>`, true);
+                                embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\nvalue:\`hiByeChannel\``, true);
                             }else {
-                                embed.addField('Welcome channel :wave:', `Empty`, true);
+                                embed.addField('Welcome channel :wave:', `Empty\nvalue:\`hiByeChannel\``, true);
                             }
                             if(server.hiRole){
-                                embed.addField('Welcome role :wave:', `<@&${server.hiRole}>`, true);
+                                embed.addField('Welcome role :wave:', `<@&${server.hiRole}>\nvalue:\`hiRole\``, true);
                             } else {
-                                embed.addField('Welcome role :wave:',  `Empty`,true);
+                                embed.addField('Welcome role :wave:',  `Empty\nvalue:\`hiRole\``,true);
                             }
                             if(daServer.muteRole){
-                                embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
+                                embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\nvalue:\`muteRole\``, true);
                             } else {
-                                embed.addField('Mute role :mute:',  `Empty`,true);
+                                embed.addField('Mute role :mute:',  `Empty\nvalue:\`muteRole\``,true);
                             }
 
                             if(server.warningRoles.firstwarningRole && server.warningRoles.secondWarningRole && server.warningRoles.thirdWarningRole){
                                 embed.addFields(
-                                    {name:'First warning role :one:', value:`<@&${server.warningRoles.firstwarningRole}>`, inline:true},
-                                    {name:'Second warning role :two:', value:`<@&${server.warningRoles.secondWarningRole}>`, inline:true},
-                                    {name:'Third warning role :three:', value:`<@&${server.warningRoles.thirdWarningRole}>`, inline:true},
+                                    {name:'First warning role :one:', value:`<@&${server.warningRoles.firstwarningRole}>\nvalue:\`1\``, inline:true},
+                                    {name:'Second warning role :two:', value:`<@&${server.warningRoles.secondWarningRole}>\nvalue:\`2\``, inline:true},
+                                    {name:'Third warning role :three:', value:`<@&${server.warningRoles.thirdWarningRole}>\nvalue:\`2\``, inline:true},
                             )} else {
                                 embed.addFields(
-                                    {name:'First warning role :one:', value:`Empty`, inline:true},
-                                    {name:'Second warning role :two:', value:`Empty`, inline:true},
-                                    {name:'Third warning role :three:', value:`Empty`, inline:true},
+                                    {name:'First warning role :one:', value:`Empty\nvalue:\`1\``, inline:true},
+                                    {name:'Second warning role :two:', value:`Empty\nvalue:\`2\``, inline:true},
+                                    {name:'Third warning role :three:', value:`Empty\nvalue:\`3\``, inline:true},
                             )}
                             
                             embed.addFields(
-                                {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}`, inline:true},
-                                {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}`, inline:true},
+                                {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\nvalue:\`deleteInLogs\``, inline:true},
+                                {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\nvalue:\`deleteFailulres\``, inline:true},
                                 {name:'Language :abc:', value:`${server.language}`, inline:true},
                                 {name:'Prefix :information_source:', value:`${server.prefix}`, inline:true},
                                 {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
                             );
                             message.channel.send(embed);
                             const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-                            message.channel.awaitMessages(gayFilter,{max: 1, time : 10000, errors: ['time']})
-                                .then( async(j) => {   
+                            message.channel.awaitMessages(gayFilter,{max: 1, time : 10000, errors: ['time']});
+                               /* .then( async(j) => {   
 
                                     if (j.first().content === "reset"){
                                         await mongo().then(async (mongoose) =>{
@@ -360,7 +360,7 @@ module.exports = {
                                         });
                                     }
                             }).catch(e => e);
-
+                            */
                         }
             } catch (err) {console.log(err);}
 

@@ -88,6 +88,7 @@ module.exports = {
                         logEmbed.addFields(
                             { name:'Duration', value:args[1], inline:true },
                             { name:'Muted by: ', value:message.author, inline:true },
+                            { name:'Roles: ', value:hisRoles.join("> <@"), inline:true },
                             { name : "Reason:", value:reason, inline:true}
 						
                         );

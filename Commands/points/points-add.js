@@ -27,10 +27,13 @@ module.exports = {
 	name : 'points-add',
 	description : "Adds points to a member in the server",
     aliases:["p-add","p+","points+","points-give","p-give"],
-    cooldown: 60,
+    cooldown: 30,
     whiteList:'ADMINISTRATOR',
 	usage:'!points-add <@user> <number>',
 	async execute(message, args, server)  { 
+        try {
+            
+        
              
         const pointsToGive= args[args.length - 1];
             
@@ -125,7 +128,10 @@ module.exports = {
             } return true;
             
         
-		
+		} catch (error) {
+            console.log(error);
+        
+        }
 		
 	},
 
