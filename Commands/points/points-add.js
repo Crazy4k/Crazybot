@@ -16,6 +16,7 @@ const checkUseres = (message, arg) => {
 			return message.author.id;
 		}else if(message.mentions.members.first()){
             let id = arg.slice(3, arg.length-1);
+            console.log(id);
             return message.mentions.members.get(id).id;
         }else if(message.mentions.everyone) {
             return "everyone";
