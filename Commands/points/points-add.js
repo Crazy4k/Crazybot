@@ -16,7 +16,7 @@ const checkUseres = (message, arg) => {
 			return message.author.id;
 		}else if(message.mentions.members.first()){
             let id = arg.slice(3, arg.length-1);
-            console.log(id);
+            if(id.startsWith("!"))id = arg.slice(1, arg.length-1);
             return message.mentions.members.get(id).id;
         }else if(message.mentions.everyone) {
             return "everyone";
@@ -105,6 +105,7 @@ module.exports = {
                     }
                 }                 
                 for(let e of humans){
+                    if(servery.members[e]=== undefined)servery.members[e] = 0;
                     servery.members[e] += parseInt(pointsToGive);
                 }
                 mongo().then(async (mongoose) =>{

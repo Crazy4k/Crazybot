@@ -78,17 +78,18 @@ module.exports = {
                         message.channel.send(embed1);
                         client.setTimeout(()=>{
                             if(muteCache[`${message.author.id}-${message.guild.id}`] !== null){
-                                member.roles.add(hisRoles);
-                                member.roles.remove(muteRole.id);
+                                member.roles.add(hisRoles).then(e=>{
+                                    member.roles.remove(muteRole.id).catch(e=>console.log(e));
+                                })
                                 muteCache[`${message.author.id}-${message.guild.id}`] = null;
                             }
                         },muteTime * multi);
                         const logEmbed = makeEmbed("Mute","","002EFE",true);
-                        logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                        logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
                         logEmbed.addFields(
                             { name:'Duration', value:args[1], inline:true },
                             { name:'Muted by: ', value:message.author, inline:true },
-                            { name:'Roles: ', value:hisRoles.join("> <@"), inline:true },
+                            { name:'Roles: ', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
                             { name : "Reason:", value:reason, inline:true}
 						
                         );

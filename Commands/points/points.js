@@ -52,7 +52,23 @@ module.exports = {
                             }
                         })
                     }
-                
+                    if(servery.members[target]=== undefined){
+
+                        await mongo().then(async (mongoose) =>{
+                            try{
+                                servery.members[target] = 0;
+                                await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
+                                    members:servery.members    
+                                },{upsert:true});
+                                cache[message.guild.id] = servery;
+                               
+                            } finally{
+                                console.log("WROTE TO DATABASE");
+                                mongoose.connection.close();
+                            }
+                        })
+                        
+                    }
                     const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
                     message.channel.send(emb);                                    
                     return true;
