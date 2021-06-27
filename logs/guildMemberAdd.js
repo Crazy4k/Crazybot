@@ -4,9 +4,8 @@ const Discord = require('discord.js');
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
-console.log("yes");
+
 module.exports = async (member)=> {
-		console.log("WORK BRO!");
 	try {
 		let i = guildsCache[member.guild.id];
 		if(!i){
@@ -19,9 +18,6 @@ module.exports = async (member)=> {
 				}
 			});
 		}
-		console.log("The currect cache is:");
-		console.log(i);
-		console.log(i ===guildsCache[member.guild.id]);
 		const room = member.guild.channels.cache.get(i.hiByeChannel);
 		const role = member.guild.roles.cache.get(i.hiRole);
 		const log = member.guild.channels.cache.get(i.logs.hiByeLog);
