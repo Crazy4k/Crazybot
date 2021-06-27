@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
-
+console.log("yes");
 module.exports = async (member)=> {
 		console.log("WORK BRO!");
 	try {
