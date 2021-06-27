@@ -202,6 +202,7 @@ client.on('message', async (message) => {
 
 const guildMemberAdd = require("./logs/guildMemberAdd");
 client.on('guildMemberAdd', (member)=> {
+	console.log("<>");
 	guildMemberAdd(member);
 	
 });

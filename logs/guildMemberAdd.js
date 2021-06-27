@@ -6,7 +6,7 @@ let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
 
 module.exports = async (member)=> {
-		
+		console.log("WORK BRO!");
 	try {
 		let i = guildsCache[member.guild.id];
 		if(!i){
