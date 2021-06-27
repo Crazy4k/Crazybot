@@ -19,7 +19,9 @@ module.exports = async (member)=> {
 				}
 			});
 		}
-
+		console.log("The currect cache is:");
+		console.log(i);
+		console.log(i ===guildsCache[member.guild.id]);
 		const room = member.guild.channels.cache.get(i.hiByeChannel);
 		const role = member.guild.roles.cache.get(i.hiRole);
 		const log = member.guild.channels.cache.get(i.logs.hiByeLog);
@@ -42,10 +44,10 @@ module.exports = async (member)=> {
 					}
 					if(!member.bot){
 						if (typeof role !== 'undefined' ) {
-							member.roles.add(role).catch(console.error);
+							member.roles.add(role).catch(e=>console.log(e));
 						}
 						if (typeof room !== 'undefined'){
-							room.send(`:green_circle:  Welcome <@${member.id}> to the server, have a great time :+1:`);
+							room.send(`:green_circle:  Welcome <@${member.id}> to the server, have a great time :+1:`).catch(e=> console.log(e));
 						}
 					}
 					
