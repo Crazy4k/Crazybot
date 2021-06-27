@@ -12,11 +12,10 @@ module.exports = {
 	name : 'server',
 	description : 'modifies the settings of the server',
 	usage:'!server',
-	whiteList:'ADMINISTRATOR',
     cooldown:  5,
 	async execute(message, args, server) {
         
-        let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.**`, server);
+        let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.👋**`, server);
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
         const reactionFilter = (react, noob) => noob.id === message.author.id && !noob.bot;
 		
@@ -45,7 +44,7 @@ module.exports = {
                                         daServer.hiByeChannel = checkChannels(a);
                                         break;
                                 }
-                                embed.setDescription(`${type0Message} **Enter your welcoming role.**`);
+                                embed.setDescription(`${type0Message} **Enter your welcoming role.👋**`);
                                 m.edit(embed);
 
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -69,7 +68,7 @@ module.exports = {
                                                  daServer.hiRole = checkRoles(a);
                                                 break;
                                         }
-                                        embed.setDescription(`${type0Message} **Enter your mute role.**`);
+                                        embed.setDescription(`${type0Message} **Enter your mute role.🔇**`);
                                         m.edit(embed);
 
                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -93,7 +92,7 @@ module.exports = {
                                                             daServer.muteRole = checkRoles(a);
                                                             break;
                                                     }
-                                                        embed.setDescription(`${type0Message} **Enter your first warning role.**`);
+                                                        embed.setDescription(`${type0Message} **Enter your first warning role.1️⃣**`);
                                                             m.edit(embed);
                                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
                                                                 .then(a => {  
@@ -116,7 +115,7 @@ module.exports = {
                                                                             daServer.warningRoles.firstwarningRole = checkRoles(a);
                                                                             break;
                                                                     }  
-                                                                        embed.setDescription(`${type0Message} **Enter your second warning role.**`);
+                                                                        embed.setDescription(`${type0Message} **Enter your second warning role.2️⃣**`);
                                                                         m.edit(embed);
                                                                         message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
                                                                             .then(a => {  
@@ -141,7 +140,7 @@ module.exports = {
                                                                                         break;
                                                                                 } 
                                                                                 
-                                                                                embed.setDescription(`${type0Message} **Enter your third warning role.**`);
+                                                                                embed.setDescription(`${type0Message} **Enter your third warning role.3️⃣**`);
                                                                                 m.edit(embed);
             
                                                                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -167,7 +166,7 @@ module.exports = {
                                                                                                 break;
                                                                                         } 
                                                                                     
-                                                                                        embed.setDescription(`**Do you want messages to be deleted in logs ?\n[✅ is yes ❌ is no]**`);
+                                                                                        embed.setDescription(`**Do you want messages to be deleted in logs? ❌\n[✅ is yes ❌ is no]**`);
                                                                                         m.edit(embed)
                                                                                             .then(m => {
                                                                                                 m.react("✅");
@@ -188,7 +187,7 @@ module.exports = {
                                                                                                                 break;
                                                                                                         }
                                                                                                         m.reactions.removeAll();
-                                                                                                        embed.setDescription(`**Do you want failed commands to be deleted after a few seconds ?\n[✅ is yes ❌ is no]**`);
+                                                                                                        embed.setDescription(`**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`);
                                                                                                         m.edit(embed)
                                                                                                             .then(m => {
                                                                                                                 m.react("✅");
@@ -365,7 +364,7 @@ module.exports = {
                 let daServer = server;
                 switch (args[0].toLowerCase()) {
                     case "hibyechannel":
-                        let embedo = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.**`, server);
+                        let embedo = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.👋**`, server);
                         message.channel.send(embedo)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -405,7 +404,7 @@ module.exports = {
                             });
                         break;
                     case "hirole":
-                        let embedo1 = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming role.**`, server);
+                        let embedo1 = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming role.👋**`, server);
                         message.channel.send(embedo1)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -445,7 +444,7 @@ module.exports = {
                             });
                         break;
                     case "muterole":
-                        let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.**`, server);
+                        let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.🔇**`, server);
                         message.channel.send(embedo2)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -485,7 +484,7 @@ module.exports = {
                             });
                         break;
                     case "1":
-                        let embedo3 = makeEmbed("Server Settings", `${type0Message}**Enter  your first warning role.**`, server);
+                        let embedo3 = makeEmbed("Server Settings", `${type0Message}**Enter  your first warning role.1️⃣**`, server);
                         message.channel.send(embedo3)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -525,7 +524,7 @@ module.exports = {
                             });
                         break;
                     case "2":
-                        let embedo4 = makeEmbed("Server Settings", `${type0Message}**Enter  your second warning role.**`, server);
+                        let embedo4 = makeEmbed("Server Settings", `${type0Message}**Enter  your second warning role.2️⃣**`, server);
                         message.channel.send(embedo4)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -565,7 +564,7 @@ module.exports = {
                             });
                         break; 
                     case "3":
-                        let embedo5 = makeEmbed("Server Settings", `${type0Message}**Enter  your third warning role.**`, server);
+                        let embedo5 = makeEmbed("Server Settings", `${type0Message}**Enter  your third warning role.3️⃣**`, server);
                         message.channel.send(embedo5)
                             .then(m => {
                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
@@ -605,7 +604,7 @@ module.exports = {
                             });
                         break;
                     case "deleteinlogs":
-                        let embedo6 = makeEmbed("Server Settings", `**Do you want messages to be deleted in logs?\n[✅ is yes ❌ is no]**`, server);
+                        let embedo6 = makeEmbed("Server Settings", `**Do you want messages to be deleted in logs?❌ \n[✅ is yes ❌ is no]**`, server);
                         message.channel.send(embedo6)
                         .then(async m => {
                             m.react("✅");
@@ -641,7 +640,7 @@ module.exports = {
                             });
                         break; 
                     case "deletefails":
-                        let embedo7 = makeEmbed("Server Settings", `**Do you want failed commands to be deleted after a few seconds?\n[✅ is yes ❌ is no]**`, server);
+                        let embedo7 = makeEmbed("Server Settings", `**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`, server);
                         message.channel.send(embedo7)
                         .then(async m => {
                             m.react("✅");
@@ -678,7 +677,6 @@ module.exports = {
                         break;                                    
                     default:
                         message.channel.send("Invalid value.");
-                        console.log("Fail: "+args[0].toLowerCase());
                         break;
                 }
             }
