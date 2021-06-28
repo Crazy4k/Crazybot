@@ -5,7 +5,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 
 const dltTime = 1000 * 60 * 1;
 
-const role = "847812366506000384";
+const role = "847812366506000384"|| "859066551046766602";
 
 
 module.exports = {
