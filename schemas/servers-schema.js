@@ -12,6 +12,7 @@ const guildSchema = mongoose.Schema({
     _id: requiredString,
     hiByeChannel:requiredString,
     hiRole:requiredString,
+    hostRole:{type:String,required:false},
     muteRole:requiredString,
     language:requiredString,
     prefix:requiredString,

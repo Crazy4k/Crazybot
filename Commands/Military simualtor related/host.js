@@ -5,7 +5,6 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 
 const dltTime = 1000 * 60 * 1;
 
-const role = "847812366506000384"|| "859066551046766602";
 
 
 module.exports = {
@@ -14,9 +13,10 @@ module.exports = {
     cooldown: 5,
     aliases:[],
 	usage:'!host <event-type> [Supervised by] <link can be "ms1", "ms2">',
-    whiteList:'ADMINISTRATOR',
 
 	execute(message, args, server) { 
+
+        const role = server.hostRole;
         if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(role)){
         let eventType = args[0];
         let supervisor = checkUseres(message, args, 1);
