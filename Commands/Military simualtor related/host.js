@@ -3,7 +3,7 @@ const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
 
 
-const dltTime = 1000 * 60 * 1;
+const dltTime = 1000 * 60 *60* 1;
 
 
 
