@@ -43,7 +43,7 @@ module.exports = async (member)=> {
 							member.roles.add(role).catch(e=>console.log(e));
 						}
 						if (typeof room !== 'undefined'){
-							room.send(`:green_circle:  Welcome <@${member.id}> to the server, have a great time :+1:`).catch(e=> console.log(e));
+							room.send(`:green_circle:<@${member.id}> Welcome to the server, have a great time :+1:`).catch(e=> console.log(e));
 						}
 					}
 					
