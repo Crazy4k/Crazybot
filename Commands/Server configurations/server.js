@@ -289,7 +289,7 @@ module.exports = {
                                 }).catch(e => {message.channel.send(idleMessage)});
                                 });
             } else if(!args.length){
-                const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType ${server.prefix}server \`value\` to edit a selected option.`, server);
+                const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType "${server.prefix}server \`value\`" to edit a selected option.\nExample:${server.prefix}server hiByeChannel`, server);
                 if(server.hiByeChannel){
                     embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\nvalue: \`hiByeChannel\``, true);
                 }else {
@@ -326,41 +326,7 @@ module.exports = {
                     {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
                 );
                 message.channel.send(embed);
-                            /*
-                            const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-                            message.channel.awaitMessages(gayFilter,{max: 1, time : 10000, errors: ['time']});
-                                .then( async(j) => {   
 
-                                    if (j.first().content === "reset"){
-                                        await mongo().then(async (mongoose) =>{
-                                            try{ 
-                                                
-                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                    hiByeChannel:"",
-                                                    hiRole:"",
-                                                    muteRole:"",
-                                                    defaultEmbedColor:"#f7f7f7",
-                                                    deleteFailedMessagedAfter:10000,
-                                                    deleteMessagesInLogs:true,
-                                                    deleteFailedCommands:false,
-                                                    isSet:false,
-                                                    pointsEnabled:server.pointsEnabled,
-                                                    warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},      
-                                                },{upsert:false});
-                                                guildsCache[message.guild.id].hiByeChannel = "";guildsCache[message.guild.id].hiRole = "";guildsCache[message.guild.id].muteRole = "";guildsCache[message.guild.id].defaultEmbedColor = "#f7f7f7";
-                                                guildsCache[message.guild.id].deleteMessagesInLogs = true;guildsCache[message.guild.id].deleteFailedCommands = false; guildsCache[message.guild.id].isSet= false;
-                                                guildsCache[message.guild.id].pointsEnabled = server.pointsEnabled;guildsCache[message.guild.id].warningRoles = {firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""};
-                                            } catch(e){console.log(e);}
-                                            finally{
-                                                console.log("WROTE TO DATABASE");
-                                                mongoose.connection.close();
-                                            }      
-                                            message.channel.send("Server configuration have been reset✅.\nType `!server` again to reconfigure your server.");
-                                            return true;
-                                        });
-                                    }
-                            }).catch(e => e);
-                            */
             } else {
                 let daServer = server;
                 switch (args[0].toLowerCase()) {

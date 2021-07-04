@@ -9,6 +9,7 @@ const keepAlive = require('./server.js');
 const mongo = require("./mongo");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
+const warnSchema = require("./schemas/warn-schema");
 let guildsCache = require("./caches/guildsCache");
 
 keepAlive();
@@ -89,6 +90,19 @@ client.on('guildCreate', async (guild)  => {
 					mongoose.connection.close();
 				}
 			});	
+			mongo().then(async (mongoose) =>{
+				try{
+					await warnSchema.findOneAndUpdate({_id:guild.id},{
+						_id:guild.id,
+						whiteListedRole:"",
+						members:{}   
+					},{upsert:true});
+				} finally{
+					
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
+				}
+			});	
 			console.log(`joined a new server. name: ${guild.name}`);
 		} catch (err) {console.log(err);}
 	
@@ -117,8 +131,17 @@ client.on('guildDelete', async (guild) => {
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}
-		});			
+		});	
 		
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				await warnSchema.findOneAndDelete({_id:guild.id});
+			} finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});			
+		console.log(`Left a  server. name: ${guild.name}`);
 			
 	} catch (err) {console.log(err);}
 });
@@ -178,27 +201,26 @@ client.on('message', async (message) => {
 });
 
 
-/*	 ________						_________________________			_________________________________		
-	|		|						|						|           |								|
-	|		|						|	________________	|			|		_________________		|
-	|	  	|						|	|				|	|			|		|				|		|
-	|		|						|	|				|	|			|		|				|_______|
-	|	  	|						|	|				|	|			|		|						
-	|		|						|	|				|	|			|		|
-	|		|						|	|				|	|			|		|
-	|		|						|	|				|	|			|		|						
-	|		|						|	|				|	|			|		|		_________________
-	|	  	|						|	|				|	|			|		|		|				|
-	|		|						|	|				|	|			|		|		|___________	|
-	|       |____________			|	|				|	|			|		|					|	|
-	|					|			|	|_______________|	|			|		|___________________|	|
-	|					|			|						|			|								|
-	|___________________|			|_______________________|			|_______________________________|			S
-
-
-
-
-*/
+/* 
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers 
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+Event handlers Event handlers Event handlers Event handlers
+*/ 
 
 const guildMemberAdd = require("./logs/guildMemberAdd");
 client.on('guildMemberAdd', (member)=> {
@@ -207,8 +229,11 @@ client.on('guildMemberAdd', (member)=> {
 });
 
 	
-
-
+const guildMemberUpdate = require("./logs/guildMemberUpdate");
+client.on('guildMemberUpdate', (oldMember, newMember)=> {
+	guildMemberUpdate(oldMember, newMember);
+	
+});
 // bye message/log
 const guildMemberRemove = require("./logs/guildMemberRemove");
 client.on('guildMemberRemove', (member) => {

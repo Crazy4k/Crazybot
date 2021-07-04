@@ -20,7 +20,8 @@ module.exports = {
             return false;
         }
 
-        const target = checkUseres(message, args, 0);
+        let target = checkUseres(message, args, 0);
+        
         switch (target) {
                 case "not valid":
                 case "everyone":	
@@ -31,10 +32,7 @@ module.exports = {
                     return false;
                     break;
                 case "no args": 
-                const embed2 = makeEmbed('Missing arguments',this.usage, server);
-                sendAndDelete(message,embed2, server);
-                return false;		
-                    break;
+                    target = message.author.id;
                 default:
 
                     let servery = cache[message.guild.id];

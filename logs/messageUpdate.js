@@ -48,7 +48,7 @@ module.exports = async(oldMessage, newMessage) => {
 					}
 					return;
 					
-				} else if(deleteLogs) {
+				} else if(deleteLogs && oldMessage.content !== newMessage.content) {
 					const embed = new Discord.MessageEmbed()
 						.setAuthor(oldMessage.author.username, oldMessage.author.displayAvatarURL())
 						.setTitle('Message edited')

@@ -36,7 +36,7 @@ module.exports = {
 								return true;
 							})
 							.catch( e => {
-								if(!Tmember.manageable){
+								if(!user.manageable){
 									const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to manage.", server);
 									sendAndDelete(message,embed, server);
 									return false;
