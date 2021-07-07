@@ -36,14 +36,14 @@ module.exports = async (oldMember, newMember)=> {
 				embed.addField("Nickname after: ", newMember.nickname,false);
 				size++;
 			}
-			
-			if(oldMember.roles.cache.size !== newMember.roles.cache.size){
-				let oldDif = [];
-				let newDif = [];
-				oldMember.roles.cache.each((a)=>{oldDif.push(a.id)});
-				newMember.roles.cache.each((a)=>{newDif.push(a.id)});
-				oldDif.pop();
-				newDif.pop();
+			let oldDif = [];
+			let newDif = [];
+			oldMember.roles.cache.each((a)=>{oldDif.push(a.id)});
+			newMember.roles.cache.each((a)=>{newDif.push(a.id)});
+			oldDif.pop();
+			newDif.pop();
+			if(oldDif.toString() !== newDif.toString()){
+				
 				
 				if(oldDif.length)embed.addField("Roles before: ", `<@&${oldDif.join("> <@&")}>`,false);
 				else embed.addField("Roles before: ", "`No roles`",false);

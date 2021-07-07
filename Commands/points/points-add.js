@@ -28,7 +28,7 @@ module.exports = {
 	name : 'points-add',
 	description : "Adds points to a member in the server",
     aliases:["p-add","p+","points+","points-give","p-give"],
-    cooldown: 30,
+    cooldown: 5,
     whiteList:'ADMINISTRATOR',
 	usage:'!points-add <@user> <number>',
 	async execute(message, args, server)  { 
