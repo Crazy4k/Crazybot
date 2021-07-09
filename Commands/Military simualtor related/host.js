@@ -44,7 +44,7 @@ module.exports = {
             } else {
             
         }
-            const hostString = `• Event type: ${eventType}\n• Hosted by: <@${host}>\n• Supervised by: ${supervisor}\n• Starts at: 20 minutes\n\n•  Link to the game: ${link} \n•  Extra information: ${extraInfo}\n @everyone `;
+            const hostString = `• Event type: ${eventType}\n• Hosted by: <@${host}>\n• Supervised by: ${supervisor}\n• Starts at: 10 minutes\n\n•  Link to the game: ${link} \n•  Extra information: ${extraInfo}\n @everyone `;
             message.channel.send(hostString)
                 .then(m =>{
                     message.delete();

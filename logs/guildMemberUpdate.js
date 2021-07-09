@@ -44,11 +44,23 @@ module.exports = async (oldMember, newMember)=> {
 			newDif.pop();
 			if(oldDif.toString() !== newDif.toString()){
 				
-				
-				if(oldDif.length)embed.addField("Roles before: ", `<@&${oldDif.join("> <@&")}>`,false);
-				else embed.addField("Roles before: ", "`No roles`",false);
-				if(newDif.length)embed.addField("Roles after: ",`<@&${newDif.join("> <@&")}>`,false);
-				else embed.addField("Roles after: ","`No roles`",false);
+				let objOfRoles = {};
+
+				let twoDiffs= oldDif.concat(newDif);
+				twoDiffs.forEach((item)=>{
+					if(objOfRoles[item])objOfRoles[item]++;
+					else objOfRoles[item] = 1;
+				});
+
+				let difference;
+				for (const I in objOfRoles) {
+					if(objOfRoles[I] === 1)difference = I;
+				}
+				let addedOrRemoved = "";
+				if(oldDif.includes(difference)) addedOrRemoved = "removed";
+				else addedOrRemoved = "added";
+
+				if(oldDif.length)embed.addField(`Roles ${addedOrRemoved}: `, `<@&${difference}>`,false);
 				size++;
 			}
 		if(size)log.send(embed);
