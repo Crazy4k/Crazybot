@@ -14,6 +14,10 @@ const pointsSchema = mongoose.Schema({
         type: Object,
         required: true
     },
+    rewards:{
+        type: Object,
+        required: false
+    }
     
 
 

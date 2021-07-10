@@ -3,7 +3,7 @@ const client = require("../.././index");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
-let cache = require("./cache");
+let cache = require("../../caches/pointsCache");
 let guildsCache = require("../../caches/guildsCache");
 const serversSchema= require("../../schemas/servers-schema");
 
