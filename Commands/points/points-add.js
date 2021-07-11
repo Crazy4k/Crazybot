@@ -30,6 +30,7 @@ module.exports = {
     aliases:["p-add","p+","points+","points-give","p-give"],
     cooldown: 5,
 	usage:'!points-add <@user> <number>',
+    category:"points",
 	async execute(message, args, server)  { 
         try {
             

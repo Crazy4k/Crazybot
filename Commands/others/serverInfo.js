@@ -6,6 +6,7 @@ module.exports = {
 	description : 'Shows the all the information about the this server that are not bot related.',
 	usage:'!server-info',
     aliases: ["sinfo","guild-info","serverinfo", "guildinfo"],
+    category:"other",
     cooldown: 60 * 3,
 	execute(message, args, server) {
 

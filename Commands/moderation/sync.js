@@ -20,6 +20,7 @@ module.exports = {
     //cooldown: 5 * 60,
     whiteList:'ADMINISTRATOR',
 	usage:'!sync',
+	category:"Moderation",
 	async execute(message, args, server) { 
 
 		let embed = makeEmbed("Syncing...","",server);

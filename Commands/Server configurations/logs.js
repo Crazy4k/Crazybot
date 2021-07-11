@@ -15,6 +15,7 @@ module.exports = {
 	usage:'!logs',
     cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
+    category:"Server configurations",
 	execute(message, args, server) {
         let embed = makeEmbed("Server Settings", `${type0Message}**Enter your members logging channel. 👤**`, server);
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;

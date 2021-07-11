@@ -16,6 +16,7 @@ module.exports = {
 	description : 'warns a user',
 	usage:'!warn <@user> <reason>',
 	whiteList:'BAN_MEMBERS',
+	category:"Moderation",
 	execute(message, args, server) {
 		switch (checkUseres(message, args, 0)) {
 			case "not valid":

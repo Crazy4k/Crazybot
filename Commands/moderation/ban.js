@@ -7,6 +7,7 @@ module.exports = {
 	description : 'permanently bans any one in the server. The number is for deleting messages from the banned user (0-7 days)',
 	usage:'!ban <@user> <reason> [ delete messages 0-7]',
 	whiteList:'BAN_MEMBERS',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		

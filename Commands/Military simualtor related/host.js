@@ -12,6 +12,7 @@ module.exports = {
 	description : "Sends the host message",
     cooldown: 5,
     aliases:[],
+    category:"ms",
 	usage:'!host <event-type> [Supervised by] <link can be "ms1", "ms2"> [extra info]',
 
 	execute(message, args, server) { 

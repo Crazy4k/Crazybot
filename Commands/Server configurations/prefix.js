@@ -11,6 +11,7 @@ module.exports = {
 	usage:'!preifx <new prefix>',
 	cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
+	category:"Server configurations",
 	async execute(message, args, server) {
 
 

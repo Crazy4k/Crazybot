@@ -10,6 +10,7 @@ module.exports = {
 	cooldown: 1,
 	usage:'!nick <user> "name"',
 	whiteList:'MANAGE_NICKNAMES',
+	category:"Moderation",
 	execute(message, args, server) {
         switch (checkUseres(message, args, 0)) {
 			case "not valid":

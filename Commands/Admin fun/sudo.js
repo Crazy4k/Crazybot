@@ -9,6 +9,7 @@ module.exports = {
 	description : 'makes the bot say whatever you want wherever you want',
 	usage:'!sudo <Channel ID or name> <Message>',
 	cooldown: 5,
+	category:"admin fun",
 	whiteList :'ADMINISTRATOR',
 
 	execute(message, args, server) {

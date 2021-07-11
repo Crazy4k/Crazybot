@@ -10,6 +10,7 @@ module.exports = {
 	description : 'sends the activity check message',
 	cooldown: 60 * 10,
 	usage:'!activity',
+	category:"Moderation",
 	whiteList :'ADMINISTRATOR',
 	execute(message, args, server) {
 
@@ -27,10 +28,10 @@ module.exports = {
 
 			let = activePeople = [];
 
-			collector.on('collect',(r, u) => activePeople.push(u.tag));
+			collector.on('collect',(r, u) => activePeople.push(u.id));
 
 			collector.on('end', collected => {
-				activityLogChannel.send(`People who reacted:\n${activePeople.join(', ')}`);
+				activityLogChannel.send(`People who reacted:\n<@${activePeople.join('> <@')}>`);
 			});
 
 		})

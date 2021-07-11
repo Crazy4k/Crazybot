@@ -3,7 +3,9 @@ module.exports = {
 	aliases: ["test","pang"],
 	description : 'the basic ping command. Mainly used to test if the bot was on or not',
 	usage:'!ping',
+	category:"other",
 	execute(message, args, server) {
+		
 		message.channel.send('pong!');
 		return true;
 	},

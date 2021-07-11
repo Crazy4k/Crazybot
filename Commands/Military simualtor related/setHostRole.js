@@ -11,6 +11,7 @@ module.exports = {
     cooldown: 60 * 1,
     aliases:["h-role"],
 	usage:'!host-role',
+    category:"ms",
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 
 

@@ -14,6 +14,7 @@ module.exports = {
 	usage:'!server',
     cooldown:  5,
     whiteList:'ADMINISTRATOR',
+    category:"Server configurations",
 	async execute(message, args, server) {
         
         let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.👋**`, server);

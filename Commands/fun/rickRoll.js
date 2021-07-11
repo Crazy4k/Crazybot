@@ -15,6 +15,7 @@ module.exports = {
 	description : 'sends a dm with a Rick roll',
 	cooldown: 60 * 1,
 	usage:'!rr <@user>',
+	category:"fun",
 	execute(message, args, server) {
 
 

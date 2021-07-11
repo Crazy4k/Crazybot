@@ -13,6 +13,7 @@ module.exports = {
 	cooldown: 1,
 	usage:'!mute <@user> [duration in s,m or h]',
 	whiteList:'MUTE_MEMBERS',
+    category:"Moderation",
 	execute(message, args, server) {
 
         const muteRole = message.guild.roles.cache.get(server.muteRole);

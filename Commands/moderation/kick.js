@@ -7,6 +7,7 @@ module.exports = {
 	description : 'kicks any user (requires a reason)',
 	usage:'!kick <@user> <reason>',
 	whiteList:'KICK_MEMBERS',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		switch (checkUseres(message, args, 0)) {

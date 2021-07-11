@@ -12,6 +12,7 @@ module.exports = {
     cooldown: 5,
     whiteList:'ADMINISTRATOR',
 	usage:'!points-set <@user> <points>',
+    category:"points",
 	async execute(message, args, server) { 
 
         if(!server.pointsEnabled){

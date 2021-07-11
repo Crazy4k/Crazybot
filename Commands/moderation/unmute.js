@@ -1,6 +1,4 @@
 
-
-const client = require("../../index");
 let muteCache = require("../../caches/muteCache");
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
@@ -17,6 +15,7 @@ module.exports = {
 	cooldown: 10,
 	usage:'!unmute <@user> ',
 	whiteList:'MUTE_MEMBERS',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		const muteLog = message.guild.channels.cache.get(server.logs.warningLog);

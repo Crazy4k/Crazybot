@@ -11,6 +11,7 @@ module.exports = {
     aliases:["plb","p-top","points-lb", "points-top"],
     cooldown: 5,
 	usage:'!points-leaderboard',
+    category:"points",
 	async execute(message, args, server) { 
 
         if(!server.pointsEnabled){

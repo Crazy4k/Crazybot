@@ -9,6 +9,7 @@ module.exports = {
 	description : 'unbans any one who was banned before (id is used))',
 	usage:'!unban <ID> <reason>',
 	whiteList:'BAN_MEMBERS',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		

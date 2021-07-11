@@ -9,6 +9,7 @@ module.exports = {
     aliases: ["lol","annoy"],
 	description : 'Makes the bot copy every message that the <user> says',
     cooldown: 60 * 3,
+    category:"admin fun",
 	usage:'!copy <user>',
 	whiteList : ['ADMINISTRATOR'],
 

@@ -13,6 +13,7 @@ module.exports = {
 	description : ' removes a role to a user',
 	usage:'!role-remove <@user> <role name>',
 	whiteList:'MANAGE_ROLES',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		let Trole = message.guild.roles.cache.find(role => role.name === args.slice(1).join(' '));

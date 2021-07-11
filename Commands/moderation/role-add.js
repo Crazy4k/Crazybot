@@ -8,6 +8,7 @@ module.exports = {
 	description : 'gives a role to a user',
 	usage:'!role-add <@user> <role name>',
 	whiteList:'MANAGE_ROLES',
+	category:"Moderation",
 	execute(message, args, server) {
 
 		switch (checkUseres(message, args, 0)) {

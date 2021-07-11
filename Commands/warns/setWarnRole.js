@@ -1,4 +1,4 @@
-const makeEmbed = require("../../functions/embed");
+/*const makeEmbed = require("../../functions/embed");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
 let cache = require("../../caches/muteCache");
@@ -12,6 +12,7 @@ module.exports = {
    // aliases:["w-role"],
 	usage:'!warn-role',
     whiteList:'ADMINISTRATOR',
+    category:"Moderation",
 	async execute(message, args, server) { 
         let warnObject = cache[message.guild.id];
     
@@ -80,3 +81,4 @@ module.exports = {
         }           
     }
 };
+*/

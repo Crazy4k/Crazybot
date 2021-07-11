@@ -7,6 +7,7 @@ module.exports = {
 	aliases: ["meow","pussy","furr","kitty"],
 	description : 'sends a random cat gif or picture',
 	usage:'!cat',
+	category:"fun",
 	cooldown: 3,
 	execute(message, args, server) {
 		try {
