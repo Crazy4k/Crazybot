@@ -8,20 +8,20 @@ const serversSchema = require("../schemas/servers-schema");
 module.exports =async(channel) => {
 	if(channel.type === 'dm') return;
 
-		try {
-			let i = guildsCache[channel.guild.id];
-			if(!i){
-				await mongo().then(async (mongoose) =>{
-					try{ 
-						guildsCache[channel.guild.id] =i= await serversSchema.findOne({_id:channel.guild.id});
-					} finally{
-						console.log("FETCHED FROM DATABASE");
-						mongoose.connection.close();
-					}
-				});
-			}
-		const JsonedDB = JSON.parse(config);
-			
+	try {
+		let i = guildsCache[channel.guild.id];
+		if(!i){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[channel.guild.id] =i= await serversSchema.findOne({_id:channel.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
+				}
+			});
+		}
+
+		
 		const serverLogs = channel.guild.channels.cache.get(i.logs.serverLog);
 		if (typeof serverLogs !== 'undefined') {
 			const embed = new Discord.MessageEmbed()

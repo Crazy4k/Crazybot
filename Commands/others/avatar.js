@@ -9,7 +9,9 @@ module.exports = {
 	execute(message, args, server) {
 		//if there was no arguments, send the avatar of the sender
 
-		switch (checkUseres(message, args, 0)) {
+
+		let person =checkUseres(message, args, 0);
+		switch (person) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
@@ -23,9 +25,8 @@ module.exports = {
 				return true;
 				break;	
 			default:
-				const dude = message.guild.members.cache.get(checkUseres(message, args, 0));
-			    const guy = dude.user;
-				const image1 = guy.displayAvatarURL();
+				const dude = message.guild.members.cache.get(person);
+				const image1 = dude.user.displayAvatarURL();
 				message.channel.send(image1);
 				return true;
 				break;

@@ -155,7 +155,11 @@ let recentlyRan = [];
 //command handler|prefix based
 //i like to devide this into multiple pieces since it's a bit weird
 client.on('message', async (message) => {
+	//no dm commands
 	if(message.channel.type === "dm")return;
+
+	//retrive guild data from data base (only once then it will be saved in a cache)
+
 	if(!guildsCache[message.guild.id]){
 		await mongo().then(async (mongoose) =>{
 			try{ 
@@ -168,6 +172,11 @@ client.on('message', async (message) => {
 	}
 		try {
 			let server = guildsCache[message.guild.id];
+			if (message.content === `!?!sync`) {
+				if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR"))
+				client.commands.get("sync").execute(message,["A"],{});
+			}
+			if(server === null ) return;
 				if (!message.author.bot){
 					if(server.deleteMessagesInLogs) {
 						// if the "server.deleteMessagesInLogs" is set to true, it instantly deletes the message if it was sent inside a log channel
@@ -187,7 +196,7 @@ client.on('message', async (message) => {
 					const prefix = server.prefix;
 					if (!message.content.startsWith(prefix) || message.author.bot)return;
 					const args = message.content.slice(prefix.length).split(/ +/);
-					const commandName = args.shift().toLowerCase();
+					let commandName = args.shift().toLowerCase();
 					//break if the command given was invalid
 					//if (!client.commands.has(commandName)) return;
 					//then finally after all of the checks, the commands executes 
