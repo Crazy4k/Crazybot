@@ -20,7 +20,7 @@ module.exports = {
 	usage:'!sync',
 	category:"Moderation",
 	async execute(message, args, server) { 
-
+		let whatToSay = [];
 		let embed = makeEmbed("Syncing...","",server);
 		message.channel.send(embed).then(async msg =>{
 			
@@ -38,6 +38,7 @@ module.exports = {
 
 			
 			if(data1 === null){
+				whatToSay.push("*Created a missing file of the server on the data base. \n");
 				const serverObject = {
 					guildId: message.guild.id,
 					hiByeChannel:"",
@@ -93,6 +94,7 @@ module.exports = {
 
 			
 			if(data2 === null){
+				whatToSay.push("*Created a missing file of the server on the data base. \n");
 				mongo().then(async (mongoose) =>{
 					let temp = {	
 						_id: message.guild.id,
@@ -129,6 +131,7 @@ module.exports = {
 				}
 
 				if(size1 !== size2){
+					whatToSay.push("*Deleted left over data from members that are no longer in the server. \n");
 					await mongo().then(async (mongoose) =>{
 						try{
 							
@@ -159,6 +162,7 @@ module.exports = {
 
 
 			if(data3 === null){
+				whatToSay.push("*Created a missing file of the server on the data base. \n");
 				let temp = {
 					_id:message.guild.id,
 					whiteListedRole:"",
@@ -196,6 +200,7 @@ module.exports = {
 				
 
 				if(size1 !== size2) {
+					whatToSay.push("*Deleted left over data from members that are no longer in the server. \n");
 					await mongo().then(async (mongoose) =>{
 						try{
 							
@@ -212,9 +217,11 @@ module.exports = {
 					});
 				}
 			}
-			
+			if(!whatToSay.length) whatToSay = "No changes applied."
+			else whatToSay = whatToSay.join(" ");
 			embed.setColor("29C200");
 			embed.setTitle("synchronization complete ✅");
+			embed.setDescription(`Summary of changes: ${whatToSay}`);
 			msg.edit(embed);
 			
 		});
