@@ -7,8 +7,8 @@ module.exports = {
 	aliases: ["meow","pussy","furr","kitty"],
 	description : 'sends a random cat gif or picture',
 	usage:'!cat',
-	category:"fun",
 	cooldown: 3,
+	category:"fun",
 	execute(message, args, server) {
 		try {
 			axios.get('https://api.thecatapi.com/v1/images/search?api_key= key goes here ')

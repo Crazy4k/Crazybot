@@ -11,7 +11,7 @@ const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
 let guildsCache = require("./caches/guildsCache");
-
+const sync = require("./functions/sync");
 keepAlive();
 
 
@@ -21,13 +21,13 @@ client.commands = new Discord.Collection();
 const bigcommandfile = fs.readdirSync("./Commands/");
 
 for(let category of bigcommandfile){
-
+	
 	const smallCommandFile = fs.readdirSync(`./Commands/${category}/`).filter(file =>file.endsWith('.js'));
 
 	for(const file of smallCommandFile) {
 
 		const command = require(`./Commands/${category}/${file}`);
-
+		
 		client.commands.set(command.name, command);
 	}
 }
@@ -172,11 +172,14 @@ client.on('message', async (message) => {
 	}
 		try {
 			let server = guildsCache[message.guild.id];
-			if (message.content === `!?!sync`) {
-				if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR"))
-				client.commands.get("sync").execute(message,["A"],{});
+			
+
+			if(server === null ) {
+				sync(message);
+				return;
 			}
-			if(server === null ) return;
+
+
 				if (!message.author.bot){
 					if(server.deleteMessagesInLogs) {
 						// if the "server.deleteMessagesInLogs" is set to true, it instantly deletes the message if it was sent inside a log channel

@@ -1,6 +1,4 @@
-const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
-const sendAndDelete = require("../../functions/sendAndDelete");
 
 let pointsCache = require("../../caches/pointsCache");
 let guildsCache = require("../../caches/guildsCache");
@@ -221,8 +219,6 @@ module.exports = {
 			
 		});
 
-
-
-	},
+	},	
 
 };
