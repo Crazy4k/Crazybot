@@ -6,9 +6,9 @@ const checkChannels = require('../../functions/checkChannels');
 module.exports = {
 	name : 'sudo',
 	aliases: ["say","tell"],
-	description : 'makes the bot say whatever you want wherever you want',
-	usage:'!sudo <Channel ID or name> <Message>',
-	cooldown: 5,
+	description : 'makes the bot say a message in a given channel.',
+	usage:'!sudo <Channel ID or #name> <Message>',
+	cooldown: 7.5,
 	category:"admin fun",
 	whiteList :'ADMINISTRATOR',
 

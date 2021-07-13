@@ -6,9 +6,10 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'unban',
 	aliases: ["remove-ban","ban-remove","ban-"],
-	description : 'unbans any one who was banned before (id is used))',
-	usage:'!unban <ID> <reason>',
+	description : 'Unbans a user who was banned before (id is used))',
+	usage:'!unban <user ID> <reason>',
 	whiteList:'BAN_MEMBERS',
+	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 

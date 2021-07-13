@@ -7,6 +7,7 @@ module.exports = {
 	description : 'kicks any user (requires a reason)',
 	usage:'!kick <@user> <reason>',
 	whiteList:'KICK_MEMBERS',
+	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 

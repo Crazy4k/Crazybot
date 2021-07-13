@@ -7,7 +7,7 @@ const serversSchema= require("../../schemas/servers-schema");
 
 module.exports = {
 	name : 'host-role',
-	description : "Sets the role for the !host command.",
+	description : "Sets the role that will be able to use the !host command.",
     cooldown: 60 * 1,
     aliases:["h-role"],
 	usage:'!host-role',

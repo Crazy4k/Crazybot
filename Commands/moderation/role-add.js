@@ -5,9 +5,10 @@ const checkRoles = require("../../functions/checkRoles");
 module.exports = {
 	name : 'role-add',
 	aliases: ["role-give","role","roleA","roleG","role+"],
-	description : 'gives a role to a user',
-	usage:'!role-add <@user> <role name>',
+	description : 'gives a role to the user',
+	usage:'!role-add <@user> <@role or role id>',
 	whiteList:'MANAGE_ROLES',
+	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 

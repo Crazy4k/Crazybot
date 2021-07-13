@@ -10,9 +10,10 @@ const checkRoles = require("../../functions/checkRoles");
 module.exports = {
 	name : 'role-remove',
 	aliases: ["role-delete","role-","roleR","roleD"],
-	description : ' removes a role to a user',
-	usage:'!role-remove <@user> <role name>',
+	description : 'Removes a role from the user.',
+	usage:'!role-remove <@user> <@role or role id>',
 	whiteList:'MANAGE_ROLES',
+	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 

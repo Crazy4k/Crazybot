@@ -9,6 +9,7 @@ let hugeObj = require("../../caches/tempCmds");
 module.exports = {
 	name : 'help',
 	description : 'Helps',
+	cooldown: 3,
 	usage:'!help [value of a category]',
     category:"other",
 	execute(message, args, server) {

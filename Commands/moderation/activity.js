@@ -1,4 +1,3 @@
-const sendAndDelete = require("../../functions/sendAndDelete");
 
 // all the configuraions are found in "activity.json"
 const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, activityCheckEmoji}= require('./activity.json');
@@ -7,7 +6,7 @@ const{activityCheckReactionTime, activityLogchannelID, activityCheckMessage, act
 module.exports = {
 	name : 'activity',
 	aliases: ["acti", "activity-check"],
-	description : 'sends the activity check message',
+	description : 'sends the activity check message(pings everyone).',
 	cooldown: 60 * 10,
 	usage:'!activity',
 	category:"Moderation",

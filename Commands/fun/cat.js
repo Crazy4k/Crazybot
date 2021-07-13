@@ -5,9 +5,9 @@ const axios = require('axios');
 module.exports = {
 	name : 'cat',
 	aliases: ["meow","pussy","furr","kitty"],
-	description : 'sends a random cat gif or picture',
+	description : 'Sends a random cat pic.',
 	usage:'!cat',
-	cooldown: 3,
+	cooldown: 5,
 	category:"fun",
 	execute(message, args, server) {
 		try {

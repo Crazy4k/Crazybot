@@ -9,11 +9,11 @@ const tenMinutes = 1000 * 60 * 10; // 10 minutes
 
 module.exports = {
 	name : 'host',
-	description : "Sends the host message",
-    cooldown: 5,
+	description : "Sends a message that is formated as an event message (pings everyone).",
+    cooldown: 10,
     aliases:[],
     category:"ms",
-	usage:'!host <event-type> [Supervised by] <link can be "ms1", "ms2"> [extra info]',
+	usage:'!host <event-type> <Supervised by> <link> [extra info]',
 
 	execute(message, args, server) { 
 

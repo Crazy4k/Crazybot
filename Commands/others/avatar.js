@@ -6,6 +6,7 @@ module.exports = {
 	name : 'avatar',
 	description : 'sends the avatar of the user',
 	usage:'!avatar [@user]',
+	cooldown: 3,
 	category:"other",
 	execute(message, args, server) {
 		//if there was no arguments, send the avatar of the sender
