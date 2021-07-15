@@ -10,6 +10,7 @@ const mongo = require("./mongo");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
+const officerPointsSchema = require("./schemas/officerPoints-schema");
 let guildsCache = require("./caches/guildsCache");
 const sync = require("./functions/sync");
 keepAlive();
@@ -92,6 +93,19 @@ client.on('guildCreate', async (guild)  => {
 			});	
 			mongo().then(async (mongoose) =>{
 				try{
+					await officerPointsSchema.findOneAndUpdate({_id:guild.id},{
+						_id:guild.id,
+						whiteListedRole:"",
+						members:{}   
+					},{upsert:true});
+				} finally{
+					
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
+				}
+			});	
+			mongo().then(async (mongoose) =>{
+				try{
 					await warnSchema.findOneAndUpdate({_id:guild.id},{
 						_id:guild.id,
 						whiteListedRole:"",
@@ -136,6 +150,14 @@ client.on('guildDelete', async (guild) => {
 		await mongo().then(async (mongoose) =>{
 			try{ 
 				await warnSchema.findOneAndDelete({_id:guild.id});
+			} finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});		
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				await officerPointsSchema.findOneAndDelete({_id:guild.id});
 			} finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
@@ -327,4 +349,6 @@ client.once('ready', async() => {
 	console.log('Bot succesfuly launched.');
 
 });
+
 client.login(token);
+setTimeout(()=>{client.user.setActivity("!help",{type: "LISTENING"});},3000)

@@ -36,6 +36,11 @@ module.exports = {
             if(message.guild.members.cache.get(supervisor))supervisor = `<@${supervisor}>`;
             let host = message.author.id;
             let link = args[2];
+            if(!link) {
+                const embed2 = makeEmbed('Missing arguments',this.usage, server);
+                sendAndDelete(message,embed2, server);
+                return false;		
+            }
             let extraInfo = args.splice(3).join(" ");
             if(!extraInfo)extraInfo = "STS once spawned | PTS is active ";
             if(link === "ms2"){ 
@@ -49,6 +54,7 @@ module.exports = {
             message.channel.send(hostString)
                 .then(m =>{
                     message.delete();
+                    
                     setTimeout(()=>{
                         if(!m.deleted){
                             m.channel.send("^^ Started.").then(mm=>mm.delete({timeout:dltTime - tenMinutes}))
@@ -60,6 +66,7 @@ module.exports = {
                     m.awaitReactions(filter, { time: dltTime , max : 1})
                         .then(collected => m.delete().catch(e=>console.log(e)))
                         .catch(console.error);
+                        return true;
                 });
             } else return false;       
         }

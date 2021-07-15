@@ -116,7 +116,7 @@ module.exports = {
 
                         const variable = makeEmbed("points removed ✅",`Removed ${pointsToGive} points from <@${humans[0]}>`, server);
                         if(humans.length === 1) variable.setDescription(`Removed ${pointsToGive} points from <@${humans[0]}>`);
-                        else variable.setDescription(`Removed ${pointsToGive} points from <@${humans[0]}> and other people`);
+                        else variable.setDescription(`Removed ${pointsToGive} points from <@${humans.join(">, <@")}> and other people`);
                         message.channel.send(variable);
                     } finally{
                         console.log("WROTE TO DATABASE");

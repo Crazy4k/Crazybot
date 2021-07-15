@@ -1,9 +1,9 @@
 
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/officerPointsCache");
+const pointsSchema = require("../../schemas/officerPoints-schema");
 const mongo = require("../../mongo");
-const pointsSchema = require("../../schemas/points-schema");
 
 const checkUseres = (message, arg) => {
     if(arg) {
@@ -25,12 +25,11 @@ const checkUseres = (message, arg) => {
 }
 
 module.exports = {
-	name : 'points-add',
-	description : "Adds points to a member in the server",
-    aliases:["p-add","p+","points+","points-give","p-give"],
+	name : 'opoints-add',
+	description : "Adds officer points to a member in the server",
+    aliases:["op-add","op+","opoints+","opoints-give","op-give"],
     cooldown: 5,
 	usage:'!points-add <@user> <number>',
-    category:"points",
 	async execute(message, args, server)  { 
         try {
             
@@ -58,7 +57,7 @@ module.exports = {
 
 
                 if(!server.pointsEnabled){
-                    const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
+                    const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
                     sendAndDelete(message, embed, server);
                     return false;
                 }
@@ -116,9 +115,9 @@ module.exports = {
                             members:servery.members    
                         },{upsert:true});
 
-                        const variable = makeEmbed("points added ✅",`Added ${pointsToGive} points to <@${humans[0]}>`, server);
-                        if(humans.length === 1) variable.setDescription(`Added ${pointsToGive} points to <@${humans[0]}>`);
-                        else variable.setDescription(`Added ${pointsToGive} points to <@${humans.join(">, <@")}> and other people`);
+                        const variable = makeEmbed("Officer points added ✅",`Added ${pointsToGive} officer points to <@${humans[0]}>`, server);
+                        if(humans.length === 1) variable.setDescription(`Added ${pointsToGive} officer points to <@${humans[0]}>`);
+                        else variable.setDescription(`Added ${pointsToGive} officer points to <@${humans.join(">, <@")}>.`);
                         message.channel.send(variable);
                     } finally{
                         console.log("WROTE TO DATABASE");

@@ -13,55 +13,50 @@ module.exports = {
 
 		
 		const time = args[1] * 2 / 2;
+		let id = checkUseres(message,args,0);
 
-		switch (checkUseres(message, args, 0)) {
+		switch (id) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
-				try {
-					const embed = makeEmbed('invalid username',this.usage, server);
-					sendAndDelete(message,embed, server);
-					return false;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				const embed1 = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed1, server);
+				return false;
 				break;
 			case "no args": 
-			try {
-
 				const embed = makeEmbed('Missing arguments',this.usage, server);
 				sendAndDelete(message,embed, server );
 				return false;
-
-			} catch (error) {
-				console.error(error);
-			}
 				break;
 			default:
-				const target = checkUseres(message, args, 0);
+				const target = message.guild.members.cache.get(id);
 
-		if(!target.bannable) {
-			message.channel.send('nope');
+		  if(args.length === 1) {
+			
+			const embed = makeEmbed('Missing argument : reason',this.usage, server);
+			sendAndDelete(message,embed, server );
 			return false;
-
-		} else if(args.length === 1) {
-			try {
-				const embed = makeEmbed('Missing argument : reason',this.usage, server);
-				sendAndDelete(message,embed, server );
-				return false;
-			} catch (error) {
-				console.error(error);
-			}
+			
 		} else if(!isNaN(time)) {
 			try {
-				message.channel.send(`The user <@${target.id}> has been banned for ${args.slice(2).join(' ')}`);
-				target.ban({ reason:args.slice(2).join(' '), days:time });
-				return true;
+				
+				target.ban({ reason:args.slice(2).join(' '), days:time })
+				.then(a=>{
+					message.channel.send(`The user <@${target.id}> has been banned for ${args.slice(2).join(' ')}`);
+					return true;
+				}).catch(e => {
+					
+					if(!target.bannable) {
+						const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
+						sendAndDelete(message,embed, server );
+						return false;
+			
+					}
+				})
 			} catch(error) {
-				console.error(error);
-				const embed = makeEmbed('ERROR 103', 'There was an issue executing the command \ncontact the developer to fix this problem.', "#FF0000");
-				message.channel.send(embed);
+				
+				const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
+				sendAndDelete(message,embed, server );
 				return false;
 			}
 
@@ -70,12 +65,16 @@ module.exports = {
 
 			message.delete({ timeout: server.deleteFailedMessagedAfter })
 				.catch(console.error);
-			target.ban({ reason:args.slice(1).join(' ') });
+
+			target.ban({ reason:args.slice(1).join(' ') }).catch(a=>{
+				console.log(a);
+				const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
+				sendAndDelete(message,embed, server );
+				return false;
+			})
 			return true;
 
-		} message.channel.send('i couldn\'t ban that user maybe because he had a higher rank than you')
-			.catch(console.error);
-			return false;
+		}
 		}
 		
 		

@@ -1,9 +1,8 @@
-
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
 const mongo = require("../../mongo");
-const pointsSchema = require("../../schemas/points-schema");
+let cache = require("../../caches/officerPointsCache");
+const pointsSchema = require("../../schemas/officerPoints-schema");
 
 const checkUseres = (message, arg) => {
     if(arg) {
@@ -25,16 +24,13 @@ const checkUseres = (message, arg) => {
 }
 
 module.exports = {
-	name : 'points-add',
-	description : "Adds points to a member in the server",
-    aliases:["p-add","p+","points+","points-give","p-give"],
-    cooldown: 5,
-	usage:'!points-add <@user> <number>',
-    category:"points",
-	async execute(message, args, server)  { 
-        try {
-            
-        
+	name : 'opoints-remove',
+	description : "Removes officer points from a user in a server.",
+    aliases:["op-remove","op-","opoints-","opoints-delete","op-delete"],
+    cooldown: 5 ,
+	usage:'!points-remove <@user> [@user2] [@user3]... <number>',
+    async execute(message, args, server)  { 
+        try{
              
         const pointsToGive= args[args.length - 1];
             
@@ -58,7 +54,7 @@ module.exports = {
 
 
                 if(!server.pointsEnabled){
-                    const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
+                    const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
                     sendAndDelete(message, embed, server);
                     return false;
                 }
@@ -106,7 +102,7 @@ module.exports = {
                 }                 
                 for(let e of humans){
                     if(servery.members[e]=== undefined)servery.members[e] = 0;
-                    servery.members[e] += parseInt(pointsToGive);
+                    servery.members[e] -= parseInt(pointsToGive);
                 }
                 mongo().then(async (mongoose) =>{
                     try{
@@ -116,9 +112,9 @@ module.exports = {
                             members:servery.members    
                         },{upsert:true});
 
-                        const variable = makeEmbed("points added ✅",`Added ${pointsToGive} points to <@${humans[0]}>`, server);
-                        if(humans.length === 1) variable.setDescription(`Added ${pointsToGive} points to <@${humans[0]}>`);
-                        else variable.setDescription(`Added ${pointsToGive} points to <@${humans.join(">, <@")}> and other people`);
+                        const variable = makeEmbed("Officer points removed ✅",`Removed ${pointsToGive} officer points from <@${humans[0]}>`, server);
+                        if(humans.length === 1) variable.setDescription(`Removed ${pointsToGive} officer points from <@${humans[0]}>`);
+                        else variable.setDescription(`Removed ${pointsToGive} officer points from <@${humans.join(">, <@")}>`);
                         message.channel.send(variable);
                     } finally{
                         console.log("WROTE TO DATABASE");
@@ -132,7 +128,6 @@ module.exports = {
         
 		} catch (error) {
             console.log(error);
-        
         }
 		
 	},

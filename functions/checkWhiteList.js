@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = (command, message, args, server, recentlyRan) => {
 	//this checks if the property "whitlist" in a command exists and if does check if the author of the message is able to execute the command.
 	const cooldownString = `${message.guild.id}-${message.author.id}-${command.name}`;
-	let = cooldownTime = 0.5;
+	let = cooldownTime = 2;
 	if(command.cooldown) cooldownTime = command.cooldown;
 	
 	if(!command.whiteList) {

@@ -3,11 +3,13 @@ const makeEmbed = require("../../functions/embed");
 let pointsCache = require("../../caches/pointsCache");
 let guildsCache = require("../../caches/guildsCache");
 let warnCache = require("../../caches/warnCache");
+let officerPointsCache = require("../../caches/officerPointsCache");
 
 
 const pointsSchema = require("../../schemas/points-schema");
 const guildsSchema = require("../../schemas/servers-schema");
 const warnSchema = require("../../schemas/warn-schema");
+const officerPointsSchema = require("../../schemas/officerPoints-schema");
 
 const mongo = require("../../mongo");
 
@@ -27,6 +29,7 @@ module.exports = {
 			let data1;
 			let data2;
 			let data3;
+			let data4;
 			await mongo().then(async (mongoose) =>{
 				try{ 
 					data1 = guildsCache[message.guild.id] = await guildsSchema.findOne({_id:message.guild.id});
@@ -217,6 +220,77 @@ module.exports = {
 					});
 				}
 			}
+
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					data4 = officerPointsCache[message.guild.id] = await officerPointsSchema.findOne({_id:message.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
+				}
+			});
+		
+			
+			if(data4 === null){
+				whatToSay.push("*Created a missing file of the server on the data base. \n");
+				let temp = {	
+					_id: message.guild.id,
+					whiteListedRole:"",
+					members:{}
+	
+				}
+				mongo().then(async (mongoose) =>{
+					try{
+						await officerPointsSchema.findByIdAndUpdate({_id:message.guild.id},{
+							_id:message.guild.id,
+							whiteListedRole:"",
+							members:{}   
+						},{upsert:true});
+						
+						officerPointsCache[message.guild.id] = temp;
+					} finally{
+						
+						console.log("WROTE TO DATABASE");
+						mongoose.connection.close();
+					}
+				});	
+				
+			}else if(officerPointsCache[message.guild.id].members){
+				
+				let newObj ={};
+				let size1 = 0;
+				let size2 = 0;
+		
+				for (const key in officerPointsCache[message.guild.id].members) {
+					size1++;
+					if(message.guild.members.cache.get(key)) {
+						size2++;
+						newObj[key] = officerPointsCache[message.guild.id].members[key];
+					}
+				}
+		
+				if(size1 !== size2){
+					whatToSay.push("*Deleted left over data from members that are no longer in the server. \n");
+					await mongo().then(async (mongoose) =>{
+						try{
+							
+							await officerPointsSchema.findOneAndUpdate({_id:message.guild.id},{
+								members:newObj  
+							},{upsert:true});
+							officerPointsCache[message.guild.id].members = newObj;
+							
+						} finally{
+							
+							console.log("WROTE TO DATABASE");
+							mongoose.connection.close();
+						}
+					});
+				}
+			}
+		
+		
+
+
 			if(!whatToSay.length) whatToSay = "No changes applied."
 			else whatToSay = whatToSay.join(" ");
 			embed.setColor("29C200");
