@@ -70,9 +70,7 @@ module.exports = {
                     let bool1 = !message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR");
                     let bool2 = !message.guild.members.cache.get(message.author.id).roles.cache.get(servery.whiteListedRole);
                     let bool3 = !bool1 || !bool2;
-                    console.log(bool1);
-                    console.log(bool2);
-                    console.log(bool3);
+                    
                     if(target !== message.author.id &&  !bool3){
                         const embed1 = makeEmbed("You don't have permission to view other people's officer points","Do `!opints me` instead", server);
                         sendAndDelete(message,embed1, server);

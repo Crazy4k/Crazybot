@@ -52,7 +52,7 @@ module.exports = {
                     }
                 });	
             }
-                    if(!server.pointsEnabled){
+                    if(!server.oPointsEnabled){
 
                         let arrayOfIds = [];
                         client.guilds.cache.get(message.guild.id).members.cache.each(user => (arrayOfIds.push(user.id)));
@@ -99,9 +99,9 @@ module.exports = {
                                     await mongo().then(async (mongoose) =>{
                                         try{ 
                                             await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                pointsEnabled:true,  
+                                                oPointsEnabled:true,  
                                             },{upsert:false});
-                                            guildsCache[message.guild.id].pointsEnabled = true;
+                                            guildsCache[message.guild.id].oPointsEnabled = true;
                                         } finally{
                                             console.log("WROTE TO DATABASE");
                                             mongoose.connection.close();
