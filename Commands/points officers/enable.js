@@ -107,7 +107,7 @@ module.exports = {
                                             mongoose.connection.close();
                                         }
                                     });
-                                    const embed = makeEmbed(`✅ Your server  officer points plugin has been activated.`,`Now you can access all of the officer points commands`, "#24D900");
+                                    const embed = makeEmbed(`✅ Your server  officer points plugin has been activated.`,`People with that role can access all of the officer points commands`, "#24D900");
                                     message.channel.send(embed);
                             });
                         return true;

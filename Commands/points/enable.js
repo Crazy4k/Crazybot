@@ -108,7 +108,7 @@ module.exports = {
                                             mongoose.connection.close();
                                         }
                                     });
-                                    const embed = makeEmbed(`✅ Your server points plugin has been activated.`,`No you can access all of the points commands`, "#24D900");
+                                    const embed = makeEmbed(`✅ Your server points plugin has been activated.`,`People with that role now can access all of the points commands`, "#24D900");
                                     message.channel.send(embed);
                             });
                         return true;
