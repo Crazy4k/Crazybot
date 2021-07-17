@@ -53,7 +53,7 @@ module.exports = {
         if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
 
 
-                if(!server.pointsEnabled){
+                if(!server.oPointsEnabled){
                     const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
                     sendAndDelete(message, embed, server);
                     return false;

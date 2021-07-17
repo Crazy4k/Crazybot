@@ -13,7 +13,7 @@ module.exports = {
 	usage:'!opoints-set <@user> <points>',
 	async execute(message, args, server) { 
 
-        if(!server.pointsEnabled){
+        if(!server.oPointsEnabled){
             const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
             sendAndDelete(message, embed, server);
             return false;
