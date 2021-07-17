@@ -351,4 +351,4 @@ client.once('ready', async() => {
 });
 
 client.login(token);
-setTimeout(()=>{client.user.setActivity("!help",{type: "LISTENING"});},3000)
+setTimeout(()=>{client.user.setActivity(";help",{type: "LISTENING"});},3000)
