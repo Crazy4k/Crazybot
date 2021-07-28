@@ -6,7 +6,7 @@ module.exports = {
 	description : 'very sus',
 	cooldown: 3,
 	category:"fun",
-	usage:'!sus',
+	usage:'sus',
 	execute(message, args, server) {
 		
 		const crewMates = ["AMOGUS.mp4","Black.png","Blue.png","Lime.png","Pink.png","Red.png","sos.mp4","White.png"];

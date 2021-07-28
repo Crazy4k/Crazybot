@@ -28,7 +28,7 @@ module.exports = {
 	description : "Removes officer points from a user in a server.",
     aliases:["op-remove","op-","opoints-","opoints-delete","op-delete"],
     cooldown: 5 ,
-	usage:'!points-remove <@user> [@user2] [@user3]... <number>',
+	usage:'points-remove <@user> [@user2] [@user3]... <number>',
     async execute(message, args, server)  { 
         try{
              

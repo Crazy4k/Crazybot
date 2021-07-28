@@ -11,7 +11,7 @@ module.exports = {
 	name : 'role-remove',
 	aliases: ["role-delete","role-","roleR","roleD"],
 	description : 'Removes a role from the user.',
-	usage:'!role-remove <@user> <@role or role id>',
+	usage:'role-remove <@user> <@role or role id>',
 	whiteList:'MANAGE_ROLES',
 	cooldown: 3,
 	category:"Moderation",

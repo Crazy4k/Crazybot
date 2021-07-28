@@ -13,7 +13,7 @@ module.exports = {
 	description : "Enables the ~points~ plugin.",
     cooldown: 60 * 2,
     aliases:["p-enable","enable-points","enable-points"],
-	usage:'!points-enable',
+	usage:'points-enable',
     category:"points",
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 

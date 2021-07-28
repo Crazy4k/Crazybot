@@ -11,7 +11,7 @@ const serversSchema = require("../../schemas/servers-schema");
 module.exports = {
 	name : 'server',
 	description : 'modifies the settings of the server',
-	usage:'!server',
+	usage:'server',
     cooldown:  5,
     whiteList:'ADMINISTRATOR',
     category:"Server configurations",

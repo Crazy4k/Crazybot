@@ -10,7 +10,7 @@ module.exports = {
 	description : "Sets a person's officer points to whatever the second arugment is.",
     cooldown: 5,
     whiteList:'ADMINISTRATOR',
-	usage:'!opoints-set <@user> <points>',
+	usage:'opoints-set <@user> <points>',
 	async execute(message, args, server) { 
 
         if(!server.oPointsEnabled){

@@ -10,7 +10,7 @@ module.exports = {
 	description : "Sets the role that will be able to use the !host command.",
     cooldown: 30 ,
     aliases:["h-role","hostrol","hrole"],
-	usage:'!host-role',
+	usage:'host-role',
     category:"ms",
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 

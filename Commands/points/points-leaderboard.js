@@ -10,7 +10,7 @@ module.exports = {
 	description : "shows the top 20 people with the most points.",
     aliases:["plb","p-top","points-lb", "points-top"],
     cooldown: 5,
-	usage:'!points-leaderboard',
+	usage:'points-leaderboard',
     category:"points",
 	async execute(message, args, server) { 
 

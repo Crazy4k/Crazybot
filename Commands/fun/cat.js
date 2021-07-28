@@ -6,7 +6,7 @@ module.exports = {
 	name : 'cat',
 	aliases: ["meow","pussy","furr","kitty"],
 	description : 'Sends a random cat pic.',
-	usage:'!cat',
+	usage:'cat',
 	cooldown: 5,
 	category:"fun",
 	execute(message, args, server) {

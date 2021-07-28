@@ -13,7 +13,7 @@ module.exports = {
 	aliases: ["unshut","unstfu"],
 	description : 'unmutes someone.\nCancels the !mute command',
 	cooldown: 10,
-	usage:'!unmute <@user> ',
+	usage:'unmute <@user> ',
 	whiteList:'MUTE_MEMBERS',
 	category:"Moderation",
 	execute(message, args, server) {

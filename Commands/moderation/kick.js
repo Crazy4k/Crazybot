@@ -5,7 +5,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'kick',
 	description : 'kicks any user (requires a reason)',
-	usage:'!kick <@user> <reason>',
+	usage:'kick <@user> <reason>',
 	whiteList:'KICK_MEMBERS',
 	cooldown: 3,
 	category:"Moderation",

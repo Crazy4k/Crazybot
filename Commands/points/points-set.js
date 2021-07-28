@@ -11,7 +11,7 @@ module.exports = {
 	description : "Sets a person's points to whatever the second arugment is.",
     cooldown: 5,
     whiteList:'ADMINISTRATOR',
-	usage:'!points-set <@user> <points>',
+	usage:'points-set <@user> <points>',
     category:"points",
 	async execute(message, args, server) { 
 

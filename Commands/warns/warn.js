@@ -14,7 +14,7 @@ module.exports = {
 
 	name : 'warn',
 	description : 'warns a user',
-	usage:'!warn <@user> <reason>',
+	usage:'warn <@user> <reason>',
 	whiteList:'BAN_MEMBERS',
 	category:"Moderation",
 	execute(message, args, server) {

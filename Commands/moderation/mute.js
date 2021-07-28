@@ -11,7 +11,7 @@ module.exports = {
 	aliases: ["shut","stfu"],
 	description : 'mutes someone for a specific duration',
 	cooldown: 3,
-	usage:'!mute <@user> <duration in s,m or h>',
+	usage:'mute <@user> <duration in s,m or h>',
 	whiteList:'MUTE_MEMBERS',
     category:"Moderation",
 	execute(message, args, server) {

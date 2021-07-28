@@ -4,7 +4,7 @@ const moment = require("moment");
 module.exports = {
 	name : 'server-info',
 	description : 'Shows the all the information about the this server that are not bot related.',
-	usage:'!server-info',
+	usage:'server-info',
     aliases: ["sinfo","guild-info","serverinfo", "guildinfo"],
     category:"other",
     cooldown: 60 * 3,

@@ -12,7 +12,7 @@ const cancerCultureMessage ="Command cancelled successfully";
 module.exports = {
 	name : 'logs',
 	description : 'modifies the logs of the server',
-	usage:'!logs',
+	usage:'logs',
     cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
     category:"Server configurations",

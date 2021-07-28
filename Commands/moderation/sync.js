@@ -19,7 +19,7 @@ module.exports = {
 	description : "syncs all data between the bot's cache and the data base, removes left members from the server's data base and creates some files for the server if missing.",
     cooldown: 5 * 60,
     whiteList:'ADMINISTRATOR',
-	usage:'!sync',
+	usage:'sync',
 	category:"Moderation",
 	async execute(message, args, server) { 
 		let whatToSay = [];

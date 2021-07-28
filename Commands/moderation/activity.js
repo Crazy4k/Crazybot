@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ["acti", "activity-check"],
 	description : 'sends the activity check message(pings everyone).',
 	cooldown: 60 * 10,
-	usage:'!activity',
+	usage:'activity',
 	category:"Moderation",
 	whiteList :'ADMINISTRATOR',
 	execute(message, args, server) {

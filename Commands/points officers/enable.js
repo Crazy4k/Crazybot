@@ -13,7 +13,7 @@ module.exports = {
 	description : "Enables the ~officer points~ plugin.",
     cooldown: 60 * 2,
     aliases:["op-enable","enable-opoints","enable-opoints"],
-	usage:'!opoints-enable',
+	usage:'opoints-enable',
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 
 

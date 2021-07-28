@@ -13,7 +13,7 @@ module.exports = {
     cooldown: 10,
     aliases:[],
     category:"ms",
-	usage:'!host <event-type> <Supervised by> <link> [extra info]',
+	usage:'host <event-type> <Supervised by> <link> [extra info]',
 
 	execute(message, args, server) { 
 

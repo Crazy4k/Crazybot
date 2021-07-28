@@ -10,7 +10,7 @@ module.exports = {
 	description : 'Makes the bot copy every message that the <@user> says for 1.5 minutes.',
     cooldown: 60 * 3,
     category:"admin fun",
-	usage:'!copy <@user>',
+	usage:'copy <@user>',
 	whiteList : ['ADMINISTRATOR'],
 
 	execute(message, args, server ) {

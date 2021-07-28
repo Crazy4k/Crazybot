@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ["nickname","change-nick"],
 	description : 'Changes the nickname of the user.',
 	cooldown: 3,
-	usage:'!nick <user> <new name>',
+	usage:'nick <user> <new name>',
 	whiteList:'MANAGE_NICKNAMES',
 	category:"Moderation",
 	execute(message, args, server) {

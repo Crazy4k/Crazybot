@@ -10,7 +10,7 @@ module.exports = {
 	description : "shows your total officer points",
     aliases:["op","officerpoints","officer-points"],
     cooldown: 5,
-	usage:'!points [@user]',
+	usage:'points [@user]',
 	async execute(message, args, server) { 
 
         if(!server.oPointsEnabled){

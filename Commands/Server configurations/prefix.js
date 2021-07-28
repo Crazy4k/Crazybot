@@ -8,7 +8,7 @@ const serversSchema = require("../../schemas/servers-schema");
 module.exports = {
 	name : 'prefix',
 	description : 'changes the prefix of the bot',
-	usage:'!preifx <new prefix>',
+	usage:'preifx <new prefix>',
 	cooldown: 60 * 5,
 	whiteList:'ADMINISTRATOR',
 	category:"Server configurations",

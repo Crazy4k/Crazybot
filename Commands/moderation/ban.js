@@ -5,7 +5,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'ban',
 	description : 'permanently bans any one in the server. The number is to delete the last messages send by the banned user (max is 7).',
-	usage:'!ban <@user> <reason> [ delete messages 0-7]',
+	usage:'ban <@user> <reason> [ delete messages 0-7]',
 	whiteList:'BAN_MEMBERS',
 	cooldown: 3,
 	category:"Moderation",

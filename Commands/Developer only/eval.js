@@ -11,7 +11,7 @@ const moment = require("moment");
 module.exports = {
 	name : 'eval',
 	description : 'makes the bot do stuff with eval();',
-	usage:'!eval ``` code ``',
+	usage:'eval ``` code ``',
 	execute(message, args, server) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);

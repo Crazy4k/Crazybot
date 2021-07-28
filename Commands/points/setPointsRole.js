@@ -11,7 +11,7 @@ module.exports = {
 	description : "Sets the role that will be able to modify other user's roles (Officers).",
     cooldown: 30 ,
     aliases:["p-role","pointsrole","prole"],
-	usage:'!points-role',
+	usage:'points-role',
     category:"points",
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 

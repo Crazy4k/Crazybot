@@ -11,7 +11,7 @@ module.exports = {
 	description : "shows your total points",
     aliases:["p"],
     cooldown: 5,
-	usage:'!points [@user]',
+	usage:'points [@user]',
     category:"points",
 	async execute(message, args, server) { 
 
