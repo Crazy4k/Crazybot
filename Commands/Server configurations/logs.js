@@ -13,7 +13,7 @@ module.exports = {
 	name : 'logs',
 	description : 'modifies the logs of the server',
 	usage:'logs',
-    cooldown: 60 * 5,
+    cooldown: 10,
 	whiteList:'ADMINISTRATOR',
     category:"Server configurations",
 	execute(message, args, server) {
@@ -25,37 +25,267 @@ module.exports = {
                 let  daServer = server;
                 if(!daServer.logs.isSet && !args.length){
                     message.channel.send(embed)
-                        .then(m => {
-                            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                .then(a => {    
-                                    switch (checkChannels(a)) {
-                                        case "not valid":
-                                        case "no args": 
-                                        case "not useable":              
-                                             
-                                            message.channel.send(invalidargMessage);
-                                            return false;
-                                            break;
-                                        case "cancel":
-                                            message.channel.send(cancerCultureMessage);
-                                            return false;
-                                            break;
-                                        case "no":
-                                            daServer.logs.hiByeLog = "";
-                                             break;
-                                        default:
-                                            daServer.logs.hiByeLog = checkChannels(a);
-                                            break;
+                    .then(m => {
+                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                            .then(a => {    
+                                switch (checkChannels(a)) {
+                                    case "not valid":
+                                    case "no args": 
+                                    case "not useable":              
+                                         
+                                        message.channel.send(invalidargMessage);
+                                        return false;
+                                        break;
+                                    case "cancel":
+                                        message.channel.send(cancerCultureMessage);
+                                        return false;
+                                        break;
+                                    case "no":
+                                        daServer.logs.hiByeLog = "";
+                                         break;
+                                    default:
+                                        daServer.logs.hiByeLog = checkChannels(a);
+                                        break;
+                                    }
+                                embed.setDescription(`${type0Message} **Enter your messages logging channel. 📫**`);
+                                m.edit(embed);
+                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                    .then(a => {   
+                                        switch (checkChannels(a)) {
+                                            case "not valid":
+                                            case "no args": 
+                                            case "not useable":              
+                                                message.channel.send(invalidargMessage);
+                                                return false;
+                                                break;
+                                            case "cancel":
+                                                message.channel.send(cancerCultureMessage);
+                                                return false;
+                                                break;
+                                            case "no":
+                                                daServer.logs.deleteLog = "";
+                                                break;
+                                            default:
+                                                daServer.logs.deleteLog = checkChannels(a);
+                                                break;
                                         }
-                                    embed.setDescription(`${type0Message} **Enter your messages logging channel. 📫**`);
-                                    m.edit(embed);
+                                                
+                                        embed.setDescription(`${type0Message} **Enter your server logging channel. 🏠**`);
+                                        m.edit(embed);
+                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                            .then(a => {  
+                                                
+                                                switch (checkChannels(a)) {
+                                                    case "not valid":
+                                                    case "no args": 
+                                                    case "not useable":              
+                                                        message.channel.send(invalidargMessage);
+                                                        return false;
+                                                        break;
+                                                    case "cancel":
+                                                        message.channel.send(cancerCultureMessage);
+                                                        return false;
+                                                        break;
+                                                    case "no":
+                                                        daServer.logs.serverLog = "";
+                                                        break;
+                                                    default:
+                                                        daServer.logs.serverLog = checkChannels(a);
+                                                        break;
+                                                }                                
+                                                embed.setDescription(`${type0Message} **Enter your warnings logging channel. 🔨**`);
+                                                m.edit(embed);
+                                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                                    .then(async (a) => {    
+                                                        switch (checkChannels(a)) {
+                                                            case "not valid":
+                                                            case "no args": 
+                                                            case "not useable":              
+                                                                message.channel.send(invalidargMessage);
+                                                                return false;
+                                                                break;
+                                                            case "cancel":
+                                                                message.channel.send(cancerCultureMessage);
+                                                                return false;
+                                                                break;
+                                                            case "no":
+                                                                daServer.logs.warningLog = "";
+                                                                break;
+                                                            default:
+                                                                daServer.logs.warningLog = checkChannels(a);
+                                                                break;
+                                                        }
+                                                        embed.setDescription(`${type0Message} **Enter your points logging channel. 📈**`);
+                                                        m.edit(embed);
+                                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                                            .then(async (a) => {    
+                                                                switch (checkChannels(a)) {
+                                                                    case "not valid":
+                                                                    case "no args": 
+                                                                    case "not useable":              
+                                                                        message.channel.send(invalidargMessage);
+                                                                        return false;
+                                                                        break;
+                                                                    case "cancel":
+                                                                        message.channel.send(cancerCultureMessage);
+                                                                        return false;
+                                                                        break;
+                                                                    case "no":
+                                                                        daServer.logs.pointsLog = "";
+                                                                        break;
+                                                                    default:
+                                                                        daServer.logs.pointsLog = checkChannels(a);
+                                                                        break;
+                                                                }
+
+
+                                                                embed.setDescription(`${type0Message} **Enter your events logging channel. 📢**`);
+                                                                m.edit(embed);
+                                                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                                                    .then(async (a) => {    
+                                                                        switch (checkChannels(a)) {
+                                                                            case "not valid":
+                                                                            case "no args": 
+                                                                            case "not useable":              
+                                                                                message.channel.send(invalidargMessage);
+                                                                                return false;
+                                                                                break;
+                                                                            case "cancel":
+                                                                                message.channel.send(cancerCultureMessage);
+                                                                                return false;
+                                                                                break;
+                                                                            case "no":
+                                                                                daServer.logs.eventsLog = "";
+                                                                                break;
+                                                                            default:
+                                                                                daServer.logs.eventsLog = checkChannels(a);
+                                                                                break;
+                                                                        }
+                                                                        daServer.logs.isSet = true;
+
+                                                                        await mongo().then(async (mongoose) =>{
+                                                                            try{ 
+                                                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                                                   
+                                                                                    logs:{
+                                                                                        hiByeLog:daServer.logs.hiByeLog,
+                                                                                        deleteLog:daServer.logs.deleteLog,
+                                                                                        serverLog:daServer.logs.serverLog,
+                                                                                        warningLog:daServer.logs.warningLog,
+                                                                                        pointsLog:daServer.logs.pointsLog,
+                                                                                        eventsLog:daServer.logs.eventsLog,
+                                                                                        isSet:daServer.logs.isSet,
+                                                                                    },
+                                                                                },{upsert:false});
+                                                                                guildsCache[message.guild.id].logs ={
+                                                                                    hiByeLog:daServer.logs.hiByeLog,
+                                                                                    deleteLog:daServer.logs.deleteLog,
+                                                                                    serverLog:daServer.logs.serverLog,
+                                                                                    warningLog:daServer.logs.warningLog,
+                                                                                    pointsLog:daServer.logs.pointsLog,
+                                                                                    eventsLog:daServer.logs.eventsLog,
+                                                                                    isSet:daServer.logs.isSet
+                                                                                };
+                                                                            } finally{
+                                                                                console.log("WROTE TO DATABASE");
+                                                                                mongoose.connection.close();
+                                                                            }
+                                                                        });
+                                                                                        
+                                                                                    
+                                                            
+                                                                        let embed2 = makeEmbed("Done! your server's logging channels have been set ✅",`Your server logs looks like this:\n `, server);
+                                                                        if(daServer.logs.hiByeLog){
+                                                                            embed2.addField("Member logs 👤", `<#${daServer.logs.hiByeLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Member logs 👤" , `Empty`, true)
+                                                                        }
+                                                                        if(daServer.logs.deleteLog){
+                                                                            embed2.addField("Messages logs 📫", `<#${daServer.logs.deleteLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Messages logs 📫", `Empty`, true)
+                                                                        }
+                                                                        if(daServer.logs.serverLog){
+                                                                            embed2.addField("Server logs 🏠", `<#${daServer.logs.serverLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Server logs 🏠", `Empty`, true)
+                                                                        }
+                                                                        if(daServer.logs.warningLog){
+                                                                            embed2.addField("Warn logs 🔨", `<#${daServer.logs.warningLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Warn logs 🔨", `Empty`, true)
+                                                                        }
+                                                                        if(daServer.logs.pointsLog){
+                                                                            embed2.addField("Points logs 📈", `<#${daServer.logs.pointsLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Points logs 📈", `Empty`, true)
+                                                                        }
+                                                                        if(daServer.logs.eventsLog){
+                                                                            embed2.addField("Events logs 📢", `<#${daServer.logs.eventsLog}>`, true);
+                                                                        }else{
+                                                                            embed2.addField("Events logs 📢", `Empty`, true)
+                                                                        }
+                                                                        message.channel.send(embed2);
+                                                                        return true;
+                                                                                    
+                                                                    }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                                                                }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                                                            }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                                                        }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                                                    }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                            })
+                    }).catch(e => {message.channel.send(idleMessage);console.log(e);});
+                } else if(!args.length){
+                    const embed = makeEmbed("Server settings", `Your server logging channels are this:`, server);
+                    if(daServer.logs.hiByeLog){
+                        embed.addField("Member logs 👤", `<#${daServer.logs.hiByeLog}>\n\`${server.prefix}logs memberLog\``, true);
+                    }else{
+                        embed.addField("Member logs 👤", `Empty\n\`${server.prefix}logs memberLog\``, true)
+                    }
+                    if(daServer.logs.deleteLog){
+                        embed.addField("Messages logs 📫", `<#${daServer.logs.deleteLog}>\n\`${server.prefix}logs messageLog\``, true);
+                    }else{
+                        embed.addField("Messages logs 📫", `Empty\n\`${server.prefix}logs messageLog\``, true)
+                    }
+                    if(daServer.logs.serverLog){
+                        embed.addField("Server logs 🏠", `<#${daServer.logs.serverLog}>\n\`${server.prefix}logs serverLog\``, true);
+                    }else{
+                        embed.addField("Server logs 🏠", `Empty\n\`${server.prefix}logs serverLog\``, true)
+                    }
+                    if(daServer.logs.warningLog){
+                        embed.addField("Warn logs 🔨", `<#${daServer.logs.warningLog}>\n\`${server.prefix}logs warningLog\``, true);
+                    }else{
+                        embed.addField("Warn logs 🔨", `Empty\n\`${server.prefix}logs warningLog\``, true)
+                    }
+                    if(daServer.logs.pointsLog){
+                        embed.addField("Points logs 📈", `<#${daServer.logs.pointsLog}>\n\`${server.prefix}logs pointslog\``, true);
+                    }else{
+                        embed.addField("Points logs 📈", `Empty\n\`${server.prefix}logs pointslog\``, true)
+                    }
+
+                    if(daServer.logs.eventsLog){
+                        embed.addField("Events logs 📢", `<#${daServer.logs.eventsLog}>\n\`${server.prefix}logs eventlog\``, true);
+                    }else{
+                        embed.addField("Events logs 📢", `Empty\n\`${server.prefix}logs eventlog\``, true)
+                    }
+
+
+                    message.channel.send(embed);
+                }else{
+                    let daServer = server;
+                    switch (args[0].toLowerCase()) {
+                        case "memberlog":
+                            let embedo1 = makeEmbed("Logs manager", `${type0Message}**Enter your members logging channel. 👤**`, server);
+                            message.channel.send(embedo1)
+                                .then(m => {
                                     message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                        .then(a => {   
-                                            switch (checkChannels(a)) {
+                                        .then(async a => {   
+                                            let toCheck =   checkChannels(a);
+                                            switch (toCheck) {
                                                 case "not valid":
                                                 case "no args": 
-                                                case "not useable":              
-                                                    message.channel.send(invalidargMessage);
+                                             case "not useable":              
+                                                    message.channel.send("Invalid argument, command failed.");
                                                     return false;
                                                     break;
                                                 case "cancel":
@@ -63,146 +293,70 @@ module.exports = {
                                                     return false;
                                                     break;
                                                 case "no":
-                                                    daServer.logs.deleteLog = "";
+                                                    daServer.logs.hiByeLog = "";
                                                     break;
                                                 default:
-                                                    daServer.logs.deleteLog = checkChannels(a);
+                                                    daServer.logs.hiByeLog = toCheck;
                                                     break;
                                             }
-                                                    
-                                            embed.setDescription(`${type0Message} **Enter your server logging channel. 🏠**`);
-                                            m.edit(embed);
-                                            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                .then(a => {  
-                                                    
-                                                    switch (checkChannels(a)) {
-                                                        case "not valid":
-                                                        case "no args": 
-                                                        case "not useable":              
-                                                            message.channel.send(invalidargMessage);
-                                                            return false;
-                                                            break;
-                                                        case "cancel":
-                                                            message.channel.send(cancerCultureMessage);
-                                                            return false;
-                                                            break;
-                                                        case "no":
-                                                            daServer.logs.serverLog = "";
-                                                            break;
-                                                        default:
-                                                            daServer.logs.serverLog = checkChannels(a);
-                                                            break;
-                                                    }                                
-                                                    embed.setDescription(`${type0Message} **Enter your warnings logging channel. 🔨**`);
-                                                    m.edit(embed);
-                                                    message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                        .then(async (a) => {    
-                                                            switch (checkChannels(a)) {
-                                                                case "not valid":
-                                                                case "no args": 
-                                                                case "not useable":              
-                                                                    message.channel.send(invalidargMessage);
-                                                                    return false;
-                                                                    break;
-                                                                case "cancel":
-                                                                    message.channel.send(cancerCultureMessage);
-                                                                    return false;
-                                                                    break;
-                                                                case "no":
-                                                                    daServer.logs.warningLog = "";
-                                                                    break;
-                                                                default:
-                                                                    daServer.logs.warningLog = checkChannels(a);
-                                                                    break;
-                                                            }
-                                        
-                                                            daServer.logs.isSet = true;
-
-                                                            await mongo().then(async (mongoose) =>{
-                                                                try{ 
-                                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                                       
-                                                                        logs:{hiByeLog:daServer.logs.hiByeLog,
-                                                                            deleteLog:daServer.logs.deleteLog,
-                                                                            serverLog:daServer.logs.serverLog,
-                                                                            warningLog:daServer.logs.warningLog,
-                                                                            isSet:daServer.logs.isSet,
-                                                                        },
-                                                                    },{upsert:false});
-                                                                    guildsCache[message.guild.id].logs ={hiByeLog:daServer.logs.hiByeLog,
-                                                                        deleteLog:daServer.logs.deleteLog,
-                                                                        serverLog:daServer.logs.serverLog,
-                                                                        warningLog:daServer.logs.warningLog,
-                                                                        isSet:daServer.logs.isSet
-                                                                    };
-                                                                } finally{
-                                                                    console.log("WROTE TO DATABASE");
-                                                                    mongoose.connection.close();
-                                                                }
-                                                            });
-                                                                    		
-                                                                        
-                                                
-                                                            let embed2 = makeEmbed("Done! your server's logging channels have been set ✅",`Your server logs looks like this:\n `, server);
-                                                            if(daServer.logs.hiByeLog){
-                                                                embed2.addField("Member logs :bust_in_silhouette:", `<#${daServer.logs.hiByeLog}>`, true);
-                                                            }else{
-                                                                embed2.addField("Member logs :bust_in_silhouette:" , `Empty`, true)
-                                                            }
-                                                            if(daServer.logs.deleteLog){
-                                                                embed2.addField("Messages logs :mailbox_with_mail:", `<#${daServer.logs.deleteLog}>`, true);
-                                                            }else{
-                                                                embed2.addField("Messages logs :mailbox_with_mail:", `Empty`, true)
-                                                            }
-                                                            if(daServer.logs.deleteLog){
-                                                                embed2.addField("Server logs :house:", `<#${daServer.logs.serverLog}>`, true);
-                                                            }else{
-                                                                embed2.addField("Server logs :house:", `Empty`, true)
-                                                            }
-                                                            if(daServer.logs.deleteLog){
-                                                                embed2.addField("Warn logs :hammer:", `<#${daServer.logs.warningLog}>`, true);
-                                                            }else{
-                                                                embed2.addField("Warn logs :hammer:", `Empty`, true)
-                                                            }
-                                                            message.channel.send(embed2);
-                                                            return true;
-                                                                        
-                                                                    
-                                                            }).catch(e => {message.channel.send(idleMessage);console.log(e);});
-                                                    }).catch(e => {message.channel.send(idleMessage);console.log(e);});
-                                            }).catch(e => {message.channel.send(idleMessage);console.log(e);});
-                                        })
-                                    }).catch(e => {message.channel.send(idleMessage);console.log(e);});
-                        } else if(!args.length){
-                            const embed = makeEmbed("Server settings", `Your server logging channels are this:\nType "${server.prefix}logs \`value\`" to edit a selected option.\nExample:${server.prefix}logs memberLog`, server);
-                            if(daServer.logs.hiByeLog){
-                                embed.addField("Member logs 👤", `<#${daServer.logs.hiByeLog}>\nvalue: \`memberLog\``, true);
-                            }else{
-                                embed.addField("Member logs 👤", `Empty\nvalue: \`memberLog\``, true)
-                            }
-                            if(daServer.logs.deleteLog){
-                                embed.addField("Messages logs 📫", `<#${daServer.logs.deleteLog}>\nvalue: \`messageLog\``, true);
-                            }else{
-                                embed.addField("Messages logs 📫", `Empty\nvalue: \`messageLog\``, true)
-                            }
-                            if(daServer.logs.deleteLog){
-                                embed.addField("Server logs 🏠", `<#${daServer.logs.serverLog}>\nvalue: \`serverLog\``, true);
-                            }else{
-                                embed.addField("Server logs 🏠", `Empty\nvalue: \`serverLog\``, true)
-                            }
-                            if(daServer.logs.deleteLog){
-                                embed.addField("Warn logs 🔨", `<#${daServer.logs.warningLog}>\nvalue: \`warningLog\``, true);
-                            }else{
-                                embed.addField("Warn logs🔨", `Empty\nvalue: \`warningLog\``, true)
-                            }
-                            
-                            message.channel.send(embed);
-                        }else{
-                            let daServer = server;
-                            switch (args[0].toLowerCase()) {
-                                case "memberlog":
-                                    let embedo1 = makeEmbed("Logs manager", `${type0Message}**Enter your members logging channel. 👤**`, server);
-                                    message.channel.send(embedo1)
+                                            await mongo().then(async (mongoose) =>{
+                                                try{ 
+                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                        logs: daServer.logs,
+                                                    },{upsert:false});
+                                                    message.channel.send(`**Members logging channel has been successfully updated ✅.**`)
+                                                    guildsCache[message.guild.id] = daServer;
+                                                } finally{
+                                                    console.log("WROTE TO DATABASE");
+                                                    mongoose.connection.close();
+                                                }
+                                            });
+                                        });
+                                });
+                            break;
+                            case "messagelog":
+                                let embedo2 = makeEmbed("Logs manager", `${type0Message}**Enter your messages logging channel. 📫**`, server);
+                                message.channel.send(embedo2)
+                                    .then(m => {
+                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                            .then(async a => {   
+                                                let toCheck =   checkChannels(a);
+                                                switch (toCheck) {
+                                                    case "not valid":
+                                                    case "no args": 
+                                                 case "not useable":              
+                                                        message.channel.send("Invalid argument, command failed.");
+                                                        return false;
+                                                        break;
+                                                    case "cancel":
+                                                        message.channel.send(cancerCultureMessage);
+                                                        return false;
+                                                        break;
+                                                    case "no":
+                                                        daServer.logs.deleteLog = "";
+                                                        break;
+                                                    default:
+                                                        daServer.logs.deleteLog = toCheck;
+                                                        break;
+                                                }
+                                                await mongo().then(async (mongoose) =>{
+                                                    try{ 
+                                                        await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                            logs: daServer.logs,
+                                                        },{upsert:false});
+                                                        message.channel.send(`**Messages logging channel has been successfully updated ✅.**`)
+                                                        guildsCache[message.guild.id] = daServer;
+                                                    } finally{
+                                                        console.log("WROTE TO DATABASE");
+                                                        mongoose.connection.close();
+                                                    }
+                                                });
+                                            });
+                                    });
+                                break;
+                                case "serverlog":
+                                    let embedo3 = makeEmbed("Logs manager", `${type0Message}**Enter your Server logging channel. 🏠**`, server);
+                                    message.channel.send(embedo3)
                                         .then(m => {
                                             message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
                                                 .then(async a => {   
@@ -219,10 +373,10 @@ module.exports = {
                                                             return false;
                                                             break;
                                                         case "no":
-                                                            daServer.logs.hiByeLog = "";
+                                                            daServer.logs.serverLog = "";
                                                             break;
                                                         default:
-                                                            daServer.logs.hiByeLog = toCheck;
+                                                            daServer.logs.serverLog = toCheck;
                                                             break;
                                                     }
                                                     await mongo().then(async (mongoose) =>{
@@ -230,7 +384,7 @@ module.exports = {
                                                             await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                                 logs: daServer.logs,
                                                             },{upsert:false});
-                                                            message.channel.send(`Channel set✅\n**Members logging channel has been successfully updated.**`)
+                                                            message.channel.send(`**Server logging channel has been successfully updated ✅.**`)
                                                             guildsCache[message.guild.id] = daServer;
                                                         } finally{
                                                             console.log("WROTE TO DATABASE");
@@ -240,9 +394,9 @@ module.exports = {
                                                 });
                                         });
                                     break;
-                                    case "messagelog":
-                                        let embedo2 = makeEmbed("Logs manager", `${type0Message}**Enter your messages logging channel. 📫**`, server);
-                                        message.channel.send(embedo2)
+                                    case "warninglog":
+                                        let embedo4 = makeEmbed("Logs manager", `${type0Message}**Enter your Warns logging channel. 🔨**`, server);
+                                        message.channel.send(embedo4)
                                             .then(m => {
                                                 message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
                                                     .then(async a => {   
@@ -259,10 +413,10 @@ module.exports = {
                                                                 return false;
                                                                 break;
                                                             case "no":
-                                                                daServer.logs.deleteLog = "";
+                                                                daServer.logs.warningLog = "";
                                                                 break;
                                                             default:
-                                                                daServer.logs.deleteLog = toCheck;
+                                                                daServer.logs.warningLog = toCheck;
                                                                 break;
                                                         }
                                                         await mongo().then(async (mongoose) =>{
@@ -270,7 +424,7 @@ module.exports = {
                                                                 await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                                     logs: daServer.logs,
                                                                 },{upsert:false});
-                                                                message.channel.send(`Channel set✅\n**Messages logging channel has been successfully updated.**`)
+                                                                message.channel.send(`**Warns logging channel has been successfully updated ✅.**`)
                                                                 guildsCache[message.guild.id] = daServer;
                                                             } finally{
                                                                 console.log("WROTE TO DATABASE");
@@ -280,93 +434,93 @@ module.exports = {
                                                     });
                                             });
                                         break;
-                                        case "serverlog":
-                                            let embedo3 = makeEmbed("Logs manager", `${type0Message}**Enter your Server logging channel. 🏠**`, server);
-                                            message.channel.send(embedo3)
-                                                .then(m => {
-                                                    message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                        .then(async a => {   
-                                                            let toCheck =   checkChannels(a);
-                                                            switch (toCheck) {
-                                                                case "not valid":
-                                                                case "no args": 
-                                                             case "not useable":              
-                                                                    message.channel.send("Invalid argument, command failed.");
-                                                                    return false;
-                                                                    break;
-                                                                case "cancel":
-                                                                    message.channel.send(cancerCultureMessage);
-                                                                    return false;
-                                                                    break;
-                                                                case "no":
-                                                                    daServer.logs.serverLog = "";
-                                                                    break;
-                                                                default:
-                                                                    daServer.logs.serverLog = toCheck;
-                                                                    break;
-                                                            }
-                                                            await mongo().then(async (mongoose) =>{
-                                                                try{ 
-                                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                                        logs: daServer.logs,
-                                                                    },{upsert:false});
-                                                                    message.channel.send(`Channel set✅\n**Server logging channel has been successfully updated.**`)
-                                                                    guildsCache[message.guild.id] = daServer;
-                                                                } finally{
-                                                                    console.log("WROTE TO DATABASE");
-                                                                    mongoose.connection.close();
-                                                                }
-                                                            });
-                                                        });
-                                                });
-                                            break;
-                                            case "warninglog":
-                                                let embedo4 = makeEmbed("Logs manager", `${type0Message}**Enter your Warns logging channel. 🔨**`, server);
-                                                message.channel.send(embedo4)
-                                                    .then(m => {
-                                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                            .then(async a => {   
-                                                                let toCheck =   checkChannels(a);
-                                                                switch (toCheck) {
-                                                                    case "not valid":
-                                                                    case "no args": 
-                                                                 case "not useable":              
-                                                                        message.channel.send("Invalid argument, command failed.");
-                                                                        return false;
-                                                                        break;
-                                                                    case "cancel":
-                                                                        message.channel.send(cancerCultureMessage);
-                                                                        return false;
-                                                                        break;
-                                                                    case "no":
-                                                                        daServer.logs.warningLog = "";
-                                                                        break;
-                                                                    default:
-                                                                        daServer.logs.warningLog = toCheck;
-                                                                        break;
-                                                                }
-                                                                await mongo().then(async (mongoose) =>{
-                                                                    try{ 
-                                                                        await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                                            logs: daServer.logs,
-                                                                        },{upsert:false});
-                                                                        message.channel.send(`Channel set✅\n**Warns logging channel has been successfully updated.**`)
-                                                                        guildsCache[message.guild.id] = daServer;
-                                                                    } finally{
-                                                                        console.log("WROTE TO DATABASE");
-                                                                        mongoose.connection.close();
-                                                                    }
-                                                                });
-                                                            });
-                                                    });
-                                                break;
-                                default:
-                                    message.channel.send("Invalid value.");
-                                    break;
-                            }
-                        }
-                    } catch (err) {console.log(err);}
+                                        case "pointslog":
+                            let embedo5 = makeEmbed("Logs manager", `${type0Message}**Enter your points logging channel. 📈**`, server);
+                            message.channel.send(embedo5)
+                                .then(m => {
+                                    message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                        .then(async a => {   
+                                            let toCheck =   checkChannels(a);
+                                            switch (toCheck) {
+                                                case "not valid":
+                                                case "no args": 
+                                             case "not useable":              
+                                                    message.channel.send("Invalid argument, command failed.");
+                                                    return false;
+                                                    break;
+                                                case "cancel":
+                                                    message.channel.send(cancerCultureMessage);
+                                                    return false;
+                                                    break;
+                                                case "no":
+                                                    daServer.logs.pointsLog = "";
+                                                    break;
+                                                default:
+                                                    daServer.logs.pointsLog = toCheck;
+                                                    break;
+                                            }
+                                            await mongo().then(async (mongoose) =>{
+                                                try{ 
+                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                        logs: daServer.logs,
+                                                    },{upsert:false});
+                                                    message.channel.send(`**Points logging channel has been successfully updated ✅.**`)
+                                                    guildsCache[message.guild.id] = daServer;
+                                                } finally{
+                                                    console.log("WROTE TO DATABASE");
+                                                    mongoose.connection.close();
+                                                }
+                                            });
+                                        });
+                                });
+                            break;
+                            case "eventlog":
+                            let embedo6 = makeEmbed("Logs manager", `${type0Message}**Enter your events logging channel. 📢**`, server);
+                            message.channel.send(embedo6)
+                                .then(m => {
+                                    message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+                                        .then(async a => {   
+                                            let toCheck =   checkChannels(a);
+                                            switch (toCheck) {
+                                                case "not valid":
+                                                case "no args": 
+                                             case "not useable":              
+                                                    message.channel.send("Invalid argument, command failed.");
+                                                    return false;
+                                                    break;
+                                                case "cancel":
+                                                    message.channel.send(cancerCultureMessage);
+                                                    return false;
+                                                    break;
+                                                case "no":
+                                                    daServer.logs.eventsLog = "";
+                                                    break;
+                                                default:
+                                                    daServer.logs.eventsLog = toCheck;
+                                                    break;
+                                            }
+                                            await mongo().then(async (mongoose) =>{
+                                                try{ 
+                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                        logs: daServer.logs,
+                                                    },{upsert:false});
+                                                    message.channel.send(`**Events logging channel has been successfully updated ✅.**`)
+                                                    guildsCache[message.guild.id] = daServer;
+                                                } finally{
+                                                    console.log("WROTE TO DATABASE");
+                                                    mongoose.connection.close();
+                                                }
+                                            });
+                                        });
+                                });
+                            break;
+                        default:
+                            message.channel.send("Invalid value.");
+                            break;
+                    }
+                }
+            } catch (err) {console.log(err);}
 
-	}
+}
 
 };
