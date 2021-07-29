@@ -1,7 +1,7 @@
 const makeEmbed = require("../../functions/embed");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
-
+const enable = require("../../functions/enablePoints");
 let cache = require("../../caches/pointsCache");
 const pointsSchema= require("../../schemas/points-schema");
 
@@ -35,7 +35,7 @@ module.exports = {
                 }
             })
         }
-
+        if(!server.pointsEnabled) await enable(message, server);
         if(!servery.whiteListedRole || servery.whiteListedRole === ""){
 
         

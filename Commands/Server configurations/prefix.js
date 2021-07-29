@@ -14,7 +14,7 @@ module.exports = {
 	category:"Server configurations",
 	async execute(message, args, server) {
 
-
+		let oldPrefix = server.prefix
 		if (args.length === 0) {
 			const embed = makeEmbed('Missing argument : prefix',this.usage, server);
 			sendAndDelete(message,embed, server);
@@ -49,7 +49,7 @@ module.exports = {
 				}
 				const embed = new Discord.MessageEmbed()
 						.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png')
-						.setTitle(`Prefix changed from ${server.prefix} to ${args[0]}`)
+						.setTitle(`Prefix changed from ${oldPrefix} to ${args[0]}`)
 						.setColor('2EFF00')
 						.setFooter('developed by crazy4K')
 						.setTimestamp()

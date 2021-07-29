@@ -4,20 +4,17 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 const mongo = require("../../mongo");
 let cache = require("../../caches/officerPointsCache");
 const pointsSchema = require("../../schemas/officerPoints-schema");
+const enable = require("../../functions/enableOPoints");
 
 module.exports = {
 	name : 'opoints-set',
 	description : "Sets a person's officer points to whatever the second arugment is.",
     cooldown: 5,
     whiteList:'ADMINISTRATOR',
-	usage:'opoints-set <@user> <points>',
+	usage:'opoints-set <@user> <points> [reason]',
 	async execute(message, args, server) { 
 
-        if(!server.oPointsEnabled){
-            const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
-            sendAndDelete(message, embed, server);
-            return false;
-        }
+        if(!server.oPointsEnabled) await enable(message, server);
 
         let target = checkUseres(message, args, 0);
         
@@ -52,6 +49,9 @@ module.exports = {
                         }
                     })
                 }
+                let reason = args.splice(2).join(" ");   
+                if(!reason) reason = "`No reason given.`"
+                let log = message.guild.channels.cache.get(server.logs.pointsLog);   
 
                 let pointstoChange = args[1];
                 if(!pointstoChange){
@@ -83,7 +83,19 @@ module.exports = {
                     }
                 })
                 const emb = makeEmbed("User's officer points have been set!", `<@${target}>'s officer points have been changed from \`${before}\` to \`${servery.members[target]}\` officer points.`, server,false)
-                message.channel.send(emb);                                    
+                message.channel.send(emb);     
+                if(log){
+                    let embed = makeEmbed("Points changed.","","3987FF",true);
+                    embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                    embed.addFields(
+                      {name: "Chagned by:", value: message.author, inline:true},  
+                      {name: "Changed from:", value: `<@${target}>`, inline:true},
+                      {name: "Amount before:", value: before, inline:true},
+                      {name: "Amount after:", value: servery.members[target], inline:true},
+                      {name: "Reason:", value: reason, inline:true},      
+                    );
+                    log.send(embed);
+                }                                     
                 return true;
 
             }

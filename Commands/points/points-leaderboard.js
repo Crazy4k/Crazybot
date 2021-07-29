@@ -1,8 +1,8 @@
 const makeEmbed = require("../../functions/embed");
-const sendAndDelete = require("../../functions/sendAndDelete");
 let cache = require("../../caches/pointsCache");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
+const enable = require("../../functions/enablePoints");
 
 
 module.exports = {
@@ -14,11 +14,9 @@ module.exports = {
     category:"points",
 	async execute(message, args, server) { 
 
-        if(!server.pointsEnabled){
-            const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
-            sendAndDelete(message, embed, server);
-            return false;
-        }
+        if(!server.pointsEnabled)await enable(message, server);
+            
+        
 
           
         let servery = cache[message.guild.id];

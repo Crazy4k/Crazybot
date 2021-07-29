@@ -4,6 +4,7 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 const mongo = require("../../mongo");
 let cache = require("../../caches/officerPointsCache");
 const pointsSchema = require("../../schemas/officerPoints-schema");
+const enable = require("../../functions/enableOPoints");
 
 module.exports = {
 	name : 'opoints',
@@ -13,11 +14,7 @@ module.exports = {
 	usage:'points [@user]',
 	async execute(message, args, server) { 
 
-        if(!server.oPointsEnabled){
-            const embed =makeEmbed(`Your server officer points plugin isn't active yet.`,`Do "${server.prefix}opoints-enable" Instead.`, server)
-            sendAndDelete(message, embed, server);
-            return false;
-        }
+        if(!server.oPointsEnabled) await enable(message, server);
 
         let target = checkUseres(message, args, 0);
         

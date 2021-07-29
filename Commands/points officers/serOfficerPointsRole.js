@@ -1,7 +1,7 @@
 const makeEmbed = require("../../functions/embed");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
-
+const enable = require("../../functions/enableOPoints");
 let cache = require("../../caches/officerPointsCache");
 const pointsSchema= require("../../schemas/officerPoints-schema");
 
@@ -15,7 +15,7 @@ module.exports = {
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 
 
-        
+        if(!server.oPointsEnabled) enable(message, server);
         let whiteListedRole;
             
 

@@ -4,22 +4,18 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 let cache = require("../../caches/pointsCache");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
-
+const enable = require("../../functions/enablePoints");
 
 module.exports = {
 	name : 'points-set',
 	description : "Sets a person's points to whatever the second arugment is.",
     cooldown: 5,
     whiteList:'ADMINISTRATOR',
-	usage:'points-set <@user> <points>',
+	usage:'points-set <@user> <points> [reason]',
     category:"points",
 	async execute(message, args, server) { 
 
-        if(!server.pointsEnabled){
-            const embed =makeEmbed(`Your server points plugin isn't active yet.`,`Do "${server.prefix}points-enable" Instead.`, server)
-            sendAndDelete(message, embed, server);
-            return false;
-        }
+        if(!server.pointsEnabled) await enable(message, server);
 
         let target = checkUseres(message, args, 0);
         
@@ -54,7 +50,9 @@ module.exports = {
                         }
                     })
                 }
-
+                let reason = args.splice(2).join(" ");   
+                if(!reason) reason = "`No reason given.`"
+                let log = message.guild.channels.cache.get(server.logs.pointsLog);    
                 let pointstoChange = args[1];
                 if(!pointstoChange){
                     const embed69 = makeEmbed('Missing arguments',this.usage, server);
@@ -85,7 +83,19 @@ module.exports = {
                     }
                 })
                 const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
-                message.channel.send(emb);                                    
+                message.channel.send(emb);     
+                if(log){
+                    let embed = makeEmbed("Officer points changed.","","3987FF",true);
+                    embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                    embed.addFields(
+                      {name: "Chagned by:", value: message.author, inline:true},  
+                      {name: "Changed from:", value: `<@${target}>`, inline:true},
+                      {name: "Amount before:", value: before, inline:true},
+                      {name: "Amount after:", value: servery.members[target], inline:true},
+                      {name: "Reason:", value: reason, inline:true},      
+                    );
+                    log.send(embed);
+                }                               
                 return true;
 
             }

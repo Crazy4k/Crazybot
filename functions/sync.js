@@ -11,17 +11,17 @@ const officerPointsSchema = require("../schemas/officerPoints-schema");
 const mongo = require("../mongo");
 
 
-module.exports = async (message) => {
+module.exports = async (message,) => {
     
     
-    console.log(`BTS syncing for ${message.guild.name} began...`);
+    console.log(`Syncing for ${message.guild.name} executed.`);
     
-    
+    let whatToSay = [];
+
     let data1;
     let data2;
     let data3;
     let data4;
-
     await mongo().then(async (mongoose) =>{
         try{ 
             data1 = guildsCache[message.guild.id] = await guildsSchema.findOne({_id:message.guild.id});
@@ -33,6 +33,7 @@ module.exports = async (message) => {
 
     
     if(data1 === null){
+        whatToSay.push("\n*Created a missing file of the server on the data base.");
         const serverObject = {
             guildId: message.guild.id,
             hiByeChannel:"",
@@ -88,6 +89,7 @@ module.exports = async (message) => {
 
     
     if(data2 === null){
+        whatToSay.push("*\nCreated a missing file of the server on the data base.");
         mongo().then(async (mongoose) =>{
             let temp = {	
                 _id: message.guild.id,
@@ -124,6 +126,7 @@ module.exports = async (message) => {
         }
 
         if(size1 !== size2){
+            whatToSay.push("\n*Deleted left over data from members that are no longer in the server.");
             await mongo().then(async (mongoose) =>{
                 try{
                     
@@ -154,6 +157,7 @@ module.exports = async (message) => {
 
 
     if(data3 === null){
+        whatToSay.push("\n*Created a missing file of the server on the data base.");
         let temp = {
             _id:message.guild.id,
             whiteListedRole:"",
@@ -191,6 +195,7 @@ module.exports = async (message) => {
         
 
         if(size1 !== size2) {
+            whatToSay.push("\n*Deleted left over data from members that are no longer in the server.");
             await mongo().then(async (mongoose) =>{
                 try{
                     
@@ -218,13 +223,14 @@ module.exports = async (message) => {
 
     
     if(data4 === null){
-        mongo().then(async (mongoose) =>{
+        whatToSay.push("\n*Created a missing file of the server on the data base.");
             let temp = {	
                 _id: message.guild.id,
                 whiteListedRole:"",
                 members:{}
 
             }
+        mongo().then(async (mongoose) =>{
             try{
                 await officerPointsSchema.findOneAndUpdate({_id:message.guild.id},{
                     _id:message.guild.id,
@@ -254,6 +260,7 @@ module.exports = async (message) => {
         }
 
         if(size1 !== size2){
+            whatToSay.push("\n*Deleted left over data from members that are no longer in the server.");
             await mongo().then(async (mongoose) =>{
                 try{
                     
@@ -271,9 +278,8 @@ module.exports = async (message) => {
         }
     }
 
-
+    console.log(`Syncing ended for ${message.guild.name}.`);
     
-    console.log("BTS syncing ended.");
-
+    return whatToSay;
 
 }
