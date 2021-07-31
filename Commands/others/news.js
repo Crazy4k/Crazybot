@@ -4,7 +4,7 @@ const updateObj = require("../../updates.json");
 module.exports = {
 	name : 'news',
 	description : 'Send a sum of the latest update.',
-	cooldown: 3,
+	cooldown: 60* 8,
 	usage:'news',
     category:"other",
 	execute(message, args, server) {
