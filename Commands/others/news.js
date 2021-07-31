@@ -11,6 +11,7 @@ module.exports = {
 
 	const embed = makeEmbed(`CrazyBot patch ${config.bot_info.version}`,updateObj[config.bot_info.version],server,true,"It's advised to use `;sync` after an update");
     message.channel.send(embed);
+	return true;
 	},
 
 };
