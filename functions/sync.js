@@ -22,6 +22,7 @@ module.exports = async (message,) => {
     let data2;
     let data3;
     let data4;
+    
     await mongo().then(async (mongoose) =>{
         try{ 
             data1 = guildsCache[message.guild.id] = await guildsSchema.findOne({_id:message.guild.id});
@@ -36,38 +37,38 @@ module.exports = async (message,) => {
         whatToSay.push("\n*Created a missing file of the server on the data base.");
         const serverObject = {
             guildId: message.guild.id,
-            hiByeChannel:"",
-            hiRole: "",
-            language:"English",
-            prefix : ";",
-            muteRole:"",
-            defaultEmbedColor:"#f7f7f7",
-            deleteFailedMessagedAfter: 10000,
-            deleteMessagesInLogs : true,
-            deleteFailedCommands : false,
-            isSet:false,
-            pointsEnabled: false,
-            logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
-            warningRoles: {	firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""}
+			hiByeChannel:"",
+			hiRole: "",
+			language:"English",
+			prefix : ";",
+			muteRole:"",
+			defaultEmbedColor:"#f7f7f7",
+			deleteFailedMessagedAfter: 10000,
+			deleteMessagesInLogs : true,
+			deleteFailedCommands : false,
+			isSet:false,
+			pointsEnabled: false,
+			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+            
         };
 
         await mongo().then(async (mongoose) =>{
             try{ 
                 await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
-                    _id: message.guild.id,
-                    hiByeChannel:"",
-                    hiRole:"",
-                    language:"English",
-                    prefix:";",
-                    muteRole:"",
-                    defaultEmbedColor:"#f7f7f7",
-                    deleteFailedMessagedAfter:10000,
-                    deleteMessagesInLogs:true,
-                    deleteFailedCommands:false,
-                    isSet:false,
-                    pointsEnabled:false,
-                    logs:{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
-                    warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},    
+                    _id: serverObject.guildId,
+					hiByeChannel: serverObject.hiByeChannel,
+					hiRole: serverObject.hiRole,
+					language: serverObject.language,
+					prefix: serverObject.prefix,
+					muteRole: serverObject.muteRole,
+					defaultEmbedColor: serverObject.defaultEmbedColor,
+					deleteFailedMessagedAfter: serverObject.deleteFailedMessagedAfter,
+					deleteMessagesInLogs: serverObject.deleteMessagesInLogs,
+					deleteFailedCommands: serverObject.deleteFailedCommands,
+					isSet: serverObject.isSet,
+					pointsEnabled: serverObject.pointsEnabled,
+					logs: serverObject.logs,  
+                      
                 },{upsert:true});
                 guildsCache[message.guild.id] = serverObject;
             } finally{

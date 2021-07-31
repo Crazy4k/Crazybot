@@ -24,7 +24,6 @@ const guildSchema = mongoose.Schema({
     pointsEnabled:{type:Boolean,required:true},
     oPointsEnabled:{type:Boolean,required:false},
     logs:{type:Object,required:true},
-    warningRoles:{type:Object,required:true},
 
 
     

@@ -7,6 +7,9 @@ const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const client = require("../../index");
 const moment = require("moment");
+const timerCache = require("../../caches/timerCache");
+let fetchesCache = require("../../caches/fetchesCache");
+
 
 module.exports = {
 	name : 'eval',
@@ -17,12 +20,10 @@ module.exports = {
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
         if (args.length === 0) return message.channel.send("No code was given");
 
-        const log  = item => message.channel.send(item);
         
         try {
             let evalString = args.join(" ");
-            eval(evalString);
-            const embed1 = makeEmbed("Succes ✅", "Command executed succesfuly.", "24D900");
+            const embed1 = makeEmbed("Succes ✅", `\`\`\`${eval(evalString)}\`\`\``, "24D900");
             message.channel.send(embed1);
 
         } catch (error) {

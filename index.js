@@ -50,68 +50,75 @@ client.on('guildCreate', async (guild)  => {
 			isSet:false,
 			pointsEnabled: false,
 			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
-			warningRoles: {	firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""}
+			
 		};
 
 		await mongo().then(async (mongoose) =>{
 			try{ 
 				await serversSchema.findOneAndUpdate({_id:guild.id},{
-					_id: guild.id,
-					hiByeChannel:"",
-					hiRole:"",
-					language:"English",
-					prefix:";",
-					muteRole:"",
-					defaultEmbedColor:"#f7f7f7",
-					deleteFailedMessagedAfter:10000,
-					deleteMessagesInLogs:true,
-					deleteFailedCommands:false,
-					isSet:false,
-					pointsEnabled:false,
-					logs:{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
-					warningRoles:{firstwarningRole:"",secondWarningRole:"",thirdWarningRole:""},    
+					_id: serverObject.guildId,
+					hiByeChannel: serverObject.hiByeChannel,
+					hiRole: serverObject.hiRole,
+					language: serverObject.language,
+					prefix: serverObject.prefix,
+					muteRole: serverObject.muteRole,
+					defaultEmbedColor: serverObject.defaultEmbedColor,
+					deleteFailedMessagedAfter: serverObject.deleteFailedMessagedAfter,
+					deleteMessagesInLogs: serverObject.deleteMessagesInLogs,
+					deleteFailedCommands: serverObject.deleteFailedCommands,
+					isSet: serverObject.isSet,
+					pointsEnabled: serverObject.pointsEnabled,
+					logs: serverObject.logs,   
 				},{upsert:true});
 				guildsCache[guild.id] = serverObject;
-			} finally{
+			} catch(err){
+                console.log(err)
+            }finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}
 		});
 
-			mongo().then(async (mongoose) =>{
+			await mongo().then(async (mongoose) =>{
 				try{
 					await pointsSchema.findOneAndUpdate({_id:guild.id},{
 						_id:guild.id,
 						whiteListedRole:"",
 						members:{}   
 					},{upsert:true});
+				}catch(err){
+					console.log(err)
 				} finally{
 					
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();
 				}
 			});	
-			mongo().then(async (mongoose) =>{
+			await mongo().then(async (mongoose) =>{
 				try{
 					await officerPointsSchema.findOneAndUpdate({_id:guild.id},{
 						_id:guild.id,
 						whiteListedRole:"",
 						members:{}   
 					},{upsert:true});
-				} finally{
+				} catch(err){
+					console.log(err)
+				}finally{
 					
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();
 				}
 			});	
-			mongo().then(async (mongoose) =>{
+			await mongo().then(async (mongoose) =>{
 				try{
 					await warnSchema.findOneAndUpdate({_id:guild.id},{
 						_id:guild.id,
 						whiteListedRole:"",
 						members:{}   
 					},{upsert:true});
-				} finally{
+				} catch(err){
+					console.log(err)
+				}finally{
 					
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();
@@ -131,8 +138,11 @@ client.on('guildDelete', async (guild) => {
 
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				await serversSchema.findOneAndDelete({_id:guild.id});
-			} finally{
+				let data = await serversSchema.findOne({_id:guild.id});
+				if(data !== null) await serversSchema.findOneAndRemove({_id:guild.id});
+			} catch(err){
+                console.log(err)
+            }finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}
@@ -140,8 +150,12 @@ client.on('guildDelete', async (guild) => {
 
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				await pointsSchema.findOneAndDelete({_id:guild.id});
-			} finally{
+				let data = await pointsSchema.findOne({_id:guild.id});
+				if(data !== null) await pointsSchema.findOneAndRemove({_id:guild.id});
+
+			}catch(err){
+                console.log(err)
+            } finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}
@@ -149,16 +163,22 @@ client.on('guildDelete', async (guild) => {
 		
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				await warnSchema.findOneAndDelete({_id:guild.id});
-			} finally{
+				let data = await warnSchema.findOne({_id:guild.id});
+				if(data !== null) await warnSchema.findOneAndRemove({_id:guild.id});
+			} catch(err){
+                console.log(err)
+            }finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}
 		});		
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				await officerPointsSchema.findOneAndDelete({_id:guild.id});
-			} finally{
+				let data = await officerPointsSchema.findOne({_id:guild.id});
+				if(data !== null) officerPointsSchema.findOneAndRemove({_id:guild.id});
+			} catch(err){
+                console.log(err)
+            }finally{
 				console.log("WROTE TO DATABASE");
 				mongoose.connection.close();
 			}

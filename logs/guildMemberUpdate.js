@@ -1,6 +1,5 @@
-const moment = require('moment');
-const Discord = require('discord.js'); 
-
+const Discord = require('discord.js');
+ 
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");

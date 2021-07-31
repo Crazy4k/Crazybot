@@ -94,234 +94,132 @@ module.exports = {
                                                             daServer.muteRole = checkRoles(a);
                                                             break;
                                                     }
-                                                        embed.setDescription(`${type0Message} **Enter your first warning role.1️⃣**`);
-                                                            m.edit(embed);
-                                                            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                                .then(a => {  
-                                                                    switch (checkRoles(a)) {
-                                                                        case "not valid":
-                                                                        case "not useable":
-                                                                        case "no args":               
-                                                                            message.channel.send("Invalid argument, command failed.");
-                                                                            return false;
+                                                       
+                                                    embed.setDescription(`**Do you want messages to be deleted in logs? ❌\n[✅ is yes ❌ is no]**`);
+                                                    m.edit(embed)
+                                                        .then(m => {
+                                                            m.react("✅");
+                                                            m.react("❌");
+                                                            m.awaitReactions(reactionFilter, { max : 1,time: 120000, errors : ["time"] })
+                                                                .then(a =>{
+                                                                    
+                                                                    switch (a.first().emoji.name) {
+                                                                        case "✅":
+                                                                            daServer.deleteMessagesInLogs = true;
                                                                             break;
-                                                                        case "cancel":
+                                                                        case "❌":
+                                                                            daServer.deleteMessagesInLogs = false;
+                                                                            break;
+                                                                        default:
                                                                             message.channel.send(cancerCultureMessage);
                                                                             return false;
                                                                             break;
-                                                                        case "no":
-                                                                            daServer.warningRoles.firstwarningRole = "";
-                                                                            break;
-                                                                        default:
-                                                                            
-                                                                            daServer.warningRoles.firstwarningRole = checkRoles(a);
-                                                                            break;
-                                                                    }  
-                                                                        embed.setDescription(`${type0Message} **Enter your second warning role.2️⃣**`);
-                                                                        m.edit(embed);
-                                                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                                            .then(a => {  
-                                                                                
-                                                                                switch (checkRoles(a)) {
-                                                                                    case "not valid":
-                                                                                    case "not useable":
-                                                                                    case "no args":               
-                                                                                        message.channel.send("Invalid argument, command failed.");
-                                                                                        return false;
-                                                                                        break;
-                                                                                    case "cancel":
-                                                                                        message.channel.send(cancerCultureMessage);
-                                                                                        return false;
-                                                                                        break;
-                                                                                    case "no":
-                                                                                        daServer.warningRoles.secondWarningRole = "";
-                                                                                        break;
-                                                                                    default:
-                                                                                        
-                                                                                        daServer.warningRoles.secondWarningRole = checkRoles(a);
-                                                                                        break;
-                                                                                } 
-                                                                                
-                                                                                embed.setDescription(`${type0Message} **Enter your third warning role.3️⃣**`);
-                                                                                m.edit(embed);
-            
-                                                                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                                                                    .then(a => {    
-
-                                                                                        switch (checkRoles(a)) {
-                                                                                            case "not valid":
-                                                                                            case "not useable":
-                                                                                            case "no args":               
-                                                                                                message.channel.send("Invalid argument, command failed.");
-                                                                                                return false;
-                                                                                                break;
-                                                                                            case "cancel":
-                                                                                                message.channel.send(cancerCultureMessage);
-                                                                                                return false;
-                                                                                                break;
-                                                                                            case "no":
-                                                                                                daServer.warningRoles.thirdWarningRole = "";
-                                                                                                break;
-                                                                                            default:
-                                                                                                
-                                                                                                daServer.warningRoles.thirdWarningRole = checkRoles(a);
-                                                                                                break;
-                                                                                        } 
+                                                                    }
+                                                                    m.reactions.removeAll();
+                                                                    embed.setDescription(`**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`);
+                                                                    m.edit(embed)
+                                                                        .then(m => {
+                                                                            m.react("✅");
+                                                                            m.react("❌");
+                                                                            m.awaitReactions(reactionFilter, { max : 1,time: 120000, errors : ["time"] })
+                                                                                .then( async (a) =>{
                                                                                     
-                                                                                        embed.setDescription(`**Do you want messages to be deleted in logs? ❌\n[✅ is yes ❌ is no]**`);
-                                                                                        m.edit(embed)
-                                                                                            .then(m => {
-                                                                                                m.react("✅");
-                                                                                                m.react("❌");
-                                                                                                m.awaitReactions(reactionFilter, { max : 1,time: 120000, errors : ["time"] })
-                                                                                                    .then(a =>{
-                                                                                                        
-                                                                                                        switch (a.first().emoji.name) {
-                                                                                                            case "✅":
-                                                                                                                daServer.deleteMessagesInLogs = true;
-                                                                                                                break;
-                                                                                                            case "❌":
-                                                                                                                daServer.deleteMessagesInLogs = false;
-                                                                                                                break;
-                                                                                                            default:
-                                                                                                                message.channel.send(cancerCultureMessage);
-                                                                                                                return false;
-                                                                                                                break;
-                                                                                                        }
-                                                                                                        m.reactions.removeAll();
-                                                                                                        embed.setDescription(`**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`);
-                                                                                                        m.edit(embed)
-                                                                                                            .then(m => {
-                                                                                                                m.react("✅");
-                                                                                                                m.react("❌");
-                                                                                                                m.awaitReactions(reactionFilter, { max : 1,time: 120000, errors : ["time"] })
-                                                                                                                    .then( async (a) =>{
-                                                                                                                        
-                                                                                                                        switch (a.first().emoji.name) {
-                                                                                                                            case "✅":
-                                                                                                                                daServer.deleteFailedCommands = true;
-                                                                                                                                break;
-                                                                                                                            case "❌":
-                                                                                                                                daServer.deleteFailedCommands = false;
-                                                                                                                                break;
-                                                                                                                            default:
-                                                                                                                                message.channel.send(cancerCultureMessage);
-                                                                                                                                return false;
-                                                                                                                                break;
-                                                                                                                        }
+                                                                                    switch (a.first().emoji.name) {
+                                                                                        case "✅":
+                                                                                            daServer.deleteFailedCommands = true;
+                                                                                            break;
+                                                                                        case "❌":
+                                                                                            daServer.deleteFailedCommands = false;
+                                                                                            break;
+                                                                                        default:
+                                                                                            message.channel.send(cancerCultureMessage);
+                                                                                            return false;
+                                                                                            break;
+                                                                                    }
 
 
-                                                                                                                        daServer.isSet = true;
-                                                                                                                        await mongo().then(async (mongoose) =>{
-                                                                                                                            try{ 
-                                                                                                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                                                                                                    hiByeChannel: daServer.hiByeChannel,
-                                                                                                                                    hiRole: daServer.hiRole,
-                                                                                                                                    muteRole: daServer.muteRole,
-                                                                                                                                    warningRoles: {
-                                                                                                                                        firstwarningRole:daServer.warningRoles.firstwarningRole,
-                                                                                                                                        secondWarningRole: daServer.warningRoles.secondWarningRole,
-                                                                                                                                        thirdWarningRole: daServer.warningRoles.thirdWarningRole
-                                                                                                                                    },
-                                                                                                                                    deleteMessagesInLogs: daServer.deleteMessagesInLogs,
-                                                                                                                                    deleteFailedCommands: daServer.deleteFailedCommands,
-                                                                                                                                    isSet: daServer.isSet
-                                                                                                                                    
+                                                                                    daServer.isSet = true;
+                                                                                    await mongo().then(async (mongoose) =>{
+                                                                                        try{ 
+                                                                                            await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                                                                hiByeChannel: daServer.hiByeChannel,
+                                                                                                hiRole: daServer.hiRole,
+                                                                                                muteRole: daServer.muteRole,
+                                                                                               
+                                                                                                deleteMessagesInLogs: daServer.deleteMessagesInLogs,
+                                                                                                deleteFailedCommands: daServer.deleteFailedCommands,
+                                                                                                isSet: daServer.isSet
+                                                                                                
 
-                                                                                                                                },{upsert:false});
-                                                                                                                                guildsCache[message.guild.id] = daServer;
-                                                                                                                            } finally{
-                                                                                                                                console.log("WROTE TO DATABASE");
-                                                                                                                                mongoose.connection.close();
-                                                                                                                            }
-                                                                                                                        });
-                                                                                                                        
-                                                                                                                                const embed2 = makeEmbed("Server configurations", `Done ✅.Your server configuration look like:`, server);
-                                                                                                                                if(daServer.hiByeChannel){
-                                                                                                                                    embed2.addField('Welcome channel :wave:', `<#${daServer.hiByeChannel}>`, true);
-                                                                                                                                }else {
-                                                                                                                                    embed2.addField('Welcome channel :wave:', `Empty`, true);
-                                                                                                                                }
-                                                                                                                                if(daServer.hiRole){
-                                                                                                                                    embed2.addField('Welcome role :wave:', `<@&${daServer.hiRole}>`, true);
-                                                                                                                                } else {
-                                                                                                                                    embed2.addField('Welcome role :wave:',  `Empty`,true);
-                                                                                                                                }
-                                                                                                                                if(daServer.muteRole){
-                                                                                                                                    embed2.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
-                                                                                                                                } else {
-                                                                                                                                    embed2.addField('Mute role :mute:',  `Empty`,true);
-                                                                                                                                }
-                                                                                                    
-                                                                                                                                if(daServer.warningRoles.firstwarningRole && daServer.warningRoles.secondWarningRole && daServer.warningRoles.thirdWarningRole){
-                                                                                                                                    embed2.addFields(
-                                                                                                                                        {name:'First warning role :one:', value:`<@&${daServer.warningRoles.firstwarningRole}>`, inline:true},
-                                                                                                                                        {name:'Second warning role :two:', value:`<@&${daServer.warningRoles.secondWarningRole}>`, inline:true},
-                                                                                                                                        {name:'Third warning role :three:', value:`<@&${daServer.warningRoles.thirdWarningRole}>`, inline:true},
-                                                                                                                                )} else {
-                                                                                                                                    embed2.addFields(
-                                                                                                                                        {name:'First warning role :one:', value:`Empty`, inline:true},
-                                                                                                                                        {name:'Second warning role :two:', value:`Empty`, inline:true},
-                                                                                                                                        {name:'Third warning role :three:', value:`Empty`, inline:true},
-                                                                                                                                )}
-                                                                                                                                
-                                                                                                                                embed2.addFields(
-                                                                                                                                    {name:'Delete messages in logs? :x:', value:`${daServer.deleteMessagesInLogs}`, inline:true},
-                                                                                                                                    {name:'Delete failed commands?:clock1:', value:`${daServer.deleteFailedCommands}`, inline:true},
-                                                                                                                                    {name:'Language :abc:', value:`${daServer.language}`, inline:true},
-                                                                                                                                    {name:'Prefix :information_source:', value:`${daServer.prefix}`, inline:true},
-                                                                                                                                    {name:'Default embed color :white_large_square:', value:`${daServer.defaultEmbedColor}`, inline:true}
-                                                                                                                                );
-                                                                                                                                message.channel.send(embed2);
-                                                                                                                                return true;
-                                                                                                                            
-                                                                                                                        
-                                                                                                                    }).catch(e => {message.channel.send(idleMessage)});
-                                                                                                            }).catch(e => {message.channel.send(idleMessage)});
+                                                                                            },{upsert:false});
+                                                                                            guildsCache[message.guild.id] = daServer;
+                                                                                        } finally{
+                                                                                            console.log("WROTE TO DATABASE");
+                                                                                            mongoose.connection.close();
+                                                                                        }
+                                                                                    });
+                                                                                    
+                                                                                            const embed2 = makeEmbed("Server configurations", `Done ✅.Your server configuration look like:`, server);
+                                                                                            if(daServer.hiByeChannel){
+                                                                                                embed2.addField('Welcome channel :wave:', `<#${daServer.hiByeChannel}>`, true);
+                                                                                            }else {
+                                                                                                embed2.addField('Welcome channel :wave:', `Empty`, true);
+                                                                                            }
+                                                                                            if(daServer.hiRole){
+                                                                                                embed2.addField('Welcome role :wave:', `<@&${daServer.hiRole}>`, true);
+                                                                                            } else {
+                                                                                                embed2.addField('Welcome role :wave:',  `Empty`,true);
+                                                                                            }
+                                                                                            if(daServer.muteRole){
+                                                                                                embed2.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
+                                                                                            } else {
+                                                                                                embed2.addField('Mute role :mute:',  `Empty`,true);
+                                                                                            }
+                                                                                            
+                                                                                            embed2.addFields(
+                                                                                                {name:'Delete messages in logs? :x:', value:`${daServer.deleteMessagesInLogs}`, inline:true},
+                                                                                                {name:'Delete failed commands?:clock1:', value:`${daServer.deleteFailedCommands}`, inline:true},
+                                                                                                {name:'Language :abc:', value:`${daServer.language}`, inline:true},
+                                                                                                {name:'Prefix :information_source:', value:`${daServer.prefix}`, inline:true},
+                                                                                                {name:'Default embed color :white_large_square:', value:`${daServer.defaultEmbedColor}`, inline:true}
+                                                                                            );
+                                                                                            message.channel.send(embed2);
+                                                                                            return true;
+                                                                                        
+                                                                                    
+                                                                                }).catch(e => {message.channel.send(idleMessage)});
+                                                                        }).catch(e => {message.channel.send(idleMessage)});
 
-                                                                                                        }).catch(e => {message.channel.send(idleMessage)});
-                                                                                                    })
-                                                                                                    .catch(e => {message.channel.send(idleMessage)});
-                                                                                            }).catch(e => {message.channel.send(idleMessage)});
-                                                                            }).catch(e => {message.channel.send(idleMessage)});
-                                                                }).catch(e => {message.channel.send(idleMessage)});                                                                    
-                                                                }).catch(e => {message.channel.send(idleMessage)});
-                                                        }).catch(e => {message.channel.send(idleMessage)});
-                                }).catch(e => {message.channel.send(idleMessage)});
-                                });
+                                                                    
+                                        }).catch(e => {message.channel.send(idleMessage)});
+                            }).catch(e => {message.channel.send(idleMessage)});                                                                    
+                            }).catch(e => {message.channel.send(idleMessage)});
+                    }).catch(e => {message.channel.send(idleMessage)});
+}).catch(e => {message.channel.send(idleMessage)});
+});                   
+                                                                                       
             } else if(!args.length){
-                const embed = makeEmbed("Server configurations", `Your server configuration look like this:\nType "${server.prefix}server \`value\`" to edit a selected option.\nExample:${server.prefix}server hiByeChannel`, server);
+                const embed = makeEmbed("Server configurations", `Your server configuration look like this:`, server);
                 if(server.hiByeChannel){
-                    embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\nvalue: \`hiByeChannel\``, true);
+                    embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\n\`${server.prefix}server hiByeChannel\``, true);
                 }else {
-                    embed.addField('Welcome channel :wave:', `Empty\nvalue: \`hiByeChannel\``, true);
+                    embed.addField('Welcome channel :wave:', `Empty\n\`${server.prefix}server hiByeChannel\``, true);
                 }
                 if(server.hiRole){
-                    embed.addField('Welcome role :wave:', `<@&${server.hiRole}>\nvalue: \`hiRole\``, true);
+                    embed.addField('Welcome role :wave:', `<@&${server.hiRole}>\n\`${server.prefix}server hiRole\``, true);
                 } else {
-                    embed.addField('Welcome role :wave:',  `Empty\nvalue: \`hiRole\``,true);
+                    embed.addField('Welcome role :wave:',  `Empty\n\`${server.prefix}server hiRole\``,true);
                 }
                 if(daServer.muteRole){
-                    embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\nvalue: \`muteRole\``, true);
+                    embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\n \`${server.prefix}server muteRole\``, true);
                 } else {
-                    embed.addField('Mute role :mute:',  `Empty\nvalue: \`muteRole\``,true);
+                    embed.addField('Mute role :mute:',  `Empty\n\`${server.prefix}server muteRole\``,true);
                 }
 
-                if(server.warningRoles.firstwarningRole && server.warningRoles.secondWarningRole && server.warningRoles.thirdWarningRole){
-                    embed.addFields(
-                        {name:'First warning role :one:', value:`<@&${server.warningRoles.firstwarningRole}>\nvalue: \`1\``, inline:true},
-                        {name:'Second warning role :two:', value:`<@&${server.warningRoles.secondWarningRole}>\nvalue: \`2\``, inline:true},
-                        {name:'Third warning role :three:', value:`<@&${server.warningRoles.thirdWarningRole}>\nvalue: \`3\``, inline:true},
-                )} else {
-                    embed.addFields(
-                        {name:'First warning role :one:', value:`Empty\nvalue: \`1\``, inline:true},
-                        {name:'Second warning role :two:', value:`Empty\nvalue: \`2\``, inline:true},
-                        {name:'Third warning role :three:', value:`Empty\nvalue: \`3\``, inline:true},
-                )}
                             
                 embed.addFields(
-                    {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\nvalue: \`deleteInLogs\``, inline:true},
-                    {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\nvalue: \`deleteFails\``, inline:true},
+                    {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\n \`${server.prefix}server deleteInLogs\``, inline:true},
+                    {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\n \`${server.prefix}server deleteFails\``, inline:true},
                     {name:'Language :abc:', value:`${server.language}`, inline:true},
                     {name:'Prefix :information_source:', value:`${server.prefix}`, inline:true},
                     {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
@@ -442,126 +340,6 @@ module.exports = {
                                                     muteRole: daServer.muteRole,
                                                 },{upsert:false});
                                                 message.channel.send(`Channel set✅\n**Mute role has been successfully updated.**`)
-                                                guildsCache[message.guild.id] = daServer;
-                                            } finally{
-                                                console.log("WROTE TO DATABASE");
-                                                mongoose.connection.close();
-                                            }
-                                        });
-                                    });
-                            });
-                        break;
-                    case "1":
-                        let embedo3 = makeEmbed("Server Settings", `${type0Message}**Enter  your first warning role.1️⃣**`, server);
-                        message.channel.send(embedo3)
-                            .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                    .then(async a => {      
-                                        let toCheck = checkRoles(a);
-                                        switch (toCheck) {
-                                            case "not valid":
-                                            case "no args": 
-                                            case "not useable":              
-                                                message.channel.send("Invalid argument, command failed.");
-                                                return false;
-                                                break;
-                                            case "cancel":
-                                                message.channel.send(cancerCultureMessage);
-                                                return false;
-                                                break;
-                                            case "no":
-                                                daServer.warningRoles.firstwarningRole = "";
-                                                break;
-                                            default:
-                                                daServer.warningRoles.firstwarningRole = toCheck;
-                                                break;
-                                        }
-                                        await mongo().then(async (mongoose) =>{
-                                            try{ 
-                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                    warningRoles: daServer.warningRoles,
-                                                },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**The first warning role has been successfully updated.**`)
-                                                guildsCache[message.guild.id] = daServer;
-                                            } finally{
-                                                console.log("WROTE TO DATABASE");
-                                                mongoose.connection.close();
-                                            }
-                                        });
-                                    });
-                            });
-                        break;
-                    case "2":
-                        let embedo4 = makeEmbed("Server Settings", `${type0Message}**Enter  your second warning role.2️⃣**`, server);
-                        message.channel.send(embedo4)
-                            .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                    .then(async a => {      
-                                        let toCheck = checkRoles(a);
-                                        switch (toCheck) {
-                                            case "not valid":
-                                            case "no args": 
-                                            case "not useable":              
-                                                message.channel.send("Invalid argument, command failed.");
-                                                return false;
-                                                break;
-                                            case "cancel":
-                                                message.channel.send(cancerCultureMessage);
-                                                return false;
-                                                break;
-                                            case "no":
-                                                daServer.warningRoles.secondWarningRole = "";
-                                                break;
-                                            default:
-                                                daServer.warningRoles.secondWarningRole = toCheck;
-                                                break;
-                                        }
-                                        await mongo().then(async (mongoose) =>{
-                                            try{ 
-                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                    warningRoles: daServer.warningRoles,
-                                                },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**The second warning role has been successfully updated.**`)
-                                                guildsCache[message.guild.id] = daServer;
-                                            } finally{
-                                                console.log("WROTE TO DATABASE");
-                                                mongoose.connection.close();
-                                            }
-                                        });
-                                    });
-                            });
-                        break; 
-                    case "3":
-                        let embedo5 = makeEmbed("Server Settings", `${type0Message}**Enter  your third warning role.3️⃣**`, server);
-                        message.channel.send(embedo5)
-                            .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
-                                    .then(async a => {      
-                                        let toCheck = checkRoles(a);
-                                        switch (toCheck) {
-                                            case "not valid":
-                                            case "no args": 
-                                            case "not useable":              
-                                                message.channel.send("Invalid argument, command failed.");
-                                                return false;
-                                                break;
-                                            case "cancel":
-                                                message.channel.send(cancerCultureMessage);
-                                                return false;
-                                                break;
-                                            case "no":
-                                                daServer.warningRoles.thirdWarningRole = "";
-                                                break;
-                                            default:
-                                                daServer.warningRoles.thirdWarningRole = toCheck;
-                                                break;
-                                        }
-                                        await mongo().then(async (mongoose) =>{
-                                            try{ 
-                                                await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                    warningRoles: daServer.warningRoles,
-                                                },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**The third warning role has been successfully updated.**`)
                                                 guildsCache[message.guild.id] = daServer;
                                             } finally{
                                                 console.log("WROTE TO DATABASE");
