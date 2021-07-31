@@ -49,7 +49,7 @@ client.on('guildCreate', async (guild)  => {
 			deleteFailedCommands : false,
 			isSet:false,
 			pointsEnabled: false,
-			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:"",eventsLog:"",pointsLog:""},
 			
 		};
 
@@ -230,6 +230,8 @@ client.on('message', async (message) => {
 							case server.logs.deleteLog: 
 							case server.logs.serverLog: 
 							case server.logs.warningLog: 
+							case server.logs.eventsLog:
+							case server.logs.pointsLog:
 							message.delete().catch(console.error);
 							message.channel.send('You can\'t send a message in the logs ❌')
 								.then(msg=> msg.delete({ timeout:4000 })).catch(console.error);

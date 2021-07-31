@@ -48,7 +48,7 @@ module.exports = async (message,) => {
 			deleteFailedCommands : false,
 			isSet:false,
 			pointsEnabled: false,
-			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:""},
+			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:"",eventsLog:"",pointsLog:""},
             
         };
 
