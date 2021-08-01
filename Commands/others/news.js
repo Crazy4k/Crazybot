@@ -23,7 +23,7 @@ module.exports = {
 
 
 	const embed = makeEmbed(`CrazyBot patch ${update}`,updateObj[update],server,false,"It's advised to use `;sync` after an update");
-    message.channel.send(embed).then(m => m.delete({timeout: this.cooldown}))
+    message.channel.send(embed).then(m => m.delete({timeout: this.cooldown*1000}))
 	return true;
 	},
 
