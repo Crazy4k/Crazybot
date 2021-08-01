@@ -74,7 +74,7 @@ module.exports = {
                                 break;
         
                             default:
-                                if(servery.members[persona]=== undefined)servery.members[e] = 0;
+                                if(servery.members[persona]=== undefined)servery.members[persona] = 0;
                                 servery.members[persona] -= parseInt(pointsToGive);
                         }
                                     
