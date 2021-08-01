@@ -41,7 +41,7 @@ module.exports = {
 
 			
 
-			const embed = makeEmbed("Bot's status report!!", "", server, true);
+			const embed = makeEmbed("Bot's status report!", "", server, true);
 			embed.addFields(
 				{name:"Online for", value:`${totalTimerCache.days} days ${timerCache.hours} hours ${timerCache.minutes} minutes ${timerCache.seconds} seconds`, inline: true},
 				{name:"Data base Ping ", value:`${dataBasePing} ms`, inline: true},
