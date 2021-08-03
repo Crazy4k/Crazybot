@@ -1,20 +1,30 @@
 const Discord = require('discord.js');
-require("dotenv").config();
 const fs = require('fs');
+const mongo = require("./mongo");
+const noblox = require("noblox.js");
+require("dotenv").config();
+
 const client = new Discord.Client();
 module.exports = client;
 const token = process.env.DISCORD_BOT_TOKEN;
+const cookie = process.env.NBLXJS_COOKIE;
+
 const checkWhiteList = require("./functions/checkWhiteList");
-const keepAlive = require('./server.js');
-const mongo = require("./mongo");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
 const officerPointsSchema = require("./schemas/officerPoints-schema");
 let guildsCache = require("./caches/guildsCache");
 const sync = require("./functions/sync");
-keepAlive();
+const keepAlive = require('./server.js');
 
+const turnOnRoblox = async()=>{
+	const currentUser = await noblox.setCookie(cookie)
+	console.log(`Logged in as ${currentUser.UserName} [${currentUser.UserID}]`)
+	
+}
+turnOnRoblox();
+keepAlive();
 
 client.commands = new Discord.Collection();
 
