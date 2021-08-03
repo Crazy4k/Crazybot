@@ -8,7 +8,7 @@ const pointsSchema= require("../../schemas/officerPoints-schema");
 
 module.exports = {
 	name : 'opoints-role',
-	description : "Sets the role that will be able to modify other user's roles (Officers).",
+	description : "Sets the role that will be able to modify other user's Opoints (Officers).",
     cooldown: 30 ,
     aliases:["op-role","opointsrole","oprole"],
 	usage:'points-role',
