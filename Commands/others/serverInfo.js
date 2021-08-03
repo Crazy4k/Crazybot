@@ -23,7 +23,7 @@ module.exports = {
             {name:"default Notifications: ", value:guild.defaultMessageNotifications
             , inline: true},
             {name:"Member count: ", value:guild.memberCount, inline: false},
-            {name:"Chennels: ", value:guild.channels.cache.size, inline: false},
+            {name:"Channels: ", value:guild.channels.cache.size, inline: false},
             {name:"Roles: ", value:guild.roles.cache.size, inline: false},
             {name:"Emojis: ", value:guild.emojis.cache.size, inline: false},
             {name:"Created at: ", value:moment(guild.createdAt).format("LLL"), inline: true},
