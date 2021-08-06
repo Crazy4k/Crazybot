@@ -3,25 +3,40 @@ const sendAndDelete = require("./sendAndDelete");
 const moment = require('moment');
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 
-module.exports = (command, message, args, server, recentlyRan) => {
+module.exports = async (command, message, args, server, recentlyRan, uniqueCooldowns, globalCooddowns) => {
 	//this checks if the property "whitlist" in a command exists and if does check if the author of the message is able to execute the command.
 	const cooldownString = `${message.guild.id}-${message.author.id}-${command.name}`;
+	const globalCooldownString = `${message.guild.id}-${message.author.id}`;
+	const uniqueCooldownString = `${message.guild.id}-${command.name}`;
 	let = cooldownTime = 2;
+	const globalCooldownTime = 2;
 	if(command.cooldown) cooldownTime = command.cooldown;
 	
 	if(!command.whiteList) {
 		try{
-			if(command.cooldown && recentlyRan.includes(cooldownString)){
-				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nCooldown duration: ${cooldownTime} seconds`, server);
+			if(uniqueCooldowns.includes(uniqueCooldownString)){
+				const embed = makeEmbed("Slow down there !", `This command is on global cooldown, wait for it to end.`, server);
 				sendAndDelete(message, embed,server);
 				return false;
 			}
-			const booly =command.execute(message, args, server);
+			else
+			if(command.cooldown && recentlyRan[cooldownString]){
+				let seconds = command.cooldown * 1000
+				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds `, server);
+				sendAndDelete(message, embed, server);
+				return false;
+			}
+			const booly = await command.execute(message, args, server);
+			
 			if(booly) {
-			recentlyRan.push(cooldownString);
-			setTimeout(() =>{
-				recentlyRan.splice(recentlyRan.indexOf(cooldownString), 1);
-			}, cooldownTime * 1000);
+				if(command.unique)uniqueCooldowns.push(uniqueCooldownString);
+				
+
+				recentlyRan[cooldownString] = moment();
+				setTimeout(() =>{
+					if(command.unique)uniqueCooldowns.splice(uniqueCooldowns.indexOf(uniqueCooldownString),1);
+					recentlyRan[cooldownString] = null;
+				}, cooldownTime * 1000);
 			}	
 		}
 		catch(error) {
@@ -35,17 +50,26 @@ module.exports = (command, message, args, server, recentlyRan) => {
 	try{
 		
 		if(dude.hasPermission(command.whiteList)) {
-			if(command.cooldown && recentlyRan.includes(cooldownString)){
-				const embed = makeEmbed("Slow down there !", `Wait for the cooldown to end.\nCooldown duration: ${cooldownTime} seconds`, server);
+			if(uniqueCooldowns.includes(uniqueCooldownString)){
+				const embed = makeEmbed("Slow down there !", `This command is on global cooldown, wait for it to end.`, server);
 				sendAndDelete(message, embed,server);
 				return false;
 			}
-			const booly =command.execute(message, args, server);
+			else if(command.cooldown && recentlyRan[cooldownString]){
+				let seconds = command.cooldown * 1000
+				const embed = makeEmbed("Slow down there !", `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds`, server);
+				sendAndDelete(message, embed,server);
+				return false;
+			}
+			const booly = await command.execute(message, args, server);
+			
 			if(booly) {
-			recentlyRan.push(cooldownString);
-			setTimeout(() =>{
-				recentlyRan.splice(recentlyRan.indexOf(cooldownString), 1);
-			}, cooldownTime * 1000);
+				if(command.unique)uniqueCooldowns.push(uniqueCooldownString);
+				recentlyRan[cooldownString] = moment();
+				setTimeout(() =>{
+					if(command.unique)uniqueCooldowns.splice(uniqueCooldowns.indexOf(uniqueCooldownString),1);
+					recentlyRan[cooldownString] = null;
+				}, cooldownTime * 1000);
 			}	
 		}
 		

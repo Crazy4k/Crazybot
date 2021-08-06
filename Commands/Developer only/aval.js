@@ -12,9 +12,9 @@ let fetchesCache = require("../../caches/fetchesCache");
 const noblox = require("noblox.js");
 
 module.exports = {
-	name : 'eval',
-	description : 'makes the bot do stuff with eval();',
-	usage:'eval ``` code ``',
+	name : 'aval',
+	description : 'makes the bot do stuff with eval() (async);',
+	usage:'aval ``` code ``',
 	async execute(message, args, server) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
@@ -24,7 +24,7 @@ module.exports = {
         
         try {
             let evalString = args.join(" ");
-            const embed1 = makeEmbed("Succes ✅", `\`\`\`${eval(evalString)}\`\`\``, "24D900");
+            const embed1 = makeEmbed("Succes ✅", `\`\`\`${await eval("(async () => {await " + evalString + "})()")}\`\`\``, "24D900");
             message.channel.send(embed1);
 
         } catch (error) {

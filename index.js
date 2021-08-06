@@ -1,20 +1,31 @@
 const Discord = require('discord.js');
-require("dotenv").config();
 const fs = require('fs');
+const mongo = require("./mongo");
+const noblox = require("noblox.js");
+require("dotenv").config();
+
 const client = new Discord.Client();
 module.exports = client;
 const token = process.env.DISCORD_BOT_TOKEN;
+const cookie = process.env.NBLXJS_COOKIE;
+
+const pickRandom = require("./functions/pickRandom");
 const checkWhiteList = require("./functions/checkWhiteList");
-const keepAlive = require('./server.js');
-const mongo = require("./mongo");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
 const officerPointsSchema = require("./schemas/officerPoints-schema");
 let guildsCache = require("./caches/guildsCache");
 const sync = require("./functions/sync");
-keepAlive();
+const keepAlive = require('./server.js');
 
+const turnOnRoblox = async()=>{
+	const currentUser = await noblox.setCookie(cookie)
+	console.log(`Logged in as ${currentUser.UserName} [${currentUser.UserID}]`)
+	
+}
+turnOnRoblox();
+keepAlive();
 
 client.commands = new Discord.Collection();
 
@@ -40,6 +51,8 @@ client.on('guildCreate', async (guild)  => {
 			guildId: guild.id,
 			hiByeChannel:"",
 			hiRole: "",
+			hiString:`:green_circle: {<member>} Welcome to the server, have a great time :+1:`,
+			byeString:`:red_circle: {<member>} just left the server, bye bye :wave:`,
 			language:"English",
 			prefix : ";",
 			muteRole:"",
@@ -59,6 +72,8 @@ client.on('guildCreate', async (guild)  => {
 					_id: serverObject.guildId,
 					hiByeChannel: serverObject.hiByeChannel,
 					hiRole: serverObject.hiRole,
+					hiString:serverObject.hiString,
+					byeString:serverObject.byeString,
 					language: serverObject.language,
 					prefix: serverObject.prefix,
 					muteRole: serverObject.muteRole,
@@ -188,7 +203,9 @@ client.on('guildDelete', async (guild) => {
 	} catch (err) {console.log(err);}
 });
 
-let recentlyRan = [];
+let recentlyRan = {};
+let globalRecentlyRan = {};
+let uniqueCooldowns = [];
 // guildID-authorID-commandname
 //recentlyRan handles the cooldown mechanic
 
@@ -249,7 +266,7 @@ client.on('message', async (message) => {
 					//then finally after all of the checks, the commands executes 
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
-					if(command)checkWhiteList(command, message, args, server, recentlyRan);
+					if(command)checkWhiteList(command, message, args, server, recentlyRan,uniqueCooldowns);
 					
 				}
 			
@@ -371,6 +388,37 @@ client.once('ready', async() => {
 	console.log('Bot succesfuly launched.');
 
 });
-
 client.login(token);
-setTimeout(()=>{client.user.setActivity(";news",{type: "LISTENING"});},3000)
+
+setTimeout(()=>{
+	setInterval(()=>{
+		let members = 0;
+		client.guilds.cache.each(e=>{members += e.memberCount;})
+		let servers  = client.guilds.cache.size;
+		
+	
+		let status = [
+			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
+			{str:"to ;news",type:{type: "LISTENING"}},
+			{str:"to ;help",type:{type: "LISTENING"}},
+			{str:"Netflix and chilling",type:{type: "WATCHING"}},
+			{str:"to ;sus",type:{type: "LISTENING"}},
+			{str:"over your points",type:{type: "WATHCING"}},
+			{str:"Among us!😳",type:{type: "PLAYING"}},
+	
+		
+		];
+	
+	
+		let luckyWinner = pickRandom(status)
+		client.user.setActivity(luckyWinner.str,luckyWinner.type);
+	},1000 * 60 * 30)
+	
+
+	
+},3000)
+
+
+
+
+

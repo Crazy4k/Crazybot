@@ -39,6 +39,8 @@ module.exports = async (message,) => {
             guildId: message.guild.id,
 			hiByeChannel:"",
 			hiRole: "",
+            hiString:`:green_circle: {<member>} Welcome to the server, have a great time :+1:`,
+			byeString:`:red_circle: {<member>} just left the server, bye bye :wave:`,
 			language:"English",
 			prefix : ";",
 			muteRole:"",
@@ -58,6 +60,8 @@ module.exports = async (message,) => {
                     _id: serverObject.guildId,
 					hiByeChannel: serverObject.hiByeChannel,
 					hiRole: serverObject.hiRole,
+                    hiString: serverObject.hiString,
+                    byeString: serverObject.byeString,
 					language: serverObject.language,
 					prefix: serverObject.prefix,
 					muteRole: serverObject.muteRole,
@@ -77,7 +81,35 @@ module.exports = async (message,) => {
             }
         });
         
-    } 
+    } else if(!data1.hiString || !data1.byeString){
+        whatToSay.push("\n*Created new files that didn't exist before an update.");
+        let obj = {
+            hiString: `:green_circle: {<member>} Welcome to the server, have a great time :+1:`,
+            byeString:`:red_circle: {<member>} just left the server, bye bye :wave:`,
+        }
+
+        await mongo().then(async (mongoose) =>{
+            try{ 
+                if(!data1.hiString){
+                    await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
+                        hiString: obj.hiString
+                    },{upsert:true});
+                }
+                if(!data1.byeString){
+                    await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
+                        byeString: obj.byeString
+                    },{upsert:true});
+                }
+                
+                guildsCache[message.guild.id].hiString = obj.hiString;
+                guildsCache[message.guild.id].byeString = obj.byeString;
+            } finally{
+                console.log("WROTE TO DATABASE");
+                mongoose.connection.close();
+            }
+        });
+
+    }
 
     await mongo().then(async (mongoose) =>{
         try{ 

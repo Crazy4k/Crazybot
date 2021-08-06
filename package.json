@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "hirestime": "^6.1.0",
     "moment": "^2.29.1",
-    "mongoose": "^5.12.12"
+    "mongoose": "^5.12.12",
+    "noblox.js": "^4.8.6"
   }
 }

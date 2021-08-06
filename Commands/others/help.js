@@ -1,6 +1,4 @@
 //FIANLLY A !HELP
-
-
 const client = require("../../index");
 const makeEmbed = require('../../functions/embed');
 let hugeObj = require("../../caches/tempCmds");
@@ -9,6 +7,7 @@ let hugeObj = require("../../caches/tempCmds");
 module.exports = {
 	name : 'help',
 	description : 'Helps',
+	aliases:["cmds","commands"],
 	cooldown: 3,
 	usage:'help [value of a category]',
     category:"other",
@@ -45,6 +44,7 @@ module.exports = {
 					return true;
 					break;
 				case "ms":
+				case "tsu":
 					let num2 = 1;
 					let embed2 = makeEmbed("Help!","All of the commands in the `ms` category.",server);
 					for (const i of hugeObj.ms) {
@@ -114,13 +114,13 @@ module.exports = {
 		}else{
 			let embed = makeEmbed("Click me if you want to join our discord.", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server);
 			embed.addFields(
-				{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}help fun\` `, inline:true},
-				{name:"**ms**", value:`Commands that are related to Military simulator.\n\`${server.prefix}help ms\` `, inline:true},
-				{name:"**Moderation**", value:`Commands that do moderation actions.\n\`${server.prefix}help mod\` `, inline:true},
-				{name:"**points**", value:`Commands that are related to the points system.\n\`${server.prefix}help points\` `, inline:true},
-				{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}help AA\` `, inline:true},
-				{name:"**Server configurations**", value:`Commands that change the way the bot deals with the server.\n\`${server.prefix}help config\``, inline:true},
-				{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}help other\``, inline:true},
+				{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
+				{name:"**ms**", value:`Commands that are related to Military simulator.\n\`${server.prefix}${this.name} tsu\` `, inline:true},
+				{name:"**Moderation**", value:`Commands that do moderation actions.\n\`${server.prefix}${this.name} mod\` `, inline:true},
+				{name:"**points**", value:`Commands that are related to the points system.\n\`${server.prefix}${this.name} points\` `, inline:true},
+				{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}${this.name} AA\` `, inline:true},
+				{name:"**Server configurations**", value:`Commands that change the way the bot deals with the server.\n\`${server.prefix}${this.name} config\``, inline:true},
+				{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
 			);
 			embed.setURL("https://discord.gg/vSFp7SjHWp");
 			message.channel.send(embed);

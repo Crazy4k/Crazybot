@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
 const mongo = require("../../mongo");
@@ -9,7 +8,7 @@ module.exports = {
 	name : 'prefix',
 	description : 'changes the prefix of the bot',
 	usage:'preifx <new prefix>',
-	cooldown: 60 * 5,
+	cooldown: 20,
 	whiteList:'ADMINISTRATOR',
 	category:"Server configurations",
 	async execute(message, args, server) {
@@ -47,13 +46,10 @@ module.exports = {
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();
 				}
-				const embed = new Discord.MessageEmbed()
-						.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png')
-						.setTitle(`Prefix changed from ${oldPrefix} to ${args[0]}`)
-						.setColor('2EFF00')
-						.setFooter('developed by crazy4K')
-						.setTimestamp()
-						.setDescription('The prefix has been changed succesfuly :white_check_mark:.');
+
+				const embed = makeEmbed(`Prefix changed from ${oldPrefix} to ${args[0]}`,'The prefix has been changed succesfuly :white_check_mark:.',"2EFF00");
+				embed.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png');
+						
 					message.channel.send(embed);
 					return true;
 			});

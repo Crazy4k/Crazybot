@@ -1,10 +1,21 @@
 const makeEmbed = require('../../functions/embed');
 const config = require("../../config.json");
 const updateObj = require("../../updates.json");
+
+let poopyArray = [];
+let int = 0;
+for (const item in updateObj) {
+	if(int === 5)break;
+	if(item !== config.version)poopyArray.push(item);
+	int++;
+}
+poopyArray.reverse();
+
 module.exports = {
 	name : 'news',
+	aliases:["updates","new",],
 	description : "Sends a message that contains a summary of the latest update.",
-	cooldown: 60 * 2,
+	cooldown: 30,
 	usage:'updates [update (ex: ;updates 0.6.1)]',
     category:"other",
 	execute(message, args, server) {
@@ -20,7 +31,9 @@ module.exports = {
 
 		
 	const embed = makeEmbed(`CrazyBot patch ${update}`,updateObj[update],server,false,"It's advised to use `;sync` after an update");
-    message.channel.send(embed).then(m => m.delete({timeout: this.cooldown*1000}))
+	embed.addField("Previous updates: ",`\`${poopyArray.join("`, `")}\``,true);
+	embed.setURL("https://github.com/Crazy4k/Crazybot");
+    message.channel.send(embed).then(m => m.delete({timeout: 2 * 60 * 1000}))
 	return true;
 	},
 
