@@ -20,19 +20,16 @@ module.exports = {
     category:"other",
 	execute(message, args, server) {
 
-		let update = args[0];
-		if(!update)update = config.bot_info.version;
-		let str = updateObj[update];
+		let update = /*= args[0];*/
+		/*if(!update)update = */config.bot_info.version;
+		/*let str = updateObj[update];
 		if(!str){
 			
 			const embed = makeEmbed("Invalid value",`The given update value doesn't match`)
 			message.channel.send(embed);
-		}
+		}*/
 
 		
-
-
-
 	const embed = makeEmbed(`CrazyBot patch ${update}`,updateObj[update],server,false,"It's advised to use `;sync` after an update");
 	embed.addField("Previous updates: ",`\`${poopyArray.join("`, `")}\``,true);
 	embed.setURL("https://github.com/Crazy4k/Crazybot");
