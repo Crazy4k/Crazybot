@@ -294,7 +294,7 @@ Event handlers Event handlers Event handlers Event handlers
 Event handlers Event handlers Event handlers Event handlers
 Event handlers Event handlers Event handlers Event handlers
 */ 
-
+//
 const guildMemberAdd = require("./logs/guildMemberAdd");
 client.on('guildMemberAdd', (member)=> {
 	guildMemberAdd(member);
