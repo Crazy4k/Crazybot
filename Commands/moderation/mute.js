@@ -21,7 +21,7 @@ module.exports = {
 		if(!reason) reason = "`No reason given`";
 
         if(!muteRole){
-            const embed1 = makeEmbed("Couldn't mute","It appears that you don't have a mute role configured\nDo !server to configure your server roles.", server);
+            const embed1 = makeEmbed("Couldn't mute","It appears that you don't have a mute role configured\nDo `"+server.prefix+"server` to configure your server roles.", server);
 			sendAndDelete(message,embed1, server);
 			return false;
         }
@@ -73,7 +73,7 @@ module.exports = {
                 
                 if(member.manageable){
                     try {
-                    member.roles.remove(member.roles.cache, "mute").then(e=> {
+                    member.roles.remove(hisRoles, "mute").then(e=> {
                         member.roles.add(muteRole.id);
                         const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${args[1]} for \`${reason}\`` , server);
                         message.channel.send(embed1);

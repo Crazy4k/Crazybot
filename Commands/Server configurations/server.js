@@ -261,7 +261,7 @@ module.exports = {
                                                 await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                     hiByeChannel: daServer.hiByeChannel,
                                                 },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**Welcome channel has been successfully updated.**`)
+                                                message.channel.send(`**Welcome channel has been successfully updated.**`)
                                                 guildsCache[message.guild.id] = daServer;
                                             } finally{
                                                 console.log("WROTE TO DATABASE");
@@ -304,7 +304,7 @@ module.exports = {
                                                 await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                     hiRole: daServer.hiRole,
                                                 },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**Welcome role has been successfully updated.**`)
+                                                message.channel.send(`\n**Welcome role has been successfully updated.**`)
                                                 guildsCache[message.guild.id] = daServer;
                                             } finally{
                                                 console.log("WROTE TO DATABASE");
@@ -347,7 +347,7 @@ module.exports = {
                                                 await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                     muteRole: daServer.muteRole,
                                                 },{upsert:false});
-                                                message.channel.send(`Channel set✅\n**Mute role has been successfully updated.**`)
+                                                message.channel.send(`**Mute role has been successfully updated.**`)
                                                 guildsCache[message.guild.id] = daServer;
                                             } finally{
                                                 console.log("WROTE TO DATABASE");
@@ -386,7 +386,7 @@ module.exports = {
                                             await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                 deleteMessagesInLogs: daServer.deleteMessagesInLogs,
                                             },{upsert:false});
-                                            message.channel.send(`Channel set✅\n**Boolean status has been successfully updated.**`)
+                                            message.channel.send(`**Boolean status has been successfully updated.**`)
                                             guildsCache[message.guild.id] = daServer;
                                         } finally{
                                             console.log("WROTE TO DATABASE");
@@ -425,7 +425,7 @@ module.exports = {
                                             await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                 deleteFailedCommands: daServer.deleteFailedCommands,
                                             },{upsert:false});
-                                            message.channel.send(`Channel set✅\n**Boolean status has been successfully updated.**`)
+                                            message.channel.send(`**Boolean status has been successfully updated.**`)
                                             guildsCache[message.guild.id] = daServer;
                                         } finally{
                                             console.log("WROTE TO DATABASE");
