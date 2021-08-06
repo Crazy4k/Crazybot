@@ -66,8 +66,9 @@ module.exports = {
                 }
                 let hisRoles = [];
                 for(let rolee of member.roles.cache){
-                    if(!rolee.managed || rolee[1].id !== message.guild.id)hisRoles.push(rolee[1].id);
+                    if(!rolee.managed)hisRoles.push(rolee[1].id);
                 }
+                console.log(hisRoles);
                 hisRoles.reverse();
                 muteCache[`${message.author.id}-${message.guild.id}`] = hisRoles;
                 
