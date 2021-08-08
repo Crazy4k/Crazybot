@@ -89,7 +89,7 @@ module.exports = {
                             message.channel.send(variable);
                             if(log){
                                 let embed = makeEmbed("Points Removed.","","FF4040",true);
-                                embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                                embed.setAuthor(message.guild.members.cache.get(message.author.id).tag, message.author.displayAvatarURL());
                                 embed.addFields(
                                   {name: "Removed by:", value: message.author, inline:true},  
                                   {name: "Removed from:", value: `<@${persona}>`, inline:true},
@@ -107,6 +107,10 @@ module.exports = {
                     })
                     cache[message.guild.id] = servery;
              
+                } else {
+                    const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
+                    sendAndDelete(message,embed,server);
+                    return false;
                 } return true;
                 
             

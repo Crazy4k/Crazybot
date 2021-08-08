@@ -92,7 +92,7 @@ module.exports = {
 
                         if(log){
                             let embed = makeEmbed("Points added.","","10AE03",true);
-                            embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                            embed.setAuthor(message.guild.members.cache.get(message.author.id).tag, message.author.displayAvatarURL());
                             embed.addFields(
                               {name: "Added by:", value: message.author, inline:true},  
                               {name: "Added to:", value: `<@${persona}>`, inline:true},
@@ -110,7 +110,12 @@ module.exports = {
                 })
                 cache[message.guild.id] = servery;
          
-            } return true;
+            }else {
+                const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
+                sendAndDelete(message,embed,server);
+                return false;
+            } 
+            return true;
             
         
 		} catch (error) {
