@@ -4,7 +4,7 @@ const moment = require('moment');
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
-
+const colors =require("../colors.json");
 
 module.exports = async (oldEmoji, newEmoji) =>{
 
@@ -23,14 +23,14 @@ module.exports = async (oldEmoji, newEmoji) =>{
 		}
 			
 		const log = oldEmoji.guild.channels.cache.get(i.logs.serverLog);
-		if(typeof log !== 'undefined') {
-			let embed = makeEmbed("Emoji edited", "", "02A3F4", true);
+		if(log) {
+			let embed = makeEmbed("Emoji edited", "", colors.changeBlue, true);
 			embed.addFields(
-				{name:"Old emoji name:", value:`${oldEmoji.name}`, inline:true},
-				{name:"New emoji name:", value:`${newEmoji.name}`, inline:true},
+				{name:"Old emoji name:", value: `${oldEmoji.name}`, inline:true},
+				{name:"New emoji name:", value: `${newEmoji.name}`, inline:true},
 				{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
 			);
-			log.send(embed).then(m=>m.react(newEmoji.id));
+			log.send({embeds: [embed]}).then(m=> m.react(newEmoji.id));
 		}			
 	}catch (err) {console.log(err)}
 

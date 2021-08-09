@@ -3,7 +3,7 @@ const mongo = require("../mongo");
 const makeEmbed = require("../functions/embed");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
-
+const colors = require("../colors.json");
 
 module.exports = async (member) => {
 		
@@ -30,31 +30,34 @@ module.exports = async (member) => {
 				}
 			});
 		}
-		let splitString = i.byeString.split(" ");
-		for(let i of splitString){
-			if(i === "{<member>}"){ 
-				splitString[splitString.indexOf(i)] = `${member}`
-				break;
-			}
-		}
-		let string = splitString.join(" ");
+		
 		const ByeChannel = member.guild.channels.cache.get(i.hiByeChannel);
 		const log = member.guild.channels.cache.get(i.logs.hiByeLog);
 				
 		if (log) {
-			const embed = makeEmbed('member left',"","DB0000",true);
+			const embed = makeEmbed('member left',"",colors.failRed,true);
 			embed.setAuthor(member.displayName, member.user.displayAvatarURL());
 			embed.addFields(
-					{ name :'account age', value :`${moment(member.user.createdAt).fromNow()} /\n${moment(member.user.createdAt).format('MMM Do YY')}`, inline : true },
-					{ name :'joined at', value :`${moment(member.joinedAt).fromNow()} /\n${moment(member.joinedAt).format('MMM Do YY')}`, inline : true },
-					{ name :'ID', value :member.id, inline : true },
+					{ name :'account age', value : `${moment(member.user.createdAt).fromNow()} /\n${moment(member.user.createdAt).format('MMM Do YY')}`, inline : true },
+					{ name :'joined at', value : `${moment(member.joinedAt).fromNow()} /\n${moment(member.joinedAt).format('MMM Do YY')}`, inline : true },
+					{ name :'ID', value : member.id, inline : true },
 				
 				);
-			log.send(embed);
+			log.send({embeds: [embed]});
 					
 		}
 		if (ByeChannel){
+			let splitString = i.byeString.split(" ");
+			for(let i of splitString){
+				if(i === "{<member>}"){ 
+					splitString[splitString.indexOf(i)] = `${member}`
+					break;
+				}
+			}
+			let string = splitString.join(" ");
+
 			ByeChannel.send(string);
+			
 		}
 				
 			

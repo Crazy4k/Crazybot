@@ -5,6 +5,7 @@ const mongo = require("../../mongo");
 let cache = require("../../caches/officerPointsCache");
 const pointsSchema = require("../../schemas/officerPoints-schema");
 const enable = require("../../functions/enableOPoints");
+const {Permissions} = require("discord.js");
 
 module.exports = {
 	name : 'opoints',
@@ -64,17 +65,18 @@ module.exports = {
                         })
                         
                     }
-                    let bool1 = !message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR");
+                    let bool1 = !message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"] );
                     let bool2 = !message.guild.members.cache.get(message.author.id).roles.cache.get(servery.whiteListedRole);
                     let bool3 = !bool1 || !bool2;
                     
                     if(target !== message.author.id &&  !bool3){
+                        
                         const embed1 = makeEmbed("You don't have permission to view other people's officer points","Do `!opints me` instead", server);
                         sendAndDelete(message,embed1, server);
                         return false;
                     }
                     const emb = makeEmbed("officer points!", `<@${target}> has ${servery.members[target]} officer points.`, server,false)
-                    message.channel.send(emb);                                    
+                    message.channel.send({embeds: [emb]});                                    
                     return true;
  
                 }

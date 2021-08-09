@@ -18,7 +18,7 @@ module.exports = {
 		const timerCache = timerArray[0];
 		const totalTimerCache = timerArray[1];
 
-		message.channel.send(makeEmbed("Calculating....","","",false,"")).then(async (newMsg) =>{
+		message.channel.send({embeds: [makeEmbed("Calculating....","","",false,"")]}).then(async (newMsg) =>{
 			const messagePing = newMsg.createdTimestamp- message.createdTimestamp;
 
 			
@@ -50,7 +50,7 @@ module.exports = {
 				{name:"Fetches per minute rate", value:`${fetchesCache.totalFetches / minute} Fetch per minute`, inline: true},
 				
         	);
-			newMsg.edit(embed);
+			newMsg.edit({embeds:[embed]});
 			return true;
 
 		});

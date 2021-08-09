@@ -24,9 +24,9 @@ module.exports = {
         
             const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to use the host command.\nType \`no\` for no one except admins.`, server);
         
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+            message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
                 .then(async (a) => {
                     let checkedRole = checkRoles(a);
                     switch (checkedRole) {
@@ -58,14 +58,14 @@ module.exports = {
                         cache[message.guild.id] = servery;
 
                         const embed = makeEmbed(`✅ Host role has been updated.`,`Poeple with the role <@&${servery.hostRole}> can now use the command !host`, "#24D900");
-                        message.channel.send(embed);
+                        message.channel.send({embeds: [embed]});
                         return true;
                 });
         } else{
             const embed = makeEmbed(`You already have a host role set.`,`**Type \`reset\` to reset it..**`, server);
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(gayFilter,{max: 1, time : 20000, errors: ['time']})
+            message.channel.awaitMessages({filter: gayFilter,max: 1, time : 20000, errors: ['time']})
             .then(async (a) => {
                 if(a.first().content === "reset"){
                     await mongo().then(async (mongoose) =>{

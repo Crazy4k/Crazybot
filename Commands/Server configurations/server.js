@@ -18,187 +18,11 @@ module.exports = {
     category:"Server configurations",
 	execute(message, args, server) {
         
-        let embed = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.👋**`, server);
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
         const reactionFilter = (react, noob) => noob.id === message.author.id && !noob.bot;
 		
         try {        
             let daServer = server;
-            /*if(!daServer.isSet && !args.length){
-                message.channel.send(embed)
-                    .then(m => {
-                        message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
-                            .then(a => {      
-                                switch (checkChannels(a)) {
-                                    case "not valid":
-                                    case "no args": 
-                                    case "not useable":              
-                                        message.channel.send("Invalid argument, command failed.");
-                                        return false;
-                                        break;
-                                    case "cancel":
-                                        message.channel.send(cancerCultureMessage);
-                                        return false;
-                                        break;
-                                    case "no":
-                                        daServer.hiByeChannel = "";
-                                        break;
-                                    default:
-                                        daServer.hiByeChannel = checkChannels(a);
-                                        break;
-                                }
-                                embed.setDescription(`${type0Message} **Enter your welcoming role.👋**`);
-                                m.edit(embed);
-
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
-                                    .then(a => {
-                                        switch (checkRoles(a)) {
-                                            case "not valid":
-                                            case "not useable":
-                                            case "no args":               
-                                                message.channel.send("Invalid argument, command failed.");
-                                                return false;
-                                                break;
-                                            case "cancel":
-                                                message.channel.send(cancerCultureMessage);
-                                                    return false;
-                                                break;
-                                            case "no":
-                                                 daServer.hiRole = "";
-                                                break;
-                                            default:
-                                                            
-                                                 daServer.hiRole = checkRoles(a);
-                                                break;
-                                        }
-                                        embed.setDescription(`${type0Message} **Enter your mute role.🔇**`);
-                                        m.edit(embed);
-
-                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
-                                            .then(a => {
-                                                switch (checkRoles(a)) {
-                                                    case "not valid":
-                                                    case "not useable":
-                                                    case "no args":               
-                                                        message.channel.send("Invalid argument, command failed.");
-                                                        return false;
-                                                        break;
-                                                    case "cancel":
-                                                        message.channel.send(cancerCultureMessage);
-                                                        return false;
-                                                        break;
-                                                    case "no":
-                                                        daServer.muteRole = "";
-                                                        break;
-                                                    default:
-                                                        
-                                                        daServer.muteRole = checkRoles(a);
-                                                        break;
-                                                }
-                                                    
-                                                embed.setDescription(`**Do you want messages to be deleted in logs? ❌\n[✅ is yes ❌ is no]**`);
-                                                m.edit(embed)
-                                                    .then(m => {
-                                                        m.react("✅");
-                                                        m.react("❌");
-                                                        m.awaitReactions(reactionFilter, { max : 1,time: 1000 * 30, errors : ["time"] })
-                                                            .then(a =>{
-                                                                
-                                                                switch (a.first().emoji.name) {
-                                                                    case "✅":
-                                                                        daServer.deleteMessagesInLogs = true;
-                                                                        break;
-                                                                    case "❌":
-                                                                        daServer.deleteMessagesInLogs = false;
-                                                                        break;
-                                                                    default:
-                                                                        message.channel.send(cancerCultureMessage);
-                                                                        return false;
-                                                                        break;
-                                                                }
-                                                                m.reactions.removeAll();
-                                                                embed.setDescription(`**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`);
-                                                                m.edit(embed)
-                                                                    .then(m => {
-                                                                        m.react("✅");
-                                                                        m.react("❌");
-                                                                        m.awaitReactions(reactionFilter, { max : 1,time: 1000 * 30, errors : ["time"] })
-                                                                            .then( async (a) =>{
-                                                                                
-                                                                                switch (a.first().emoji.name) {
-                                                                                    case "✅":
-                                                                                        daServer.deleteFailedCommands = true;
-                                                                                        break;
-                                                                                    case "❌":
-                                                                                        daServer.deleteFailedCommands = false;
-                                                                                        break;
-                                                                                    default:
-                                                                                        message.channel.send(cancerCultureMessage);
-                                                                                        return false;
-                                                                                        break;
-                                                                                }
-
-                                                                                daServer.isSet = true;
-                                                                                await mongo().then(async (mongoose) =>{
-                                                                                    try{ 
-                                                                                        await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                                                                            hiByeChannel: daServer.hiByeChannel,
-                                                                                            hiRole: daServer.hiRole,
-                                                                                            muteRole: daServer.muteRole,
-                                                                                            
-                                                                                            deleteMessagesInLogs: daServer.deleteMessagesInLogs,
-                                                                                            deleteFailedCommands: daServer.deleteFailedCommands,
-                                                                                            isSet: daServer.isSet
-                                                                                            
-
-                                                                                        },{upsert:false});
-                                                                                        guildsCache[message.guild.id] = daServer;
-                                                                                    } finally{
-                                                                                        console.log("WROTE TO DATABASE");
-                                                                                        mongoose.connection.close();
-                                                                                    }
-                                                                                });
-                                                                                
-                                                                                const embed2 = makeEmbed("Server configurations", `Done ✅.Your server configuration look like:`, server);
-                                                                                if(daServer.hiByeChannel){
-                                                                                    embed2.addField('Welcome channel :wave:', `<#${daServer.hiByeChannel}>`, true);
-                                                                                }else {
-                                                                                    embed2.addField('Welcome channel :wave:', `Empty`, true);
-                                                                                }
-                                                                                if(daServer.hiRole){
-                                                                                    embed2.addField('Welcome role :wave:', `<@&${daServer.hiRole}>`, true);
-                                                                                } else {
-                                                                                    embed2.addField('Welcome role :wave:',  `Empty`,true);
-                                                                                }
-                                                                                if(daServer.muteRole){
-                                                                                    embed2.addField('Mute role :mute:', `<@&${daServer.muteRole}>`, true);
-                                                                                } else {
-                                                                                    embed2.addField('Mute role :mute:',  `Empty`,true);
-                                                                                }
-                                                                                
-                                                                                embed2.addFields(
-                                                                                    {name:'Delete messages in logs? :x:', value:`${daServer.deleteMessagesInLogs}`, inline:true},
-                                                                                    {name:'Delete failed commands?:clock1:', value:`${daServer.deleteFailedCommands}`, inline:true},
-                                                                                    {name:'Language :abc:', value:`${daServer.language}`, inline:true},
-                                                                                    {name:'Prefix :information_source:', value:`${daServer.prefix}`, inline:true},
-                                                                                    {name:'Default embed color :white_large_square:', value:`${daServer.defaultEmbedColor}`, inline:true}
-                                                                                );
-                                                                                message.channel.send(embed2);
-                                                                                return true;
-                                                                            
-                                                                                
-                                                                            }).catch(e => {message.channel.send(idleMessage)});
-                                                                    }).catch(e => {message.channel.send(idleMessage)});
-
-                                                                
-                                                            }).catch(e => {message.channel.send(idleMessage)});
-                                                        }).catch(e => {message.channel.send(idleMessage)});                                                                    
-                                            }).catch(e => {message.channel.send(idleMessage)});
-                                    }).catch(e => {message.channel.send(idleMessage)});
-                            }).catch(e => {message.channel.send(idleMessage)});
-                   }).catch(e => {message.channel.send(idleMessage)});                   
-                                                                                    
-            } else */
             if(!args.length){
                 const embed = makeEmbed("Server configurations", `Your server configuration look like this:`, server);
                 if(server.hiByeChannel){
@@ -225,7 +49,7 @@ module.exports = {
                     {name:'Prefix :information_source:', value:`${server.prefix}`, inline:true},
                     {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
                 );
-                message.channel.send(embed);
+                message.channel.send({embeds:[embed]});
                 return false;
 
             } else {
@@ -233,9 +57,9 @@ module.exports = {
                 switch (args[0].toLowerCase()) {
                     case "welcomechannel":
                         let embedo = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming channel.👋**`, server);
-                        message.channel.send(embedo)
+                        message.channel.send({embeds: [embedo]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {   
                                         let toCheck =   checkChannels(a);
                                         switch (toCheck) {
@@ -276,9 +100,9 @@ module.exports = {
                         break;
                     case "welcomerole":
                         let embedo1 = makeEmbed("Server Settings", `${type0Message}**Enter  your welcoming role.👋**`, server);
-                        message.channel.send(embedo1)
+                        message.channel.send({embeds: [embedo1]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {     
                                         let toCheck = checkRoles(a);
                                         switch (toCheck) {
@@ -319,9 +143,9 @@ module.exports = {
                         break;
                     case "muterole":
                         let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.🔇**`, server);
-                        message.channel.send(embedo2)
+                        message.channel.send({ embeds: [embedo2]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {      
                                         let toCheck = checkRoles(a);
                                         switch (toCheck) {
@@ -362,11 +186,11 @@ module.exports = {
                         break;
                     case "deleteinlogs":
                         let embedo6 = makeEmbed("Server Settings", `**Do you want messages to be deleted in logs?❌ \n[✅ is yes ❌ is no]**`, server);
-                        message.channel.send(embedo6)
+                        message.channel.send({embeds: [embedo6]})
                         .then(async m => {
                             m.react("✅");
                             m.react("❌");
-                            m.awaitReactions(reactionFilter, { max : 1,time: 1000 * 30, errors : ["time"] })
+                            m.awaitReactions({filter: reactionFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
                                 .then(async a =>{
                                     
                                     switch (a.first().emoji.name) {
@@ -401,11 +225,11 @@ module.exports = {
                         break; 
                     case "deletefails":
                         let embedo7 = makeEmbed("Server Settings", `**Do you want failed commands to be deleted after a few seconds?🕐\n[✅ is yes ❌ is no]**`, server);
-                        message.channel.send(embedo7)
+                        message.channel.send({embeds:[embedo7]})
                         .then(async m => {
                             m.react("✅");
                             m.react("❌");
-                            m.awaitReactions(reactionFilter, { max : 1,time: 1000 * 30, errors : ["time"] })
+                            m.awaitReactions({filter: reactionFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
                                 .then(async a =>{
                                     
                                     switch (a.first().emoji.name) {

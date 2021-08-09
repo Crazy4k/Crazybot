@@ -3,7 +3,7 @@ let muteCache = require("../../caches/muteCache");
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
-
+const colors = require("../../colors.json");
 
 
 
@@ -44,8 +44,8 @@ module.exports = {
 					return false;
 				} else {
 					try {		
-						const embed1 = makeEmbed("Done!",`The user <@${guy}> has been unmuted for \`${reason}\``, server);
-                        message.channel.send(embed1);
+						const embed1 = makeEmbed("Done!",`The user <@${guy}> has been unmuted for \`${reason}\``, colors.successGreen);
+                        message.channel.send({embeds:[embed1]});
 						member.roles.add(hisRoles);
 						member.roles.remove(server.muteRole);
 						muteCache[`${message.author.id}-${message.guild.id}`] = null;
@@ -53,10 +53,10 @@ module.exports = {
 						const logEmbed = makeEmbed("Unmute","","00E7FE",true);
 						logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
 						logEmbed.addFields(
-							{ name:'Umuted by: ', value:message.author, inline:true },
+							{ name:'Umuted by: ', value:`<@${message.authorId}>`, inline:true },
 							{ name : "Reason:", value:reason, inline:true}
 						);
-						if(muteLog)muteLog.send(logEmbed);
+						if(muteLog)muteLog.send({embeds:[logEmbed]});
 						
 					}catch (error) {
 						console.log(error);

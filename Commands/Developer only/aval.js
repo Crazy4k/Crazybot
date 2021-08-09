@@ -25,11 +25,11 @@ module.exports = {
         try {
             let evalString = args.join(" ");
             const embed1 = makeEmbed("Succes ✅", `\`\`\`${await eval("(async () => {await " + evalString + "})()")}\`\`\``, "24D900");
-            message.channel.send(embed1);
+            message.channel.send({embeds: [embed1]});
 
         } catch (error) {
             const embed2 = makeEmbed("Error!", error, "CF1300",);
-            message.channel.send(embed2);
+            message.channel.send({embeds: [embed2]});
             console.error(error);
         }
 	},

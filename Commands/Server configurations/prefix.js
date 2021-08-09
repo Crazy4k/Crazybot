@@ -50,7 +50,7 @@ module.exports = {
 				const embed = makeEmbed(`Prefix changed from ${oldPrefix} to ${args[0]}`,'The prefix has been changed succesfuly :white_check_mark:.',"2EFF00");
 				embed.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png');
 						
-					message.channel.send(embed);
+					message.channel.send({embeds: [embed]});
 					return true;
 			});
 				

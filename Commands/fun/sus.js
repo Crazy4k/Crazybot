@@ -15,7 +15,7 @@ module.exports = {
 		let winner = pickRandom(3);
 
 		if(winner === 2){
-			message.channel.send(`amogus`, {files :[`./sus pictures/${pickRandom(crewMates)}`]});
+			message.channel.send({content: `amogus`, files :[`./sus pictures/${pickRandom(crewMates)}`]});
 			return true;
 		}else {
 			message.channel.send(`amogus\n${pickRandom(imposters)}`);

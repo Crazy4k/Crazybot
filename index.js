@@ -1,11 +1,28 @@
 const Discord = require('discord.js');
+const { Intents } = require('discord.js');
 const fs = require('fs');
 const mongo = require("./mongo");
 const noblox = require("noblox.js");
 require("dotenv").config();
 
-const client = new Discord.Client();
-module.exports = client;
+//const { REST } = require('@discordjs/rest');
+//const { Routes } = require('discord-api-types/v9');
+let intentArray =[
+	Intents.FLAGS.GUILDS,
+	Intents.FLAGS.GUILD_MEMBERS,
+	Intents.FLAGS.GUILD_BANS,
+	Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+	Intents.FLAGS.GUILD_PRESENCES,
+	Intents.FLAGS.GUILD_MESSAGES,
+	Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+	Intents.FLAGS.GUILD_MESSAGE_TYPING,
+	Intents.FLAGS.DIRECT_MESSAGES,
+	Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+	Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+];
+
+const client = new Discord.Client({ intents: intentArray });
+
 const token = process.env.DISCORD_BOT_TOKEN;
 const cookie = process.env.NBLXJS_COOKIE;
 
@@ -18,6 +35,9 @@ const officerPointsSchema = require("./schemas/officerPoints-schema");
 let guildsCache = require("./caches/guildsCache");
 const sync = require("./functions/sync");
 const keepAlive = require('./server.js');
+const config = require("./config.json");
+module.exports = client;
+
 
 const turnOnRoblox = async()=>{
 	const currentUser = await noblox.setCookie(cookie)
@@ -28,6 +48,7 @@ turnOnRoblox();
 keepAlive();
 
 client.commands = new Discord.Collection();
+const slashCommands = new Discord.Collection();
 
 
 const bigcommandfile = fs.readdirSync("./Commands/");
@@ -213,16 +234,16 @@ let uniqueCooldowns = [];
 
 //command handler|prefix based
 //i like to devide this into multiple pieces since it's a bit weird
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
 	//no dm commands
-	if(message.channel.type === "dm")return;
-
+	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM")return;
+	if(!message.guild)return;
 	//retrive guild data from data base (only once then it will be saved in a cache)
 
-	if(!guildsCache[message.guild.id]){
+	if(!guildsCache[message.guildId]){
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				guildsCache[message.guild.id] = await serversSchema.findOne({_id:message.guild.id});
+				guildsCache[message.guildId] = await serversSchema.findOne({_id:message.guildId});
 			} finally{
 				console.log("FETCHED FROM DATABASE");
 				mongoose.connection.close();
@@ -230,7 +251,7 @@ client.on('message', async (message) => {
 		});
 	}
 		try {
-			let server = guildsCache[message.guild.id];
+			let server = guildsCache[message.guildId];
 			
 
 			if(server === null ) {
@@ -251,7 +272,11 @@ client.on('message', async (message) => {
 							case server.logs.pointsLog:
 							message.delete().catch(console.error);
 							message.channel.send('You can\'t send a message in the logs ❌')
-								.then(msg=> msg.delete({ timeout:4000 })).catch(console.error);
+								.then(msg=>{
+									setTimeout(()=>{
+										msg.delete();
+									},4000) 
+								}).catch(console.error);
 								return;
 							break;
 						}	
@@ -401,18 +426,15 @@ setTimeout(()=>{
 			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
 			{str:"to ;news",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
-			{str:"Netflix and chilling",type:{type: "WATCHING"}},
-			{str:"to ;sus",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
-			{str:"Among us!😳",type:{type: "PLAYING"}},
+			{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
 	
-		
 		];
 	
 	
 		let luckyWinner = pickRandom(status)
 		client.user.setActivity(luckyWinner.str,luckyWinner.type);
-	},1000 * 60 * 30)
+	},1000 * 60 * 20)
 	
 
 	

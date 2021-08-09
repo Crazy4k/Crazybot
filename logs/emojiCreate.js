@@ -2,6 +2,8 @@ const makeEmbed = require("../functions/embed");
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
+const colors =require("../colors.json");
+const moment = require('moment');
 
 module.exports = async (emoji) =>{
 	const maker = await emoji.fetchAuthor();
@@ -18,15 +20,15 @@ module.exports = async (emoji) =>{
 			});
 		}
 		const log = emoji.guild.channels.cache.get(i.logs.serverLog);
-		if(typeof log !== 'undefined') {
-			let embed = makeEmbed("Emoji created", "", "3EFF00", true);
+		if(log) {
+			let embed = makeEmbed("Emoji created", "", colors.successGreen, true);
 			embed.addFields(
-				{name:"Emoji name:", value:`${emoji.name}`, inline:true},
-				{name:"Emoji ID:", value:`${emoji.id}`, inline:true},
-				{name:"Created by:", value:`<@${maker.id}>`, inline:true},
-				{name:"Created at:", value:`${emoji.createdAt}`, inline:true},
+				{name:"Emoji name:", value: `${emoji.name}`, inline:true},
+				{name:"Emoji ID:", value: `${emoji.id}`, inline:true},
+				{name:"Created by:", value: `<@${maker.id}>`, inline:true},
+				{name:"Created at:", value: `${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
 			);
-			log.send(embed).then(m=>m.react(emoji.id));
+			log.send({embeds: [embed]}).then(m=>m.react(emoji.id));
 		}
 						
 	}catch (err) {console.log(err)}

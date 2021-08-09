@@ -1,8 +1,0 @@
-{
-    "activityCheckReactionTime": 7200000 ,
-    "activityCheckMessage": "@everyone activity check.\nReact with :white_check_mark: if you're online.",
-    "activityCheckEmoji" : "✅",
-    "activityLogchannelID":"831926371432661072"
-
-
-}

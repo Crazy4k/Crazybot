@@ -12,7 +12,7 @@ module.exports = {
 	async execute(message, args, server) { 
 				
 		let embed = makeEmbed("Syncing...","",server);
-		message.channel.send(embed).then(async msg =>{
+		message.channel.send({embeds:[embed]}).then(async msg =>{
 			
 			let whatToSay = await sync(message);
 
@@ -21,7 +21,8 @@ module.exports = {
 			embed.setColor("29C200");
 			embed.setTitle("synchronization complete ✅");
 			embed.setDescription(`Summary of changes: ${whatToSay}`);
-			msg.edit(embed);
+			msg.edit({embeds:[embed]});
+			return true;
 			
 		});
 

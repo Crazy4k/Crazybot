@@ -5,6 +5,7 @@ let cache = require("../../caches/officerPointsCache");
 const pointsSchema = require("../../schemas/officerPoints-schema");
 const checkUseres = require("../../functions/checkUser");
 const enable = require("../../functions/enableOPoints");
+const {Permissions} = require("discord.js");
 
 module.exports = {
 	name : 'opoints-remove',
@@ -31,7 +32,7 @@ module.exports = {
                 })
             }
     
-            if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
+            if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
     
                 //0 = tag
                 //1 = number
@@ -88,17 +89,17 @@ module.exports = {
                             },{upsert:true});
     
                             const variable = makeEmbed("Officer points removed ✅",`Removed ${pointsToGive} officer from <@${persona}>`, server);
-                            message.channel.send(variable);
+                            message.channel.send({embeds: [variable]});
                             if(log){
                                 let embed = makeEmbed("Officer points removed.","","FF4040",true);
-                                embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                                 embed.addFields(
-                                  {name: "Removed by:", value: message.author, inline:true},  
+                                  {name: "Removed by:", value: `<@${message.author.id}>`, inline:true},  
                                   {name: "Removed from:", value: `<@${persona}>`, inline:true},
-                                  {name: "Amount removed:", value: pointsToGive, inline:true},
+                                  {name: "Amount removed:", value: `${pointsToGive}`, inline:true},
                                   {name: "Reason:", value: reason, inline:true},      
                                 );
-                                log.send(embed);
+                                log.send({embeds: [embed]});
                             }
                         } finally{
                             console.log("WROTE TO DATABASE");
@@ -107,6 +108,10 @@ module.exports = {
                     })
                     cache[message.guild.id] = servery;
              
+                } else {
+                    const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
+                    sendAndDelete(message,embed,server);
+                    return false;
                 } return true;
                 
             

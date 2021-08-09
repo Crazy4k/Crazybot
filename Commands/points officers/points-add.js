@@ -5,7 +5,7 @@ let cache = require("../../caches/officerPointsCache");
 const pointsSchema = require("../../schemas/officerPoints-schema");
 const mongo = require("../../mongo");
 const checkUseres = require("../../functions/checkUser");
-
+const {Permissions} = require("discord.js");
 const enable = require("../../functions/enableOPoints");
 
 
@@ -34,17 +34,19 @@ module.exports = {
             })
         }
 
-        if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
+        if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
 
-            //0 = tag
-            //1 = number
-            //2+ = reason      
+            //[0] = tag
+            //[1] = number
+            //[2+] = reason      
+            
             const persona = checkUseres(message,args,0);      
             const pointsToGive= args[1]
             let reason = args.splice(2).join(" ");   
-            if(!reason) reason = "`No reason given.`"
-            let log = message.guild.channels.cache.get(server.logs.pointsLog);    
 
+            if(!reason) reason = "`No reason given.`"
+
+            let log = message.guild.channels.cache.get(server.logs.pointsLog);    
 
                 if(!server.oPointsEnabled) await enable(message, server);
 
@@ -54,7 +56,7 @@ module.exports = {
                     return false;
                 }
                 if(!parseInt(pointsToGive)){
-                    const embed1 = makeEmbed('Last argument must be a number.',this.usage, server);
+                    const embed1 = makeEmbed('Second argument must be a number.',this.usage, server);
                     sendAndDelete(message,embed1, server);
                     return false;
                 }
@@ -92,18 +94,18 @@ module.exports = {
                         },{upsert:true});
 
                         const variable = makeEmbed("Officer points added ✅",`Added ${pointsToGive} officer points to <@${persona}>`, server);
-                        message.channel.send(variable);
+                        message.channel.send({embeds: [variable]});
 
                         if(log){
                             let embed = makeEmbed("Officer points added.","","10AE03",true);
-                            embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                             embed.addFields(
-                              {name: "Added by:", value: message.author, inline:true},  
+                              {name: "Added by:", value: `<@${message.author.id}>`, inline:true},  
                               {name: "Added to:", value: `<@${persona}>`, inline:true},
-                              {name: "Amount added:", value: pointsToGive, inline:true},
+                              {name: "Amount added:", value: `${pointsToGive}`, inline:true},
                               {name: "Reason:", value: reason, inline:true},      
                             );
-                            log.send(embed);
+                            log.send({embeds:[embed]});
                         }
                     } finally{
                         console.log("WROTE TO DATABASE");
@@ -112,6 +114,10 @@ module.exports = {
                 })
                 cache[message.guild.id] = servery;
          
+            } else {
+                const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
+                sendAndDelete(message,embed,server);
+                return false;
             } return true;
             
         

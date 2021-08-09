@@ -9,7 +9,7 @@ const pointsSchema= require("../../schemas/points-schema");
 module.exports = {
 	name : 'points-role',
 	description : "Sets the role that will be able to modify other user's points (Officers).",
-    cooldown: 30 ,
+    cooldown: 10 ,
     aliases:["p-role","pointsrole","prole"],
 	usage:'points-role',
     category:"points",
@@ -41,9 +41,9 @@ module.exports = {
         
             const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to modify points.\nThis role will be able to view,remove,add and change the points of all users.\nType \`no\` for no one except admins.`, server);
         
-            message.channel.send(embed);
+            message.channel.send({embeds:[embed]});
             const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+            message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
                 .then(async (a) => {
                     let checkedRole = checkRoles(a);
                     switch (checkedRole) {
@@ -75,14 +75,16 @@ module.exports = {
                         cache[message.guild.id].whiteListedRole = whiteListedRole;
 
                         const embed = makeEmbed(`✅ officer role has been updated.`,`Poeple with the role <@&${whiteListedRole}> can now modify other user's points.`, "#24D900");
-                        message.channel.send(embed);
+                        message.channel.send({embeds:[embed]});
                         return true;
                 });
         } else{
+            
             const embed = makeEmbed(`You already have an officer role set.`,`Current officer role: <@&${servery.whiteListedRole}>**\nType \`reset\` to reset it..**`, server);
-            message.channel.send(embed);
+            message.channel.send({embeds:[embed]});
+
             const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(gayFilter,{max: 1, time : 20000, errors: ['time']})
+            message.channel.awaitMessages({filter: gayFilter, max: 1, time : 20000, errors: ['time']})
             .then(async (a) => {
                 if(a.first().content === "reset"){
                     await mongo().then(async (mongoose) =>{

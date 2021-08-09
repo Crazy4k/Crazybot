@@ -17,8 +17,8 @@ module.exports = {
 	category:"Moderation",
 	execute(message, args, server) {
 
-		let Trole = message.guild.roles.cache.find(role => role.name === args.slice(1).join(' '));
-		if(message.mentions.roles.first()) Trole = message.mentions.roles.first();
+		const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
+		const Trole = message.guild.roles.cache.get(checkRoles(message, args, 1));
 
 
 		switch (checkUseres(message, args, 0)) {
@@ -50,12 +50,11 @@ module.exports = {
 						return false;
 						break;
 					default:
-						const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
-						const Trole = message.guild.roles.cache.get(checkRoles(message, args, 1));
+						
 				
 						if(!Tmember.roles.cache.has(Trole.id)) {
 				
-							const embed = makeEmbed('User doesn\'t have that role\n Use`!role-add` instead',this.usage, server);
+							const embed = makeEmbed('User doesn\'t have that role\n Use`'+server.prefix+'role-add` instead',this.usage, server);
 							sendAndDelete(message,embed, server);
 							return false;
 				
