@@ -3,7 +3,7 @@ const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const eventsCache = require("../../caches/eventsCache");
 var { Timer } = require("easytimer.js");
-
+const {Permissions} = require("discord.js");
 
 const dltTime = 1000 * 60 * 60 * 2; // 2 hours
 const tenMinutes = 1000 * 60 * 10; // 10 minutes
@@ -23,7 +23,7 @@ module.exports = {
 	execute(message, args, server) { 
 
         const role = server.hostRole;
-        if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(role)){
+        if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(role)){
 
             if(eventsCache[message.guild.id] === undefined || eventsCache[message.guild.id].length < max ){
 
@@ -71,15 +71,15 @@ module.exports = {
     
                         if(eventsLog){
                             let embed = makeEmbed("Event posted.","","00FF04",true);
-                            embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                             embed.addFields(
-                                {name:`Posted by:`, value: message.author, inline:true},
-                                {name:`Posted on:`, value: message.channel, inline:true},
+                                {name:`Posted by:`, value: `<@${message.author.id}>`, inline:true},
+                                {name:`Posted on:`, value: `<#${message.channel.id}>`, inline:true},
                                 {name:`Event name:`, value: eventType, inline:true},
                                 {name:`Message link: (Will exprire)`, value: `[message](${message.url})`, inline:true},
                                 
                             );
-                            eventsLog.send(embed);
+                            eventsLog.send({embeds: [embed]});
                         }
     
                         setTimeout(()=>{
@@ -94,50 +94,52 @@ module.exports = {
     
                                     let embed = makeEmbed("Event started.","","FF9700",true);
     
-                                    embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                                     embed.addFields(
-                                        {name:`Posted by:`, value: message.author, inline:true},
-                                        {name:`Posted on:`, value: message.channel, inline:true},
+                                        {name:`Posted by:`, value: `<@${message.author.id}>`, inline:true},
+                                        {name:`Posted on:`, value: `<#${message.channel.id}>`, inline:true},
                                         {name:`Message link: (Will exprire)`, value: `[message](${message.url})`, inline:true},
                                         {name:`Link to the game:`, value:`[The given link](${link})`, inline:true},
                                         {name:`Event name:`, value: eventType, inline:true},
                                     );
     
-                                    eventsLog.send(embed);
+                                    eventsLog.send({embeds: [embed]});
                                 }
                             }
                         }, tenMinutes );
-    
-                        m.delete({timeout: dltTime + 1000}).then(e=>{
-                            if(eventsLog){
-                               
-                                let embed = makeEmbed("Event Ended.","","FF0000",true);
-                                embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
-                                embed.addFields(
-                                    {name:`Posted by:`, value: message.author, inline:true},
-                                    {name:`Posted on:`, value: message.channel, inline:true},
-                                    {name:`Event duration:`, value: `${timer.getTimeValues().hours} hours ${timer.getTimeValues().minutes} minutes ${timer.getTimeValues().seconds} seconds`, inline:true},
-                                    {name:`Event name:`, value: eventType, inline:true},
-                                    
-                                )
-                                eventsLog.send(embed);
-                            }
-    
-                            let startedMessage =message.channel.messages.cache.get(startedID);
-                            if(startedMessage && !startedMessage.deleted){
-                                startedMessage.delete();
-                            }
-    
-                            timer.stop();
-                            eventsCache[message.guild.id].splice(indexo, 1); 
-    
-                        }).catch(e => e);
+                        setTimeout(()=>{
+                            m.delete().then(e=>{
+                                if(eventsLog){
+                                   
+                                    let embed = makeEmbed("Event Ended.","","FF0000",true);
+                                    embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                                    embed.addFields(
+                                        {name:`Posted by:`, value: `<@${message.author.id}>`, inline:true},
+                                        {name:`Posted on:`, value: `<#${message.channel.id}>` , inline:true},
+                                        {name:`Event duration:`, value: `${timer.getTimeValues().hours} hours ${timer.getTimeValues().minutes} minutes ${timer.getTimeValues().seconds} seconds`, inline:true},
+                                        {name:`Event name:`, value: eventType, inline:true},
+                                        
+                                    )
+                                    eventsLog.send({embeds: [embed]});
+                                }
+        
+                                let startedMessage =message.channel.messages.cache.get(startedID);
+                                if(startedMessage && !startedMessage.deleted){
+                                    startedMessage.delete();
+                                }
+        
+                                timer.stop();
+                                eventsCache[message.guild.id].splice(indexo, 1); 
+        
+                            }).catch(e => e);
+                        },dltTime + 1000)
+                        
     
                         m.react("🗑");
     
                         const filter =(reaction, user) => user.id === message.author.id && reaction.emoji.name === "🗑";
     
-                        m.awaitReactions(filter, { time: dltTime , max : 1})
+                        m.awaitReactions({filter,  time: dltTime , max : 1})
                             .then(collected => {
                                 
                                 
@@ -151,15 +153,15 @@ module.exports = {
                                 if(eventsLog){
                                     let embed = makeEmbed("Event Ended.","","FF0000",true);
     
-                                    embed.setAuthor(message.guild.members.cache.get(message.author.id).nickname, message.author.displayAvatarURL());
+                                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                                     embed.addFields(
-                                        {name:`Posted by:`, value: message.author, inline:true},
-                                        {name:`Posted on:`, value: message.channel, inline:true},
+                                        {name:`Posted by:`, value: `<@${message.author.id}>`, inline:true},
+                                        {name:`Posted on:`, value: `<#${message.channel.id}>`, inline:true},
                                         {name:`Event duration:`, value: `${timer.getTimeValues().hours} hours ${timer.getTimeValues().minutes} minutes ${timer.getTimeValues().seconds} seconds`, inline:true},
                                         {name:`Event name:`, value: eventType, inline:true},
                                     );
     
-                                    eventsLog.send(embed);
+                                    eventsLog.send({embeds: [embed]});
                                 }
                                 eventsCache[message.guild.id].splice(indexo, 1); 
                                 timer.stop();

@@ -14,8 +14,8 @@ module.exports = {
 	whiteList : ['ADMINISTRATOR'],
 
 	execute(message, args, server ) {
-
-        switch (checkUseres(message, args, 0)) {
+        const number = checkUseres(message, args, 0);
+        switch (number) {
             case "not valid":
             case "everyone":	
             case "not useable":
@@ -38,9 +38,9 @@ module.exports = {
                                
             default:
                 message.channel.send("ok");
-                const number = checkUseres(message, args, 0);
+                
                 const filter = m => !m.author.bot && m.author.id === number;
-		        const collector = message.channel.createMessageCollector(filter,{time:150000});
+		        const collector = message.channel.createMessageCollector({filter,time:150000});
                 collector.on("collect", m => {
                     
                     let tureflase =[false, false];

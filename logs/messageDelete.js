@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const client = require("../index");
 const mongo = require("../mongo");
+const makeEmbed = require(".././functions/embed");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
+const colors = require(".././colors.json");
 
 module.exports =async (message) => {
 	
@@ -32,25 +34,23 @@ module.exports =async (message) => {
 						case i.logs.deleteLog: 
 						case i.logs.serverLog: 
 						case i.logs.warningLog: 
+						case i.logs.pointsLog:
+						case i.logs.eventsLog:
 						
 						return;	
 					}	
 					if(message.mentions.members.size > 0 ||message.mentions.roles.size > 0 || message.mentions.everyone ) {
 						
 						if(deleteLogs) {
-							const embed = new Discord.MessageEmbed()
-								.setAuthor(message.author.username, message.author.displayAvatarURL())
-								.setTitle('Possible ghost ping detected')
-								.setFooter('Developed by Crazy4K')
-								.setTimestamp()
-								.setColor('#000000')
-								.addFields(
-									{ name:'deleted from', value:message.channel, inline:false},
+							const embed = makeEmbed('Possible ghost ping detected',"",colors.pitchBlack,true);
+								embed.setAuthor(message.author.username, message.author.displayAvatarURL());
+								embed.addFields(
+									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
 									{ name:'Message content', value:message.content, inline: false },
-									{ name: "Author", value:`<@${message.author.id}>`, inline: false },
+									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
-							deleteLogs.send(embed);
+							deleteLogs.send({embeds: [embed]});
 							return;
 					
 						}
@@ -58,19 +58,15 @@ module.exports =async (message) => {
 						
 					}else if(!isCommand) {
 						if(typeof deleteLogs !== 'undefined') {
-							const embed = new Discord.MessageEmbed()
-								.setAuthor(message.author.username, message.author.displayAvatarURL())
-								.setTitle('Message deleted')
-								.setFooter('Developed by Crazy4K')
-								.setTimestamp()
-								.setColor('#DB0000')
-								.addFields(
-									{ name:'deleted from', value:message.channel, inline: false },
+							const embed = makeEmbed('Message deleted',"",colors.failRed,true);
+							embed.setAuthor(message.author.username, message.author.displayAvatarURL());
+							embed.addFields(
+									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
 									{ name:'Message content', value:message.content, inline: false },
 									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
-							deleteLogs.send(embed);
+							deleteLogs.send({embeds: [embed]});
 							return;
 				
 						}

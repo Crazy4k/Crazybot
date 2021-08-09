@@ -39,10 +39,10 @@ module.exports = {
 
         
             const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to modify officer Points.\nThis role will be able to view,remove,add and change the officer points of all users.\nType \`no\` for no one except admins.`, server);
-        
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
+
             const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+            message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
                 .then(async (a) => {
                     let checkedRole = checkRoles(a);
                     switch (checkedRole) {
@@ -74,14 +74,14 @@ module.exports = {
                         cache[message.guild.id].whiteListedRole = whiteListedRole;
 
                         const embed = makeEmbed(`✅ officer points role has been updated.`,`Poeple with the role <@&${whiteListedRole}> can now modify other users' Officer Points.`, "#24D900");
-                        message.channel.send(embed);
+                        message.channel.send({embeds: [embed]});
                         return true;
                 });
         } else{
             const embed = makeEmbed(`You already have an officer points role set.`,`Current officer role: <@&${servery.whiteListedRole}>**\nType \`reset\` to reset it..**`, server);
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-            message.channel.awaitMessages(gayFilter,{max: 1, time : 20000, errors: ['time']})
+            message.channel.awaitMessages({filter: gayFilter, max: 1, time : 20000, errors: ['time']})
             .then(async (a) => {
                 if(a.first().content === "reset"){
                     await mongo().then(async (mongoose) =>{

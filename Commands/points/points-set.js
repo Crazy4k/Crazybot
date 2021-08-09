@@ -5,6 +5,7 @@ let cache = require("../../caches/pointsCache");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");
+const {Permissions} = require("discord.js");
 
 module.exports = {
 	name : 'points-set',
@@ -33,7 +34,7 @@ module.exports = {
             })
         }
 
-        if(message.guild.members.cache.get(message.author.id).hasPermission("ADMINISTRATOR") || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
+        if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
             let target = checkUseres(message, args, 0);
             
             switch (target) {
@@ -86,18 +87,18 @@ module.exports = {
                         }
                     })
                     const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
-                    message.channel.send(emb);     
+                    message.channel.send({embeds:[emb]});     
                     if(log){
                         let embed = makeEmbed("Officer points changed.","","3987FF",true);
-                        embed.setAuthor(message.guild.members.cache.get(message.author.id).tag, message.author.displayAvatarURL());
+                        embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                         embed.addFields(
-                        {name: "Chagned by:", value: message.author, inline:true},  
+                        {name: "Chagned by:", value: `<@${message.author.id}>`, inline:true},  
                         {name: "Changed from:", value: `<@${target}>`, inline:true},
-                        {name: "Amount before:", value: before, inline:true},
-                        {name: "Amount after:", value: servery.members[target], inline:true},
+                        {name: "Amount before:", value: `${before} `, inline:true},
+                        {name: "Amount after:", value: `${servery.members[target]}`, inline:true},
                         {name: "Reason:", value: reason, inline:true},      
                         );
-                        log.send(embed);
+                        log.send({embeds:[embed]});
                         return true;
                     }
                 } 

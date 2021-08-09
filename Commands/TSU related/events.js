@@ -30,12 +30,12 @@ module.exports = {
                 embed.addField(`${shittyNumber}-event:`, `**Event name**: ${shit[0]}\n **Hosted in**: <#${shit[1]}>\n **Hosted by**: <@${shit[3]}>\n **Status**: ${shit[2]}\n **Link to the event**: [Quick travel](${shit[4]})`);
                 shittyNumber++;
             }
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             return true;
         
         } else {
             const embed = makeEmbed("No events.","These are current no events being hosted at the moment.", server);
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             return true;
 
         }

@@ -65,7 +65,7 @@ module.exports = {
                         
                     }
                     const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
-                    message.channel.send(emb);                                    
+                    message.channel.send({embeds:[emb]});                                    
                     return true;
  
                 }

@@ -12,7 +12,9 @@ module.exports = {
 	category:"Moderation",
 	execute(message, args, server) {
 
-		switch (checkUseres(message, args, 0)) {
+		const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
+		const Trole = message.guild.roles.cache.get(checkRoles(message,args,1));
+		switch (Tmember) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
@@ -46,8 +48,7 @@ module.exports = {
 					
 						break;
 					default:
-						const Tmember = message.guild.members.cache.get(checkUseres(message, args, 0));
-						const Trole = message.guild.roles.cache.get(checkRoles(message,args,1));
+						
 
 						if(Tmember.roles.cache.has(Trole.id)) {
 							const embed = makeEmbed('That user already has the role', this.usage, server);

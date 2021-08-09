@@ -57,7 +57,7 @@ module.exports = {
                     embed.addField("Events logs 📢", `Empty\n\`${server.prefix}${this.name} eventlog\``, true)
                 }
 
-                message.channel.send(embed);
+                message.channel.send({embeds:[embed]});
                 return false;
 
             }else{
@@ -67,9 +67,9 @@ module.exports = {
                     case "memberlogs":
                     case "memberlog":
                         let embedo1 = makeEmbed("Logs manager", `${type0Message}**Enter your members logging channel. 👤**`, server);
-                        message.channel.send(embedo1)
+                        message.channel.send({embeds:[embedo1]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {   
                                         let toCheck =   checkChannels(a);
                                         switch (toCheck) {
@@ -115,9 +115,9 @@ module.exports = {
                         case "messagelogs":
                         case "messagelog":
                             let embedo2 = makeEmbed("Logs manager", `${type0Message}**Enter your messages logging channel. 📫**`, server);
-                            message.channel.send(embedo2)
+                            message.channel.send({embeds:[embedo2]})
                                 .then(m => {
-                                    message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                    message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                         .then(async a => {   
                                             let toCheck =   checkChannels(a);
                                             switch (toCheck) {
@@ -160,9 +160,9 @@ module.exports = {
                             case "serverlogs":
                             case "serverlog":
                                 let embedo3 = makeEmbed("Logs manager", `${type0Message}**Enter your Server logging channel. 🏠**`, server);
-                                message.channel.send(embedo3)
+                                message.channel.send({embeds:[embedo3]})
                                     .then(m => {
-                                        message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                        message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                             .then(async a => {   
                                                 let toCheck =   checkChannels(a);
                                                 switch (toCheck) {
@@ -206,9 +206,9 @@ module.exports = {
                                 case "modlogs":
                                 case "modlog":
                                     let embedo4 = makeEmbed("Logs manager", `${type0Message}**Enter your moderation logging channel. 🔨**`, server);
-                                    message.channel.send(embedo4)
+                                    message.channel.send({embeds:[embedo4]})
                                         .then(m => {
-                                            message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                            message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                                 .then(async a => {   
                                                     let toCheck =   checkChannels(a);
                                                     switch (toCheck) {
@@ -251,9 +251,9 @@ module.exports = {
                                     case "pointslogs":
                                     case "pointslog":
                         let embedo5 = makeEmbed("Logs manager", `${type0Message}**Enter your points logging channel. 📈**`, server);
-                        message.channel.send(embedo5)
+                        message.channel.send({embeds:[embedo5]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {   
                                         let toCheck =   checkChannels(a);
                                         switch (toCheck) {
@@ -295,9 +295,9 @@ module.exports = {
                         case "eventlogs":
                         case "eventlog":
                         let embedo6 = makeEmbed("Logs manager", `${type0Message}**Enter your events logging channel. 📢**`, server);
-                        message.channel.send(embedo6)
+                        message.channel.send({embeds:[embedo6]})
                             .then(m => {
-                                message.channel.awaitMessages(messageFilter,{max: 1, time : 1000 * 30, errors: ['time']})
+                                message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {   
                                         let toCheck =   checkChannels(a);
                                         switch (toCheck) {

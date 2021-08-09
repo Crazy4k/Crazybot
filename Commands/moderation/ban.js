@@ -5,16 +5,13 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'ban',
 	description : 'permanently bans any one in the server. The number is to delete the last messages send by the banned user (max is 7).',
-	usage:'ban <@user> <reason> [ delete messages 0-7]',
+	usage:'ban <@user or user id> [reason] [ delete messages 0-7, default is 1]',
 	whiteList:'BAN_MEMBERS',
 	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 
-		
-		const time = args[1] * 2 / 2;
 		let id = checkUseres(message,args,0);
-
 		switch (id) {
 			case "not valid":
 			case "everyone":	
@@ -31,50 +28,53 @@ module.exports = {
 			default:
 				const target = message.guild.members.cache.get(id);
 
-		  if(args.length === 1) {
-			
-			const embed = makeEmbed('Missing argument : reason',this.usage, server);
-			sendAndDelete(message,embed, server );
-			return false;
-			
-		} else if(!isNaN(time)) {
-			try {
+				let copyOfArgs = [...args];
+
+				let time = 1;
+				let popped = copyOfArgs.pop()
+				if(parseInt(popped))time = parseInt(popped); 
+				else{
+					time = 1;
+					copyOfArgs.push(popped);
+				}
+				if(time > 7){
+					const embed = makeEmbed('Invaild value',"Time must be between 0 and 7.", server);
+					sendAndDelete(message,embed, server );
+					return false;
+				}
 				
-				target.ban({ reason:args.slice(2).join(' '), days:time })
-				.then(a=>{
-					message.channel.send(`The user <@${target.id}> has been banned for ${args.slice(2).join(' ')}`);
-					return true;
-				}).catch(e => {
+
+				let reason = `No reason given by ${message.author.tag}`;
+				if(copyOfArgs[1]) reason = copyOfArgs.slice(1).join(' ');
+
+				if(!isNaN(time)) {
+					try {
+						
+						target.ban({ reason: reason, days:time })
+
+						.then(a=>{
+							const embed = makeEmbed("User banned.",`The user <@${target.id}> has been banned for \n\`${reason}\`\nAnd deleted messages sent by the uses in the last \`${time}\` days.`,"29C200",);
+							message.channel.send({embeds:[embed]});
+							return true;
+						}).catch(e => {
+							
+							if(!target.bannable) {
+								const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
+								sendAndDelete(message,embed, server );
+								return false;
 					
-					if(!target.bannable) {
+							}
+						})
+					} catch(error) {
+						
 						const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
 						sendAndDelete(message,embed, server );
+						console.log(error);
 						return false;
-			
 					}
-				})
-			} catch(error) {
-				
-				const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
-				sendAndDelete(message,embed, server );
-				return false;
+
 			}
-
-		} else if(typeof args[1] === 'string' && target.bannable) {
-			message.channel.send(`The user <@${target.id}> has been banned for :  ${args.slice(1).join(' ')}`);
-
-			message.delete({ timeout: server.deleteFailedMessagedAfter })
-				.catch(console.error);
-
-			target.ban({ reason:args.slice(1).join(' ') }).catch(a=>{
-				console.log(a);
-				const embed = makeEmbed('Missing Permission',"The bot can't ban that user.", server);
-				sendAndDelete(message,embed, server );
-				return false;
-			})
-			return true;
-
-		}
+			break;
 		}
 		
 		

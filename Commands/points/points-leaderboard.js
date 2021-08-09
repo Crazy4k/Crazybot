@@ -34,6 +34,7 @@ module.exports = {
                 }
             })
         }
+        // i really have no fucking clue how I made this but it works 🤷‍♂️
         let membersObj = cache[message.guild.id].members;
 
         let arrayOfObjects = [];
@@ -62,7 +63,7 @@ module.exports = {
 
 
         const emb = makeEmbed("points leaderboard", `${arrayOfStrings.join(" ")}`, server,false)
-        message.channel.send(emb);                                    
+        message.channel.send({ embeds: [emb]});                                    
         return true;
 	},
 

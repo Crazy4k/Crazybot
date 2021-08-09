@@ -40,7 +40,7 @@ module.exports = {
 						num1++;
 					}
 
-					message.channel.send(embed1);
+					message.channel.send({embeds:[embed1]});
 					return true;
 					break;
 				case "ms":
@@ -51,7 +51,7 @@ module.exports = {
 						embed2.addField(`**${num2}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num2++;
 					}
-					message.channel.send(embed2);
+					message.channel.send({embeds:[embed2]});
 					return true;
 					break;
 				case "moderation":
@@ -62,7 +62,7 @@ module.exports = {
 						embed3.addField(`**${num3}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num3++;
 					}
-					message.channel.send(embed3);
+					message.channel.send({embeds:[embed3]});
 					return true;
 					break;
 				case "other":
@@ -72,7 +72,7 @@ module.exports = {
 						embed4.addField(`**${num4}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num4++;
 					}
-					message.channel.send(embed4);
+					message.channel.send({embeds:[embed4]});
 					return true;
 					break;
 				case "points":
@@ -82,7 +82,7 @@ module.exports = {
 						embed5.addField(`**${num5}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num5++;
 					}
-					message.channel.send(embed5);
+					message.channel.send({embeds:[embed5]});
 					return true;
 					break;
 				case "aa":
@@ -92,7 +92,7 @@ module.exports = {
 						embed6.addField(`**${num6}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num6++;
 					}
-					message.channel.send(embed6);
+					message.channel.send({embeds:[embed6]});
 					return true;
 					break;
 				case "config":
@@ -102,7 +102,7 @@ module.exports = {
 						embed7.addField(`**${num7}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num7++;
 					}
-					message.channel.send(embed7);
+					message.channel.send({embeds:[embed7]});
 					return true;
 					break;
 				default:
@@ -123,7 +123,7 @@ module.exports = {
 				{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
 			);
 			embed.setURL("https://discord.gg/vSFp7SjHWp");
-			message.channel.send(embed);
+			message.channel.send( {embeds:[embed]} );
 			return true;
 			
 		}

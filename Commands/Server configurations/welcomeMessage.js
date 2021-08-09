@@ -3,7 +3,7 @@ const sync = require("../../functions/sync");
 const mongo = require("../../mongo");
 const serversSchema = require("../../schemas/servers-schema");
 const guildsCache = require("../../caches/guildsCache");
-
+const colors = require("../../colors.json");
 
 module.exports = {
 	name : 'welcome-message',
@@ -19,15 +19,15 @@ module.exports = {
 
 		if(!args[0]){
 			const embed = makeEmbed(`The join/leave message configuration.`,`The current join message is set to:\n **${server.hiString}**\n\nThe current leave message is set to:\n**${server.byeString}**\n\n\nType \`${server.prefix}${this.name} join\` to edit the join message.\nType \`${server.prefix}${this.name} leave\` to edit the leave message.`, server);
-			message.channel.send(embed);
+			message.channel.send({embeds: [embed]});
 			return false;
 		} else switch (args[0]) {
 			case "join":
 				let thing;
 				let embedo = makeEmbed("Join message configuration", `**Enter what you want the bot to say when a member joins your server**\nIf you want to ping the person, you can include \`{<member>}\` and it will become a ping.\n\nType\`reset\` if you want to set the message back to default.\nType \`0\` to cancel the command.`, server);
-				message.channel.send(embedo)
+				message.channel.send({embeds: [embedo]})
 					.then(m => {
-						message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+						message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
 							.then(async a => {   
 								switch (a.first().content.toLowerCase()) {
 									case "0":
@@ -53,12 +53,12 @@ module.exports = {
 											mongoose.connection.close();
 										}
 									});
-									const sus = makeEmbed("Join message changed ✅",`join message Changed to \n${guildsCache[message.guild.id].hiString}`,"29C200");
-									message.channel.send(sus);
+									const sus = makeEmbed("Join message changed ✅",`join message Changed to \n${guildsCache[message.guild.id].hiString}`,colors.successGreen);
+									message.channel.send({embeds: [sus]});
 									return true;
 								}else {
 									const embed69 = makeEmbed("The message wasn't changed because the given message was same as before.","",server);
-									message.channel.send(embed69);
+									message.channel.send({embeds: [embed69]});
 									return false;
 								}
 								
@@ -71,9 +71,9 @@ module.exports = {
 
 				let thing2;
 				let embedo2 = makeEmbed("Join message configuration", `**Enter what you want the bot to say when a member leaves your server**\nIf you want to ping the person, you can include \`{<member>}\` and it will become a ping.\n\nType\`reset\` if you want to set the message back to default.\nType \`0\` to cancel the command.`, server);
-				message.channel.send(embedo2)
+				message.channel.send({embeds: [embedo2]})
 					.then(m => {
-						message.channel.awaitMessages(messageFilter,{max: 1, time : 120000, errors: ['time']})
+						message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
 							.then(async a => {   
 								switch (a.first().content.toLowerCase()) {
 									case "0":
@@ -99,12 +99,12 @@ module.exports = {
 											mongoose.connection.close();
 										}
 									});
-									const sus2 = makeEmbed("Leave message changed ✅",`Leave message Changed to \n${guildsCache[message.guild.id].byeString}`,"29C200");
-									message.channel.send(sus2);
+									const sus2 = makeEmbed("Leave message changed ✅",`Leave message Changed to \n${guildsCache[message.guild.id].byeString}`,colors.successGreen);
+									message.channel.send({embeds: [sus2]});
 									return true;
 								}else {
 									const embed69 = makeEmbed("The message wasn't changed because the given message was same as before.","",server);
-									message.channel.send(embed69);
+									message.channel.send({embeds: [embed69]});
 									return false;
 								}
 								

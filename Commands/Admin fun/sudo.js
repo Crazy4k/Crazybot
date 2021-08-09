@@ -17,7 +17,8 @@ module.exports = {
 
 		const sudoStuff = args.slice(1).join(' ');
 
-		switch (checkChannels(message, args, 0)) {
+		let channel = checkChannels(message,args,0);
+		switch (channel) {
 			case "not valid":
 			case "not useable":
 				try {
@@ -54,7 +55,7 @@ module.exports = {
 					sendAndDelete(message,embed, server);
 					return false;
 				}
-				const location = message.guild.channels.cache.get(checkChannels(message,args, 0));
+				const location = message.guild.channels.cache.get(channel);
 				 
 					message.delete();
 		

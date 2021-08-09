@@ -5,13 +5,15 @@ const sendAndDelete = require("../../functions/sendAndDelete");
 module.exports = {
 	name : 'kick',
 	description : 'kicks any user (requires a reason)',
-	usage:'kick <@user> <reason>',
+	usage:'kick <@user or user id> [reason]',
 	whiteList:'KICK_MEMBERS',
 	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
 
-		switch (checkUseres(message, args, 0)) {
+
+		let id = checkUseres(message,args,0);
+		switch (id) {
 			case "not valid":
 			case "everyone":	
 			case "not useable":
@@ -21,23 +23,24 @@ module.exports = {
 				break;
 			case "no args": 
 				const embed2 = makeEmbed('Missing arguments',this.usage, server);
-				sendAndDelete(message,embed2, server );
+				sendAndDelete(message, embed2, server );
 				return false;	
 				break;
 			default:
-				const target = message.guild.members.cache.get(checkUseres(message, args, 0));
-				if(args.length === 1) {
-					const embed3 = makeEmbed('Missing argument : reason',this.usage, server);
-					sendAndDelete(message,embed3, server);
-					return false;			
-				} else if(!target.kickable){
-					const embed = makeEmbed('Missing Permissions',"Try making the bot's rank above the rank you are trying to kick.", server);
+
+				const target = message.guild.members.cache.get(id);
+				let reason = args.slice(1).join(' ');
+				if(!reason)reason = "No reason given.";
+
+				 if(!target.kickable){
+					const embed = makeEmbed('Missing Permissions',"The bot couldn't kick that user.", server);
 					sendAndDelete(message,embed, server);
 					return false;
 				}else {
-					target.kick({ reason:args.slice(1).join(' ') })
+					target.kick({ reason:reason })
 						.then( e => {
-							message.channel.send(`The user <@${target.id}> has been kicked from the server for "${args.slice(1).join(' ')}"`);
+							const embed = makeEmbed("User kicked.",`The user <@${target.id}> has been kicked for \n\`${reason}\`.`,"29C200",);
+							message.channel.send({embeds:[embed]});
 							return true;
 						})
 						.catch(e =>{ console.log(e)}); 

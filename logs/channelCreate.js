@@ -1,12 +1,14 @@
 const moment = require('moment');
-const Discord = require('discord.js');
 const mongo = require("../mongo");
 let guildsCache = require("../caches/guildsCache");
 const serversSchema = require("../schemas/servers-schema");
+const colors =require("../colors.json");
+const makeEmbed = require(".././functions/embed");
 
 
 module.exports = async(channel) => {
-	if(channel.type === 'dm') return;
+	if(channel.type === 'DM') return;
+	if(!channel.guild) return;
 
 	let i = guildsCache[channel.guild.id];
 	if(!i){
@@ -23,19 +25,15 @@ module.exports = async(channel) => {
 	try {
 			
 		const serverLogs = channel.guild.channels.cache.get(i.logs.serverLog);
-		if (typeof serverLogs !== 'undefined') {
-			const embed = new Discord.MessageEmbed()
-				.setColor('#29C200')
-				.setFooter('Developed by Crazy4k')
-				.setTimestamp()
-				.setTitle('Channel created')
-				.addFields(
-					{ name:'name', value:channel.name, inline: false },
-					{ name:'Category', value:channel.parent, inline: false },
-					{ name:'created at', value:`${moment(channel.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`, inline: false },
+		if (serverLogs) {
+			const embed = makeEmbed('Channel created',"",colors.successGreen,true);
+				embed.addFields(
+					{ name:'name', value: channel.name, inline: false },
+					{ name:'Category', value: `${channel.parent}`, inline: false },
+					{ name:'created at', value: `${moment(channel.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`, inline: false },
 					{ name:'ID', value: channel.id, inline: false },
 				);
-			serverLogs.send(embed);
+			serverLogs.send({embeds: [embed]});
 		}
 		
 			
