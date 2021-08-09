@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
+  },"engines": {
+    "node": "16.x"
   },
   "keywords": [],
   "author": "crazy4k",
