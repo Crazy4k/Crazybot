@@ -427,10 +427,8 @@ setTimeout(()=>{
 			{str:"to ;news",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
-			{str:"Among us!😳",type:{type: "PLAYING"}},
 			{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
 	
-		
 		];
 	
 	
