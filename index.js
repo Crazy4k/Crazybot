@@ -415,8 +415,8 @@ client.once('ready', async() => {
 });
 client.login(token);
 
-//const getranks = require("./noblox.js functions/getRanks");
-//const checkF = require("./noblox.js functions/checkF");
+/*const getranks = require("./noblox.js functions/getRanks");
+const checkF = require("./noblox.js functions/checkF");*/
 let cache = {};
 let guildId = "834734044729704508";
 let channelId = "875000788441767938";
@@ -424,8 +424,8 @@ let roleID = "875012695164846110";
 /*(async () => {
 	let info = await getranks();
 	checkF(20*1000, noblox, cache, info, client, guildId, channelId,roleID)
-})()
-*/
+})()*/
+
 setTimeout(()=>{
 	setInterval(()=>{
 		let members = 0;
