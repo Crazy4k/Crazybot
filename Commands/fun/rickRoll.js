@@ -77,7 +77,10 @@ module.exports = {
 		else if (reciver.id === message.guild.ownerId) {
 			sendAndDelete(message,'you can\'t rick roll the owner of the server', server);
 			return false;
-		} else {
+		} if(reciver.user.bot){
+			message.channel.send("Bots are too powerful to rickrool ");
+			return false;
+		}else {
 
 			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', colors.successGreen);
 

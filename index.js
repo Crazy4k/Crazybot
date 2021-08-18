@@ -211,7 +211,7 @@ client.on('guildDelete', async (guild) => {
 		await mongo().then(async (mongoose) =>{
 			try{ 
 				let data = await officerPointsSchema.findOne({_id:guild.id});
-				if(data !== null) officerPointsSchema.findOneAndRemove({_id:guild.id});
+				if(data !== null) await officerPointsSchema.findOneAndRemove({_id:guild.id});
 			} catch(err){
                 console.log(err)
             }finally{
@@ -226,10 +226,9 @@ client.on('guildDelete', async (guild) => {
 
 let recentlyRan = {};
 let globalRecentlyRan = {};
-let uniqueCooldowns = [];
+let uniqueCooldowns = {};
 // guildID-authorID-commandname
 //recentlyRan handles the cooldown mechanic
-
 
 
 //command handler|prefix based
@@ -291,7 +290,7 @@ client.on('messageCreate', async (message) => {
 					//then finally after all of the checks, the commands executes 
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
-					if(command)checkWhiteList(command, message, args, server, recentlyRan,uniqueCooldowns);
+					if(command)checkWhiteList(command, message, args, server, recentlyRan,uniqueCooldowns, globalRecentlyRan);
 					
 				}
 			
@@ -414,17 +413,44 @@ client.once('ready', async() => {
 
 });
 client.login(token);
-
-/*const getranks = require("./noblox.js functions/getRanks");
-const checkF = require("./noblox.js functions/checkF");*/
+/*
+const getranks = require("./noblxF/getRanks");
+const checkF = require("./noblxF/checkF");
 let cache = {};
 let guildId = "834734044729704508";
 let channelId = "875000788441767938";
 let roleID = "875012695164846110";
-/*(async () => {
+(async () => {
 	let info = await getranks();
 	checkF(20*1000, noblox, cache, info, client, guildId, channelId,roleID)
-})()*/
+})()
+*/
+
+/*
+const getAosRanks = require("./aostracker/getRanks");
+const checkAoss = require("./aostracker/intervalpresens");
+let AosguildId = "808425970976423956";
+let AoschannelId = "877280893155291136";
+let AosroleID = "877630989545914368";
+(async () => {
+	const comandos = await getAosRanks(9723651);
+	const doj = await getAosRanks(8224374);
+	const hydra = await getAosRanks(2981881);
+	const tic = await getAosRanks(10937425);
+	let prototype = [ ... comandos, ...doj, ...hydra, ...tic];
+	const poop = [...new Set(prototype)];
+
+
+	setInterval(async () => {
+		await checkAoss( noblox, poop, client, AosguildId, AoschannelId,AosroleID)	
+	}, 120 * 1000);
+		
+
+	
+})()
+
+*/
+
 
 setTimeout(()=>{
 	setInterval(()=>{

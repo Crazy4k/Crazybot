@@ -46,7 +46,7 @@ module.exports = {
 				case "ms":
 				case "tsu":
 					let num2 = 1;
-					let embed2 = makeEmbed("Help!","All of the commands in the `ms` category.",server);
+					let embed2 = makeEmbed("Help!","All of the commands in the `TSU` category.",server);
 					for (const i of hugeObj.ms) {
 						embed2.addField(`**${num2}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num2++;

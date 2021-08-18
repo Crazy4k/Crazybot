@@ -10,35 +10,45 @@ module.exports = async (command, message, args, server, recentlyRan, uniqueCoold
 	const globalCooldownString = `${message.guild.id}-${message.author.id}`;
 	const uniqueCooldownString = `${message.guild.id}-${command.name}`;
 	let = cooldownTime = 2;
-	const globalCooldownTime = 2;
+	const globalCooldownTime = 2000;
 	if(command.cooldown) cooldownTime = command.cooldown;
 	
 	if(!command.whiteList) {
 		try{
-			if(uniqueCooldowns.includes(uniqueCooldownString)){
-				const embed = makeEmbed("Slow down there !", `This command is on global cooldown, wait for it to end.`, server);
-				sendAndDelete(message, embed,server);
+			if(uniqueCooldowns[uniqueCooldownString]){
+				let seconds = cooldownTime * 1000
+				const embed = makeEmbed("Slow down there !",  `This command is on global, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
+				sendAndDelete(message, embed, server);
 				return false;
 			}
-			else
-			if(command.cooldown && recentlyRan[cooldownString]){
-				let seconds = command.cooldown * 1000
+			else if(command.cooldown && recentlyRan[cooldownString]){
+				let seconds = cooldownTime * 1000
 				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds `, server);
+				sendAndDelete(message, embed, server);
+				return false;
+			}
+			if( globalCooddowns[globalCooldownString]){
+				
+				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - globalCooddowns[globalCooldownString] - globalCooldownTime)/1000} seconds `, server);
 				sendAndDelete(message, embed, server);
 				return false;
 			}
 			const booly = await command.execute(message, args, server);
 			
 			if(booly) {
-				if(command.unique)uniqueCooldowns.push(uniqueCooldownString);
-				
-
+				if(command.unique)uniqueCooldowns[uniqueCooldownString] = moment();
 				recentlyRan[cooldownString] = moment();
+
 				setTimeout(() =>{
-					if(command.unique)uniqueCooldowns.splice(uniqueCooldowns.indexOf(uniqueCooldownString),1);
+					if(command.unique)uniqueCooldowns[uniqueCooldownString] = null;
 					recentlyRan[cooldownString] = null;
+		
 				}, cooldownTime * 1000);
 			}	
+			globalCooddowns[globalCooldownString] = moment();
+			setTimeout(()=>{
+				globalCooddowns[globalCooldownString] = null;
+			},globalCooldownTime);
 		}
 		catch(error) {
 			console.error(error);
@@ -52,27 +62,40 @@ module.exports = async (command, message, args, server, recentlyRan, uniqueCoold
 		
 		if(dude.permissions.has(Permissions.FLAGS[command.whiteList])) {
 
-			if(uniqueCooldowns.includes(uniqueCooldownString)){
-				const embed = makeEmbed("Slow down there !", `This command is on global cooldown, wait for it to end.`, server);
-				sendAndDelete(message, embed,server);
+			if(uniqueCooldowns[uniqueCooldownString]){
+				let seconds = cooldownTime * 1000
+				const embed = makeEmbed("Slow down there !",  `This command is on global, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
+				sendAndDelete(message, embed, server);
 				return false;
 			}
 			else if(command.cooldown && recentlyRan[cooldownString]){
-				let seconds = command.cooldown * 1000
+				let seconds = cooldownTime * 1000
 				const embed = makeEmbed("Slow down there !", `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds`, server);
 				sendAndDelete(message, embed,server);
+				return false;
+			}
+			if( globalCooddowns[globalCooldownString]){
+				
+				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - globalCooddowns[globalCooldownString] - globalCooldownTime)/1000} seconds `, server);
+				sendAndDelete(message, embed, server);
 				return false;
 			}
 			const booly = await command.execute(message, args, server);
 			
 			if(booly) {
-				if(command.unique)uniqueCooldowns.push(uniqueCooldownString);
+				if(command.unique)uniqueCooldowns[uniqueCooldownString ]= moment();
 				recentlyRan[cooldownString] = moment();
+
 				setTimeout(() =>{
-					if(command.unique)uniqueCooldowns.splice(uniqueCooldowns.indexOf(uniqueCooldownString),1);
+					if(command.unique)uniqueCooldowns[uniqueCooldownString] = null;
 					recentlyRan[cooldownString] = null;
 				}, cooldownTime * 1000);
 			}	
+			globalCooddowns[globalCooldownString] = moment();
+			setTimeout(()=>{
+				globalCooddowns[globalCooldownString] = null;
+			},globalCooldownTime);
+
 		} else{
 			const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
 			sendAndDelete(message,embed,server);
