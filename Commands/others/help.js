@@ -45,8 +45,9 @@ module.exports = {
 					break;
 				case "ms":
 				case "tsu":
+				case "events":
 					let num2 = 1;
-					let embed2 = makeEmbed("Help!","All of the commands in the `TSU` category.",server);
+					let embed2 = makeEmbed("Help!","All of the commands in the `events` category.",server);
 					for (const i of hugeObj.ms) {
 						embed2.addField(`**${num2}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n`,true);						
 						num2++;
@@ -115,7 +116,7 @@ module.exports = {
 			let embed = makeEmbed("Click me if you want to join our discord.", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server);
 			embed.addFields(
 				{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
-				{name:"**ms**", value:`Commands that are related to Military simulator.\n\`${server.prefix}${this.name} tsu\` `, inline:true},
+				{name:"**events**", value:`Commands that are related to hosting events using the bot.\n\`${server.prefix}${this.name} events\` `, inline:true},
 				{name:"**Moderation**", value:`Commands that do moderation actions.\n\`${server.prefix}${this.name} mod\` `, inline:true},
 				{name:"**points**", value:`Commands that are related to the points system.\n\`${server.prefix}${this.name} points\` `, inline:true},
 				{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}${this.name} AA\` `, inline:true},
