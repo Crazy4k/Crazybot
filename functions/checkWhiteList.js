@@ -17,7 +17,7 @@ module.exports = async (command, message, args, server, recentlyRan, uniqueCoold
 		try{
 			if(uniqueCooldowns[uniqueCooldownString]){
 				let seconds = cooldownTime * 1000
-				const embed = makeEmbed("Slow down there !",  `This command is on global, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
+				const embed = makeEmbed("Slow down there !",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
 				sendAndDelete(message, embed, server);
 				return false;
 			}
@@ -64,7 +64,7 @@ module.exports = async (command, message, args, server, recentlyRan, uniqueCoold
 
 			if(uniqueCooldowns[uniqueCooldownString]){
 				let seconds = cooldownTime * 1000
-				const embed = makeEmbed("Slow down there !",  `This command is on global, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
+				const embed = makeEmbed("Slow down there !",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - uniqueCooldowns[uniqueCooldownString] - seconds)/1000} seconds `, server);
 				sendAndDelete(message, embed, server);
 				return false;
 			}
