@@ -1,18 +1,16 @@
-const checkUseres = require("../../functions/checkUser");
+/*const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
 let cache = require("../../caches/pointsCache");
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");
-const promote = require("../../functions/promote");
 
 module.exports = {
-	name : 'points',
-	description : "shows your total points",
-    aliases:["p"],
-    cooldown: 6,
-	usage:'points [@user]',
+	name : 'rewards',
+	description : "Shows the achievable points rewards for the user",
+    cooldown: 3,
+	usage:'rewards [@user or id]',
     category:"points",
 	async execute(message, args, server) { 
 
@@ -65,7 +63,7 @@ module.exports = {
                         })
                         
                     }
-                    else if( servery.members[target] < 0 || !servery.members[target]){  
+                    else if( servery.members[target] < 0){  
 
                         await mongo().then(async (mongoose) =>{
                             try{
@@ -78,17 +76,23 @@ module.exports = {
                             } finally{
                                 console.log("WROTE TO DATABASE");
                                 mongoose.connection.close();
+                                
                             }
                         })
                     }
-                    await promote(message,target,server);
+                    if(!servery.rewards || Object.values(cache).length === 0){
+                        const embed1 = makeEmbed('Points Rewards aren\'t activated.',`Automatic points rewards aren't activated on this server, ask someone with admin permissions to enable them using \`${server.prefix}rewards-set\`.`, server);
+                        sendAndDelete(message,embed1, server);
+                        return false;
+                    } else {
                     const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
                     message.channel.send({embeds:[emb]});                                    
                     return true;
- 
+                }
                 }
         
 		
 	},
 
 };
+*/

@@ -6,12 +6,13 @@ const pointsSchema = require("../../schemas/points-schema");
 const checkUseres = require("../../functions/checkUser");
 const enable = require("../../functions/enablePoints");
 const {Permissions} = require("discord.js");
+const promote = require("../../functions/promote");
 
 module.exports = {
 	name : 'points-remove',
 	description : "Removes points from a user in a server.",
     aliases:["p-remove","p-","points-","points-delete","p-delete"],
-    cooldown: 5 ,
+    cooldown: 6 ,
     category:"points",
 	usage:'points-remove <@user> <points> [reason]',
     async execute(message, args, server)  { 
@@ -77,6 +78,7 @@ module.exports = {
                     default:
                         if(servery.members[persona]=== undefined)servery.members[persona] = 0;
                         servery.members[persona] -= parseInt(pointsToGive);
+                        if( servery.members[persona] < 0 || !servery.members[persona])  servery.members[persona] = 0;
                 }
                     mongo().then(async (mongoose) =>{
                         try{
@@ -85,7 +87,8 @@ module.exports = {
                                 whiteListedRole:servery.whiteListedRole,
                                 members:servery.members    
                             },{upsert:true});
-    
+                            await promote(message,persona,server);
+
                             const variable = makeEmbed("points Removed ✅",`Removed ${pointsToGive} points from <@${persona}>`, server);
                             message.channel.send({embeds:[variable]});
                             if(log){

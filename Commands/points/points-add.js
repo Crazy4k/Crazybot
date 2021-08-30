@@ -7,12 +7,12 @@ const pointsSchema = require("../../schemas/points-schema");
 const checkUseres = require("../../functions/checkUser");
 const enable = require("../../functions/enablePoints");
 const {Permissions} = require("discord.js");
-
+const promote = require("../../functions/promote");
 module.exports = {
 	name : 'points-add',
 	description : "Adds points to a member in the server",
     aliases:["p-add","p+","points+","points-give","p-give"],
-    cooldown: 5,
+    cooldown: 6,
 	usage:'points-add <@user> <number> [reason]',
     category:"points",
 	async execute(message, args, server)  { 
@@ -79,6 +79,7 @@ module.exports = {
                 default:
                     if(servery.members[persona]=== undefined)servery.members[persona] = 0;
                     servery.members[persona] += parseInt(pointsToGive);
+                    if( servery.members[persona] < 0 || !servery.members[persona])  servery.members[persona] = 0;
             }
                 mongo().then(async (mongoose) =>{
                     try{
@@ -87,7 +88,7 @@ module.exports = {
                             whiteListedRole:servery.whiteListedRole,
                             members:servery.members    
                         },{upsert:true});
-
+                        await promote(message,persona,server);
                         const variable = makeEmbed("points added ✅",`Added ${pointsToGive} points to <@${persona}>`, server);
                         message.channel.send({embeds:[variable]});
 

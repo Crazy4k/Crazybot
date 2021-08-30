@@ -127,14 +127,16 @@ module.exports = async (message,) => {
             let temp = {	
                 _id: message.guild.id,
                 whiteListedRole:"",
-                members:{}
+                members:{},
+                rewards:{}
 
             }
             try{
                 await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
                     _id:message.guild.id,
                     whiteListedRole:"",
-                    members:{}   
+                    members:{},
+                    rewards : {} 
                 },{upsert:true});
                 pointsCache[message.guild.id] = temp;
             } finally{
@@ -268,7 +270,7 @@ module.exports = async (message,) => {
                 await officerPointsSchema.findOneAndUpdate({_id:message.guild.id},{
                     _id:message.guild.id,
                     whiteListedRole:"",
-                    members:{}   
+                    members:{}
                 },{upsert:true});
                 officerPointsCache[message.guild.id] = temp;
             } finally{

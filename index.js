@@ -283,7 +283,9 @@ client.on('messageCreate', async (message) => {
 					// then the declaration of the most important variables
 					const prefix = server.prefix;
 					if (!message.content.startsWith(prefix) || message.author.bot)return;
-					const args = message.content.slice(prefix.length).split(/ +/);
+					let bootLegArgs = message.content.slice(prefix.length).split(/\n/).join(" ");
+					const args = bootLegArgs.split(/ +/);
+					//creating an array of arguments. New line is treated as space bar.
 					let commandName = args.shift().toLowerCase();
 					//break if the command given was invalid
 					//if (!client.commands.has(commandName)) return;
@@ -409,7 +411,7 @@ client.once('ready', async() => {
 			mongoose.connection.close();
 		}
 	})
-	console.log('Bot succesfuly launched.');
+	console.log(`Bot succesfuly logged in as ${client.user.tag} [${client.user.id}]`);
 
 });
 client.login(token);

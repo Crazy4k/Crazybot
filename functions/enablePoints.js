@@ -27,12 +27,14 @@ module.exports = async (message, server) => {
                 await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
                     _id:message.guild.id,
                     whiteListedRole:"",
-                    members:{}   
+                    members:{},
+                    rewards:{} 
                 },{upsert:true});
                 servery = cache[message.guild.id] = {
                     _id:message.guild.id,
                     whiteListedRole:"",
-                    members:{}  
+                    members:{},
+                    rewards:{}
                 }
             } finally{
                 

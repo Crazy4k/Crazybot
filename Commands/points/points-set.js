@@ -6,11 +6,12 @@ const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");
 const {Permissions} = require("discord.js");
+const promote = require("../../functions/promote");
 
 module.exports = {
 	name : 'points-set',
 	description : "Sets a person's points to whatever the second arugment is.",
-    cooldown: 5,
+    cooldown: 10,
     aliases:["p-set","pset","p-change","p-edit","pchange","pedit"],
 	usage:'points-set <@user> <points> [reason]',
     category:"points",
@@ -70,6 +71,7 @@ module.exports = {
                     }
                     let before = servery.members[target]; 
                     servery.members[target] = pointstoChange;
+                    if( servery.members[target] < 0 || !servery.members[target])  servery.members[persona] = 0;
 
                     if(servery.members[target]=== undefined)servery.members[target] = 0;
                     await mongo().then(async (mongoose) =>{
@@ -86,6 +88,7 @@ module.exports = {
                             mongoose.connection.close();
                         }
                     })
+                    await promote(message,target,server);
                     const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
                     message.channel.send({embeds:[emb]});     
                     if(log){
