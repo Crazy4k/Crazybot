@@ -11,6 +11,8 @@ let hydraId = 2981881;
 let TCId = 9723651;
 let dojId = 8224374;
 let orderOfValkId = 10937425;
+let TDR = 8675204;
+let OoTNR = 7033913;
 
 module.exports = async function stalk( noblox, userIds, discordClient ,guildId = null, channelId = null, roleID = null ){
         
@@ -51,6 +53,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         let TC = groups.find(e => e.Id === TCId);
                         let doj = groups.find(e => e.Id === dojId);
                         let orderOfValk = groups.find(e => e.Id === orderOfValkId);
+                        let Tdr =  groups.find(e => e.Id === TDR);
+                        let orderofninth = groups.find(e => e.Id === OoTNR);
 
                         const embed = makeEmbed("A raider joined Military simulator!",`${username} is now playing MS1.`,colors.successGreen,true);
                         embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
@@ -58,6 +62,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         if(TC)embed.addField(`[TC] The Commandos`, `${TC.Role}`, true);
                         if(doj)embed.addField(`[DoJ] Department of Justice`, `${doj.Role}`, true);
                         if(orderOfValk)embed.addField(`Οrder of the Valkyrie`, `${orderOfValk.Role}`, true);
+                        if(Tdr)embed.addField(`[TDR] The Dark Resistance`, `${Tdr.Role}`, true);
+                        if(orderofninth)embed.addField(`Order of The Ninth's Revenge`, `${orderofninth.Role}`, true);
                         
                         embed.addField("Quick travel",`[Link](https://www.roblox.com/games/2988554876)`,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
@@ -105,6 +111,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         let TC = groups.find(e => e.Id === TCId);
                         let doj = groups.find(e => e.Id === dojId);
                         let orderOfValk = groups.find(e => e.Id === orderOfValkId);
+                        let Tdr =  groups.find(e => e.Id === TDR);
+                        let orderofninth = groups.find(e => e.Id === OoTNR);
 
                         const embed = makeEmbed("A raider joined Military simulator!",`${username} is now playing MS1.`,colors.successGreen,true);
                         embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
@@ -112,6 +120,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         if(TC)embed.addField(`[TC] The Commandos`, `${TC.Role}`, true);
                         if(doj)embed.addField(`[DoJ] Department of Justice`, `${doj.Role}`, true);
                         if(orderOfValk)embed.addField(`Οrder of the Valkyrie`, `${orderOfValk.Role}`, true);
+                        if(Tdr)embed.addField(`[TDR] The Dark Resistance`, `${Tdr.Role}`, true);
+                        if(orderofninth)embed.addField(`Order of The Ninth's Revenge`, `${orderofninth.Role}`, true);
                         
                         embed.addField("Quick travel",`[Link](https://www.roblox.com/games/2988554876)`,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
@@ -144,6 +154,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         let TC = groups.find(e => e.Id === TCId);
                         let doj = groups.find(e => e.Id === dojId);
                         let orderOfValk = groups.find(e => e.Id === orderOfValkId);
+                        let Tdr =  groups.find(e => e.Id === TDR);
+                        let orderofninth = groups.find(e => e.Id === OoTNR);
 
                         const embed = makeEmbed("A raider joined Military simulator!",`${username} is now playing MS1.`,colors.successGreen,true);
                         embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
@@ -151,6 +163,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                         if(TC)embed.addField(`[TC] The Commandos`, `${TC.Role}`, true);
                         if(doj)embed.addField(`[DoJ] Department of Justice`, `${doj.Role}`, true);
                         if(orderOfValk)embed.addField(`Οrder of the Valkyrie`, `${orderOfValk.Role}`, true);
+                        if(Tdr)embed.addField(`[TDR] The Dark Resistance`, `${Tdr.Role}`, true);
+                        if(orderofninth)embed.addField(`Order of The Ninth's Revenge`, `${orderofninth.Role}`, true);
                         
                         embed.addField("Quick travel",`[Link](https://www.roblox.com/games/2988554876)`,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
@@ -177,6 +191,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                             let TC = groups.find(e => e.Id === TCId);
                             let doj = groups.find(e => e.Id === dojId);
                             let orderOfValk = groups.find(e => e.Id === orderOfValkId);
+                            let Tdr =  groups.find(e => e.Id === TDR);
+                            let orderofninth = groups.find(e => e.Id === OoTNR);
     
                             const embed = makeEmbed("A raider joined Military simulator!",`${username} is now playing MS1.`,colors.successGreen,true);
                             embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
@@ -184,6 +200,8 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                             if(TC)embed.addField(`[TC] The Commandos`, `${TC.Role}`, true);
                             if(doj)embed.addField(`[DoJ] Department of Justice`, `${doj.Role}`, true);
                             if(orderOfValk)embed.addField(`Οrder of the Valkyrie`, `${orderOfValk.Role}`, true);
+                            if(Tdr)embed.addField(`[TDR] The Dark Resistance`, `${Tdr.Role}`, true);
+                            if(orderofninth)embed.addField(`Order of The Ninth's Revenge`, `${orderofninth.Role}`, true);
                             
                             embed.addField("Quick travel",`[Link](https://www.roblox.com/games/2988554876)`,true);
                             embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)

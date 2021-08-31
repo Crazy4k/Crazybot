@@ -220,7 +220,7 @@ module.exports = {
                         if(servery.rewards[thing][1] === "" || !servery.rewards[thing][1]){shit ="`None`";achievable = "**NO**"}
                         if(servery.rewards[thing][0] <= 0) achievable = "**NO**"
                         embed.addFields(
-                            {name:`**Required points:**`,value:`\`${thing}\`\nChange Value: \`${server.prefix}${this.name} ${thing} points\``,inline:false},
+                            {name:`**Required points:**`,value:`\`${servery.rewards[thing][0]}\`\nChange Value: \`${server.prefix}${this.name} ${thing} points\``,inline:false},
                             {name:`**Given role:**`,value:`${shit}\nChange Value: \`${server.prefix}${this.name} ${thing} role\``,inline:false},
                             {name:`**Achievable?:**`,value:`${achievable}`,inline:false},
                         );

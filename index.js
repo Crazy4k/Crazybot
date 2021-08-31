@@ -415,18 +415,7 @@ client.once('ready', async() => {
 
 });
 client.login(token);
-/*
-const getranks = require("./noblxF/getRanks");
-const checkF = require("./noblxF/checkF");
-let cache = {};
-let guildId = "834734044729704508";
-let channelId = "875000788441767938";
-let roleID = "875012695164846110";
-(async () => {
-	let info = await getranks();
-	checkF(20*1000, noblox, cache, info, client, guildId, channelId,roleID)
-})()
-*/
+
 
 /*
 const getAosRanks = require("./aostracker/getRanks");
@@ -439,13 +428,16 @@ let AosroleID = "877630989545914368";
 	const doj = await getAosRanks(8224374);
 	const hydra = await getAosRanks(2981881);
 	const tic = await getAosRanks(10937425);
-	let prototype = [ ... comandos, ...doj, ...hydra, ...tic];
+	const TDR =  await getAosRanks(8675204);
+	const OoTNR =  await getAosRanks(7033913);
+
+	let prototype = [ ... comandos, ...doj, ...hydra, ...tic,...TDR,...OoTNR];
 	const poop = [...new Set(prototype)];
 
 
 	setInterval(async () => {
 		await checkAoss( noblox, poop, client, AosguildId, AoschannelId,AosroleID)	
-	}, 120 * 1000);
+	}, 180 * 1000);
 		
 
 	

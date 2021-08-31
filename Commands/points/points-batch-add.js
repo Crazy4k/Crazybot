@@ -24,9 +24,14 @@ const checkUseres = (message, arg) => {
             let thing = message.mentions.members.get(id);
             if(thing)return thing.id;
             else return "not valid";
-        }else if(message.mentions.everyone) {
-            return "everyone";
-        } else return "not useable";
+        }else{
+            let e = message.guild.members.cache.find(user => user.displayName.toLowerCase() === arg.toLowerCase())
+			if(e){
+				return e.id;
+			}else if(message.mentions.everyone) {
+                return "everyone";
+            } else return "not useable";
+        }
     } else return "no args";
 }
 
@@ -125,7 +130,7 @@ module.exports = {
                         if( servery.members[persona] < 0 || !servery.members[persona])  servery.members[persona] = 0;
 
                         const usero = message.guild.members.cache.get(persona);
-                        embed.addField( `**${index}) ✅ Success**`,`Successfully added ${pointsToGive} points to ${usero.displayName}!`, false);
+                        embed.addField( `**${index}) ✅ Success**`,`Successfully added ${pointsToGive} points to <@${usero.id}>!`, false);
                         if( typeof edited[persona] === "object" ) edited[persona][0] = parseInt(edited[persona][0]) + parseInt(pointsToGive);
                         else if (typeof edited[persona] === "undefined") edited[persona] = [parseInt(pointsToGive), reason];
                         await promote(message,persona,server);
