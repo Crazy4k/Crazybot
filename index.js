@@ -17,11 +17,8 @@ let intentArray =[
 	Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 	Intents.FLAGS.GUILD_MESSAGE_TYPING,
 	Intents.FLAGS.DIRECT_MESSAGES,
-	Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-	Intents.FLAGS.DIRECT_MESSAGE_TYPING,
 ];
-
-const client = new Discord.Client({ intents: intentArray });
+const client = new Discord.Client({ intents: intentArray ,partials:["CHANNEL"]});
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const cookie = process.env.NBLXJS_COOKIE;
@@ -31,8 +28,9 @@ const checkWhiteList = require("./functions/checkWhiteList");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
+const raiderTrackerSchema = require("./schemas/raiderTracker-schema");
 const officerPointsSchema = require("./schemas/officerPoints-schema");
-let guildsCache = require("./caches/guildsCache");
+let {raiderTrackerChannelCache, guildsCache, commandCoolDownCache} = require("./caches/botCache");
 const sync = require("./functions/sync");
 const keepAlive = require('./server.js');
 const config = require("./config.json");
@@ -224,18 +222,25 @@ client.on('guildDelete', async (guild) => {
 	} catch (err) {console.log(err);}
 });
 
-let recentlyRan = {};
-let globalRecentlyRan = {};
-let uniqueCooldowns = {};
-// guildID-authorID-commandname
-//recentlyRan handles the cooldown mechanic
-
 
 //command handler|prefix based
 //i like to devide this into multiple pieces since it's a bit weird
 client.on('messageCreate', async (message) => {
-	//no dm commands
-	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM")return;
+	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM"){
+		const prefix = config.bot_info.dmSettings.prefix;
+			if (!message.content.startsWith(prefix) || message.author.bot)return;
+			let bootLegArgs = message.content.slice(prefix.length).split(/\n/).join(" ");
+			const args = bootLegArgs.split(/ +/);
+			let commandName = args.shift().toLowerCase();
+			const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
+			if(command){
+				if(command.worksInDMs){
+					checkWhiteList(command, message, args, config.bot_info.dmSettings, client,commandCoolDownCache, true);
+				} else return;
+			} else return;
+			
+			
+		}
 	if(!message.guild)return;
 	//retrive guild data from data base (only once then it will be saved in a cache)
 
@@ -292,7 +297,7 @@ client.on('messageCreate', async (message) => {
 					//then finally after all of the checks, the commands executes 
 					//btw checkWhiteList() is a pretty big function that does exactly what it called, but with a bunch of extra check. Path: ./functions/checkWhiteList.js
 					const command = client.commands.get(commandName) || client.commands.find(a => a.aliases && a.aliases.includes(commandName));
-					if(command)checkWhiteList(command, message, args, server, recentlyRan,uniqueCooldowns, globalRecentlyRan);
+					if(command)checkWhiteList(command, message, args, server,client ,commandCoolDownCache);
 					
 				}
 			
@@ -417,13 +422,21 @@ client.once('ready', async() => {
 client.login(token);
 
 
-/*
+
 const getAosRanks = require("./aostracker/getRanks");
 const checkAoss = require("./aostracker/intervalpresens");
-let AosguildId = "808425970976423956";
-let AoschannelId = "877280893155291136";
-let AosroleID = "877630989545914368";
+
 (async () => {
+
+	await mongo().then(async (mongoose) =>{
+		try{
+			let data = await raiderTrackerSchema.findOne({_id:"69"});
+			raiderTrackerChannelCache = data;
+		} finally{
+			console.log("FETCHED TRACKER CHANNELS");
+			mongoose.connection.close();
+		}
+	})
 	const comandos = await getAosRanks(9723651);
 	const doj = await getAosRanks(8224374);
 	const hydra = await getAosRanks(2981881);
@@ -436,14 +449,14 @@ let AosroleID = "877630989545914368";
 
 
 	setInterval(async () => {
-		await checkAoss( noblox, poop, client, AosguildId, AoschannelId,AosroleID)	
+		await checkAoss( noblox, poop, client, raiderTrackerChannelCache.channels)	
 	}, 180 * 1000);
 		
 
 	
 })()
 
-*/
+
 
 
 setTimeout(()=>{
@@ -455,7 +468,8 @@ setTimeout(()=>{
 	
 		let status = [
 			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
-			{str:"to ;news",type:{type: "LISTENING"}},
+			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
+			{str:"to ;updates",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
 			{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},

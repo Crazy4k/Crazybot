@@ -1,7 +1,4 @@
-let pointsCache = require("../caches/pointsCache");
-let guildsCache = require("../caches/guildsCache");
-let warnCache = require("../caches/warnCache");
-let officerPointsCache = require("../caches/officerPointsCache");
+let {pointsCache, guildsCache, warnCache, officerPointsCache } = require("../caches/botCache");
 
 const pointsSchema = require("../schemas/points-schema");
 const guildsSchema = require("../schemas/servers-schema");

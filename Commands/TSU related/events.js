@@ -1,7 +1,5 @@
-const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
-const sendAndDelete = require("../../functions/sendAndDelete");
-const eventsCache = require("../../caches/eventsCache");
+const {eventsCache} = require("../../caches/botCache");
 
 
 
@@ -16,7 +14,6 @@ module.exports = {
 	usage:'events',
 
 	execute(message, args, server) { 
-        console.log(eventsCache);
 
 
         if(eventsCache[message.guild.id]){

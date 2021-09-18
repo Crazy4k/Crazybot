@@ -1,6 +1,6 @@
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/botCache").pointsCache;
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");

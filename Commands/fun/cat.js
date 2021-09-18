@@ -8,6 +8,7 @@ module.exports = {
 	description : 'Sends a random cat pic.',
 	usage:'cat',
 	cooldown: 5,
+	worksInDMs: true,
 	category:"fun",
 	execute(message, args, server) {
 		try {

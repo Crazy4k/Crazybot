@@ -14,10 +14,11 @@ for (const item in updateObj) {
 poopyArray.reverse();
 
 module.exports = {
-	name : 'news',
-	aliases:["updates","new",],
+	name : 'updates',
+	aliases:["patchnotes","patch-notes","patches","update"],
 	description : "Sends a message that contains a summary of the latest update.",
 	cooldown: 20,
+	worksInDMs: true,
 	usage:'updates [update (ex: ;updates 0.6.1)]',
     category:"other",
 	execute(message, args, server) {

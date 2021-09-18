@@ -1,4 +1,4 @@
-let cache  = require("..//caches/pointsCache");
+let cache  = require("..//caches/botCache").pointsCache
 const pointsSchema = require("../schemas/points-schema");
 const mongo = require("../mongo");
 const enable = require("./enablePoints");
@@ -42,8 +42,11 @@ module.exports = async (message, guildMember, server) => {
                         let role = servery.rewards[i][1]
                         if(role !== "" && role)arr.push(role);
                     }
-                    guy.roles.remove(arr).catch(e=>console.log(e));
-                   setTimeout(()=>{guy.roles.add(ar[0][1]).catch(e=>console.log(e));},1000) 
+                    if(!guy.roles.cache.has(ar[0][1])){
+                        guy.roles.remove(arr).catch(e=>console.log(e));
+                        setTimeout(()=>{guy.roles.add(ar[0][1]).catch(e=>console.log(e));},1000) 
+                    }
+                    
                 } 
             }
         }else{

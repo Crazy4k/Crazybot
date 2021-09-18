@@ -4,8 +4,7 @@ const roblox = require('noblox.js');
 const makeEmbed = require("../functions/embed");
 const colors = require("../colors.json");
 const Discord = require('discord.js');
-
-let cache = {};
+let cache = require("../caches/botCache").raiderCache;
 
 let hydraId = 2981881;
 let TCId = 9723651;
@@ -14,12 +13,15 @@ let orderOfValkId = 10937425;
 let TDR = 8675204;
 let OoTNR = 7033913;
 
-module.exports = async function stalk( noblox, userIds, discordClient ,guildId = null, channelId = null, roleID = null ){
+module.exports = async function stalk( noblox, userIds, discordClient , channelId = null){
         
-        
-    let log =  discordClient.guilds.cache.get(guildId).channels.cache.get(channelId);
+    let arrayOfChannels = [];
+    for (let id of channelId) {
+        let log =  discordClient.channels.cache.get(id);
+        if(log)arrayOfChannels.push(log.id);
+    }
 
-    if(log){
+    if(arrayOfChannels.length){
         let iter = userIds.length / 100;
         let data = [];
         for (let i = 0; i < iter; i++) {
@@ -76,11 +78,17 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
 
             }
             if(joins.length){
-                if(log){
-                    
-                    for(let e of joins){
-                        log.send({content:`<@&${roleID}>`,embeds:[e]})
+                for(let id of arrayOfChannels){
+                    let log = discordClient.channels.cache.get(id);
+                    if(log){
+                        let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
+                        let ping = "";
+                        if(role)ping = `<@&${role.id}>`
+                        for(let e of joins){
+                            log.send({content:ping,embeds:[e]})
+                        }
                     }
+                    
                 }
 
             }
@@ -96,10 +104,10 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
                     newCache[user.userId] = `${user.rootPlaceId}`;
                 }
             }
-            console.log(1);
+            /*console.log(1);
             console.log(cache);
             console.log(2);
-            console.log(newCache);
+            console.log(newCache);*/
             //if(0 && 1)
             if(!Object.values(cache).length  && Object.values(newCache).length ) {
                 for(let I in newCache){
@@ -226,20 +234,30 @@ module.exports = async function stalk( noblox, userIds, discordClient ,guildId =
             cache = newCache;
 
             if(joins.length){
-                if(log){
-                    for(let e of joins){
-                        log.send({content:`<@&${roleID}>`,embeds:[e]})
+                for(let id of arrayOfChannels){
+                    let log = discordClient.channels.cache.get(id);
+                    if(log){
+                        let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
+                        let ping = "";
+                        if(role)ping = `<@&${role.id}>`
+                        for(let e of joins){
+                            log.send({content:ping,embeds:[e]})
+                        }
                     }
+                    
                 }
 
             }
             if(leaves.length){
-                if(log){
-                    for(let e of leaves){
-                        log.send({embeds:[e]})
+                for(let id of arrayOfChannels){
+                    let log = discordClient.channels.cache.get(id);
+                    if(log){
+                        for(let e of leaves){
+                            log.send({embeds:[e]})
+                        }
                     }
+                    
                 }
-
             }
             cache = newCache;
         }

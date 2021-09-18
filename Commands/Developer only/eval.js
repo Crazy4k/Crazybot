@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const fs = require("fs");
+const mongo = require("../../mongo")
 const {bot_info} = require("../../config.json");
 const makeEmbed = require('../../functions/embed');
 const authorID = bot_info.authorID;
@@ -7,14 +8,15 @@ const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const client = require("../../index");
 const moment = require("moment");
-const timerCache = require("../../caches/timerCache");
-let fetchesCache = require("../../caches/fetchesCache");
+const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
+const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
 
 module.exports = {
 	name : 'eval',
 	description : 'makes the bot do stuff with eval();',
 	usage:'eval ``` code ``',
+    worksInDMs: true,
 	async execute(message, args, server) {
 
         if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
@@ -24,7 +26,8 @@ module.exports = {
         
         try {
             let evalString = args.join(" ");
-            const embed1 = makeEmbed("Succes ✅", `\`\`\`${eval(evalString)}\`\`\``, "24D900");
+            let str = "```" +`${eval(evalString)}`+ "```"
+            const embed1 = makeEmbed("Succes ✅", str, "24D900");
             message.channel.send({embeds: [embed1]});
 
         } catch (error) {

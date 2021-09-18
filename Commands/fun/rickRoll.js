@@ -7,6 +7,7 @@ const colors = require("../../colors.json");
 const rickRollLinks = [
 	"<https://www.youtube.com/watch?v=dQw4w9WgXcQ>"
 ];
+const {Permissions} = require("discord.js");
 const randomStrings =[
 	"Cute kitten does a back flip",
 	"puppy thinks he is a cat",
@@ -71,12 +72,16 @@ module.exports = {
 			message.channel.send('wtf');	
 			const embed = makeEmbed('imagine Rick rolling yourself', `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
 
-			reciver.send({embeds:[embed]});
+			reciver.createDM().then(dm =>{
+				
+				dm.send({embeds:[embed]}).catch(e=> console.log(e));
+				
+			}).catch(e=> console.log(e));
 			return false;
 		}
 		// if the reciver is the owner
-		else if (reciver.id === message.guild.ownerId) {
-			sendAndDelete(message,'you can\'t rick roll the owner of the server', server);
+		else if(reciver.permissions.has(Permissions.FLAGS["ADMINISTRATOR"])) {
+			sendAndDelete(message,'you can\'t rick roll an admin', server);
 			return false;
 		} if(reciver.user.bot){
 			message.channel.send("Bots are too powerful to rickrool ");
@@ -91,7 +96,10 @@ module.exports = {
 
 
 			sendAndDelete(message,embedToPublic,server, true)
-			reciver.send({embeds: [embed]});
+			reciver.createDM().then(dm =>{
+				
+				dm.send({embeds:[embed]}).catch(e=> console.log(e));	
+			}).catch(e=> console.log(e));
 			return true;
 		}
 		}}catch(yes){

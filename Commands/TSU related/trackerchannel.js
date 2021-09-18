@@ -1,21 +1,21 @@
-const makeEmbed = require("../../functions/embed");
-const checkRoles = require("../../functions/Response based Checkers/checkRoles");
+/*const makeEmbed = require("../../functions/embed");
+const checkChannels = require("../../functions/Response based Checkers/checkChannels");
 const mongo = require("../../mongo");
-let cache = require("../../caches/botCache").guildsCache
-const serversSchema= require("../../schemas/servers-schema");
+let raiderTrakcerchannelsCache = require("../../caches/raiderTrakcerchannelsCache");
+const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
 
 
 module.exports = {
-	name : 'host-role',
-	description : "Sets the role that will be able to use the !host command.",
+	name : 'tracker-channel',
+	description : "Sets the channel that will send pings when raiders join (raider tracker).",
     cooldown: 30 ,
-    aliases:["h-role","hostrol","hrole"],
-	usage:'host-role',
+    aliases:["trackerchannel","trackerc"],
+	usage:'tracker-channel',
     category:"ms",
     whiteList:'ADMINISTRATOR',
 	async execute(message, args, server) { 
 
-        let servery = cache[message.guild.id];
+        let channelIds = raiderTrakcerchannelsCache.channels;
 
             
             
@@ -88,3 +88,4 @@ module.exports = {
         }           
     }
 };
+*/

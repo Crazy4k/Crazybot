@@ -1,7 +1,7 @@
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-const eventsCache = require("../../caches/eventsCache");
+const {eventsCache} = require("../../caches/botCache");
 var { Timer } = require("easytimer.js");
 const {Permissions} = require("discord.js");
 

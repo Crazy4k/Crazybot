@@ -2,7 +2,7 @@ const makeEmbed = require("../../functions/embed");
 const sync = require("../../functions/sync");
 const mongo = require("../../mongo");
 const serversSchema = require("../../schemas/servers-schema");
-const guildsCache = require("../../caches/guildsCache");
+const {guildsCache} = require("../../caches/botCache");
 const colors = require("../../colors.json");
 
 module.exports = {

@@ -1,7 +1,7 @@
 const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/botCache").pointsCache;
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");
@@ -92,7 +92,7 @@ module.exports = {
                     const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
                     message.channel.send({embeds:[emb]});     
                     if(log){
-                        let embed = makeEmbed("Officer points changed.","","3987FF",true);
+                        let embed = makeEmbed("Points changed.","","3987FF",true);
                         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                         embed.addFields(
                         {name: "Chagned by:", value: `<@${message.author.id}>`, inline:true},  

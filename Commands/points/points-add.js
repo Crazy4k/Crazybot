@@ -1,7 +1,7 @@
 
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/botCache").pointsCache;
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const checkUseres = require("../../functions/checkUser");
@@ -12,7 +12,7 @@ module.exports = {
 	name : 'points-add',
 	description : "Adds points to a member in the server",
     aliases:["p-add","p+","points+","points-give","p-give"],
-    cooldown: 6,
+    cooldown: 7,
 	usage:'points-add <@user> <number> [reason]',
     category:"points",
 	async execute(message, args, server)  { 

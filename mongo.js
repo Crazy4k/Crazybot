@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 const mongoPath = process.env.MONGO_PATH;
-let fetchesCache = require("./caches/fetchesCache");
+let {fetchesCache} = require("./caches/botCache");
 
 module.exports = async () => {
     await mongoose.connect(mongoPath, {

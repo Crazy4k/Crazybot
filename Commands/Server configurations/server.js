@@ -5,7 +5,7 @@ const cancerCultureMessage = "Command cancelled successfully";
 const checkChannels = require("../../functions/Response based Checkers/checkChannels");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
-let guildsCache = require("../../caches/guildsCache");
+let {guildsCache} = require("../../caches/botCache");
 const serversSchema = require("../../schemas/servers-schema");
 
 module.exports = {

@@ -1,5 +1,5 @@
 
-let muteCache = require("../../caches/muteCache");
+let {muteCache} = require("../../caches/botCache");
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
@@ -51,10 +51,11 @@ module.exports = {
 						muteCache[`${message.author.id}-${message.guild.id}`] = null;
 							
 						const logEmbed = makeEmbed("Unmute","","00E7FE",true);
-						logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+						logEmbed.setAuthor(member.user.tag, member.user.displayAvatarURL());
 						logEmbed.addFields(
-							{ name:'Umuted by: ', value:`<@${message.authorId}>`, inline:true },
-							{ name : "Reason:", value:reason, inline:true}
+							{ name: 'Unmuted: ', value: `<@${member.id}>-${member.id}`, inline:false },
+							{ name: 'Unmuted by: ', value: `<@${message.author.id}>`, inline:false },
+							{ name : "Reason: ", value: reason, inline:false}
 						);
 						if(muteLog)muteLog.send({embeds:[logEmbed]});
 						

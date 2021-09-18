@@ -1,6 +1,7 @@
 
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
+const colors = require("../../colors.json");
 
 module.exports = {
 	name : 'unban',
@@ -21,7 +22,7 @@ module.exports = {
 			sendAndDelete(message,embed, server);
 			return false;	
 		}
-
+		const modLog = message.guild.channels.cache.get(server.logs.warningLog);
 
 		try {
 			message.guild.bans.fetch(target)
@@ -29,6 +30,15 @@ module.exports = {
 				message.guild.bans.remove(target,reason).then(yes=>{
 					const embed = makeEmbed("User unbanned",`The user <@${target}> or \`${target}\` has been unbanned for \n${reason}`,"29C200");
 					message.channel.send({embeds:[embed]});
+
+					const logEmbed = makeEmbed("Unban",`The user <@${message.author.id}>[${message.author.id}] has unbanned a user with the id ${target}`,colors.changeBlue,true);
+						logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+						logEmbed.addFields(
+							{ name: 'Unbanned: ', value:`<@${target}>`, inline:false },
+							{ name: 'Unbanned by: ', value:`<@${message.author.id}>`, inline:false },
+							{ name : "Reason: ", value: reason, inline:false}
+						);
+						if(modLog)modLog.send({embeds:[logEmbed]});
 					return true;
 				})
 			})

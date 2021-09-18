@@ -1,8 +1,15 @@
 {
   "bot_info": {
     "name": "crazybot",
-    "version": "0.6.5",
+    "version": "0.6.6",
     "auhtor": "crazy4k",
-    "authorID": "573205398526361620"
+    "authorID": "573205398526361620",
+    "dmSettings":{
+      "prefix": ";",
+      "defaultEmbedColor":"f7f7f7",
+      "deleteFailedCommands": false,
+      "deleteFailedMessagedAfter": 10000
+
+    }
   }
 }

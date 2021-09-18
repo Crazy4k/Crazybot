@@ -2,7 +2,7 @@ const makeEmbed = require("../../functions/embed");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles");
 const mongo = require("../../mongo");
 const enable = require("../../functions/enablePoints");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/botCache").pointsCache;
 const pointsSchema= require("../../schemas/points-schema");
 
 

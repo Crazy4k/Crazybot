@@ -2,7 +2,7 @@ const noblox = require("noblox.js");
 
 
 
-module.exports = async(group ) =>{
+module.exports = async(group) =>{
   
   let rolesArray = await noblox.getRoles(group);
   let rolesIds = [];

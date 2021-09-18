@@ -1,7 +1,7 @@
 const moment = require('moment');
 const makeEmbed = require("../functions/embed");
 const mongo = require("../mongo");
-let guildsCache = require("../caches/guildsCache");
+let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors = require("../colors.json");
 

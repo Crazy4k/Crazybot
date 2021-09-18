@@ -1,7 +1,7 @@
-const guildsCache = require("../caches/guildsCache");
+const {guildsCache} = require("../caches/botCache");
 const mongo = require("../mongo");
 const serversSchema = require("../schemas/servers-schema");
-let cache = require("../caches/pointsCache");
+let cache = require("../caches/botCache").pointsCache;
 const pointsSchema = require("../schemas/points-schema");
 
 module.exports = async (message, server) => { 
@@ -28,13 +28,13 @@ module.exports = async (message, server) => {
                     _id:message.guild.id,
                     whiteListedRole:"",
                     members:{},
-                    rewards:{} 
+                    
                 },{upsert:true});
                 servery = cache[message.guild.id] = {
                     _id:message.guild.id,
                     whiteListedRole:"",
                     members:{},
-                    rewards:{}
+                    
                 }
             } finally{
                 

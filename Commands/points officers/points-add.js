@@ -1,7 +1,7 @@
 
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/officerPointsCache");
+let cache = require("../../caches/botCache").officerPointsCache;
 const pointsSchema = require("../../schemas/officerPoints-schema");
 const mongo = require("../../mongo");
 const checkUseres = require("../../functions/checkUser");

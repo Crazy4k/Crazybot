@@ -1,7 +1,7 @@
 //FIANLLY A !HELP
 const client = require("../../index");
 const makeEmbed = require('../../functions/embed');
-let hugeObj = require("../../caches/tempCmds");
+let hugeObj = require("../../caches/botCache").tempCmds
 
 
 module.exports = {
@@ -9,6 +9,7 @@ module.exports = {
 	description : 'Helps',
 	aliases:["cmds","commands"],
 	cooldown: 3,
+	worksInDMs: true,
 	usage:'help [value of a category]',
     category:"other",
 	execute(message, args, server) {

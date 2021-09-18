@@ -1,10 +1,10 @@
 const makeEmbed = require("../../functions/embed");
-const timerArray = require("../../caches/timerCache");
+const timerArray = require("../../caches/botCache").timerCache
+let {fetchesCache} = require("../../caches/botCache");
 const mongo = require("../../mongo");
 const serverSchema = require("../../schemas/servers-schema");
 const moment = require("moment");
 const client = require("../../index");
-let fetchesCache = require("../../caches/fetchesCache");
 
 module.exports = {
 	name : 'status',

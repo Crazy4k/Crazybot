@@ -1,7 +1,7 @@
-const guildsCache = require("../caches/guildsCache");
+const {guildsCache} = require("../caches/botCache");
 const mongo = require("../mongo");
 const serversSchema = require("../schemas/servers-schema");
-let cache = require("../caches/officerPointsCache");
+let cache = require("../caches/botCache").officerPointsCache
 const pointsSchema = require("../schemas/officerPoints-schema");
 
 module.exports = async (message, server) => { 

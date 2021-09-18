@@ -1,6 +1,6 @@
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
-let cache = require("../../caches/pointsCache");
+let cache = require("../../caches/botCache").pointsCache;
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const checkUseres = require("../../functions/checkUser");
@@ -12,7 +12,7 @@ module.exports = {
 	name : 'points-remove',
 	description : "Removes points from a user in a server.",
     aliases:["p-remove","p-","points-","points-delete","p-delete"],
-    cooldown: 6 ,
+    cooldown: 7 ,
     category:"points",
 	usage:'points-remove <@user> <points> [reason]',
     async execute(message, args, server)  { 

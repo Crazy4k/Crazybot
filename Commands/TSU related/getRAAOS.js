@@ -1,0 +1,161 @@
+
+const getRanks = require("../../aostracker/getRanks")
+const makeEmbed = require("../../functions/embed");
+const noblox = require("noblox.js");
+const colors = require("../../colors.json");
+const moment = require("moment");
+
+module.exports = {
+	name : 'moaio',
+	description : "Membership of an Illegal Organisation. Scans all the current AOS and KoS groups for TSU branch members. Useful for TSU hicoms.",
+    aliases:[,"aosintsu","kosintsu",],
+    category:"ms",
+    worksInDMs: true,
+    cooldown: 60 * 15,
+    unique: true,
+	usage:'moaio',
+	async execute(message, args, server ) {
+        //if(!args.length){
+            const embed1 = makeEmbed("Scanning...","Gathering raider groups members...", server);
+
+            message.channel.send({embeds:[embed1]})
+            .then(async msg1 =>{
+                try {
+                    const comandos = await getRanks(9723651);
+                    const doj = await getRanks(8224374);
+                    const hydra = await getRanks(2981881);
+                    const tic = await getRanks(10937425);
+                    const TDR = await getRanks(8675204);
+                    const order = await getRanks(7033913);
+        
+                    let allGroups = [... new Set([...comandos, ...doj, ...hydra, ...tic, ...TDR,...order])]
+        
+                    const embed2 = makeEmbed("Scanning...",`Checking group data for ${allGroups.length} individuals.\nThis might take a few minutes.\n Progress: 0/${allGroups.length}`, server);
+                    const embed3 = makeEmbed("Scanning...",`Assembling all data together...`,server);
+                    
+                
+                    let inAOS = [];
+                    let coolString = [];
+                    msg1.edit({embeds:[embed2]}).then(async msg2=>{
+                        let first = moment();
+                        let averageTime = []
+                        for (let i = 0; i < allGroups.length; i++) {
+        
+                            const id = allGroups[i];
+                            const groups = await noblox.getGroups(id);
+                            let branchGroup = groups.find(group=>group.Id === 4802792 || group.Id === 4901723 || group.Id === 4849580);
+                            
+                            //RA = 4802792
+                            //Mili = 4901723
+                            //CPSU = 4849580
+                    
+                            if(branchGroup) inAOS.push(id);
+                            if(!(i % 25)) {
+                                let last = moment();
+                                let diff = last - first
+                                first = last;
+                                let estTimeLeft = (((allGroups.length - i) / 1000 / 25) * diff)/60;
+
+                                embed2.setDescription(`Checking group data for ${allGroups.length} individuals.\nEstimated time left: ${(estTimeLeft).toFixed(2)} minutes.\n Progress: ${i}/${allGroups.length}`);
+                                msg2.edit({embeds:[embed2]});
+                            }
+                            
+                            
+                        }
+                        msg2.edit({embeds:[embed3]}).then(async msg3=>{
+                            for(let id of inAOS){
+                            
+                                coolString.push(`${await noblox.getUsernameFromId(id)} (${id})\n`);
+                            }
+                            if(!coolString.length)coolString.push("There is suspiciously no AOS/KOS members in any brach at all.")
+                            const embed5 = makeEmbed(`Done ✅`, `${coolString.join(" ")}`, colors.successGreen);
+                            message.channel.send({content:`<@${message.author.id}>`,embeds:[embed5]})
+                            msg3.edit("Done.");
+                            return true;
+                        });
+                        
+                    })
+                    
+                
+                return true;
+                } catch (error) {
+                    console.log(error);
+                }
+
+            
+            })
+            return true;
+       /* } else{
+            const embed1 = makeEmbed("Scanning...","Gathering groups members...", server);
+
+            message.channel.send({embeds:[embed1]})
+            .then(async msg1 =>{
+                let arrayOfIds = [];
+                let undup = [...new Set(args)];
+                
+                
+                for(let e of undup){
+                    const group = await noblox.getGroup(e)
+                    if(group){
+                        if(group.memberCount < 1000){
+                            arrayOfIds.push(...await getRanks(e));
+                        } else{
+                            const embed = makeEmbed("Group member count too large to scan through.",`Group member count must be below 1000 members.`,server);
+                            msg1.edit({content: "Failed.", embeds:[]});
+                            sendAndDelete(message,embed, server);
+                            return false;
+                        }
+                        
+                    } else{
+                        const embed = makeEmbed("Invalid group ID",`${e} is not a vaild group id.`,server);
+                        msg1.edit({content: "Failed.", embeds:[]});
+                        sendAndDelete(message,embed, server);
+                        return false;
+                    }
+                }
+                const embed2 = makeEmbed("Scanning...",`Checking group data for ${arrayOfIds.length} individuals.\nThis might take a few minutes.\n Progress: 0/${arrayOfIds.length}`, server);
+                const embed3 = makeEmbed("Scanning...",`Assembling all data together...`,server);
+                
+            
+                let inAOS = [];
+                let coolString = [];
+                msg1.edit({embeds:[embed2]}).then(async msg2=>{
+                    for (let i = 0; i < arrayOfIds.length; i++) {
+                        const id = arrayOfIds[i];
+                        const groups = await noblox.getGroups(id);
+                    
+                        let RA = groups.find(group=>group.Id === 4802792);
+                        let Militsiya = groups.find(group=>group.Id === 4901723);
+                        let CPSU = groups.find(group=>group.Id === 4849580);
+                
+                        if(RA || Militsiya || CPSU) inAOS.push(id);
+                        if(i % 20 === 0) {
+                            embed2.setDescription(`Checking group data for ${arrayOfIds.length} individuals.\nThis might take a few minutes.\n Progress: ${i}/${arrayOfIds.length}`);
+                            msg2.edit({embeds:[embed2]});
+                        }
+                        
+                    }
+                    msg2.edit({embeds:[embed3]}).then(async msg3=>{
+                        for(let id of inAOS){
+                        
+                            coolString.push(`${await noblox.getUsernameFromId(id)}\n`);
+                        }
+                        if(!coolString.length)coolString.push("There is suspiciously no AOS/KOS members in any brach at all...")
+                        const embed5 = makeEmbed("Done ✅", `${coolString.join(" ")}`, colors.successGreen);
+                        message.channel.send({embeds:[embed5]})
+                        msg3.edit("Done.");
+                        return true;
+                    });
+                    
+                })
+                console.log(arrayOfIds)
+            });
+        
+            
+            return false;
+        
+        }*/
+    }
+    
+    
+};

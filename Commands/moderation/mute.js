@@ -2,8 +2,7 @@
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
-const client = require("../../index");
-let muteCache = require("../../caches/muteCache");
+let {muteCache} = require("../../caches/botCache");
 const colors = require("../../colors.json");
 
 
@@ -98,16 +97,16 @@ module.exports = {
                                 muteCache[`${message.author.id}-${message.guild.id}`] = null;
                             }}catch(e){console.log(e)}
                         },muteTime * multi);
-                        /*const logEmbed = makeEmbed("Mute","","002EFE",true);
+                        const logEmbed = makeEmbed("Mute","","002EFE",true);
                         logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
                         logEmbed.addFields(
                             { name:'Duration', value:muteTimeString, inline:true },
-                            { name:'Muted by: ', value:`<@${message.authorId}>`, inline:true },
+                            { name:'Muted by: ', value:`<@${message.author.id}>`, inline:true },
                             { name:'Roles: ', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
                             { name : "Reason:", value:reason, inline:true}
 						
                         );
-                        if(muteLog)muteLog.send({embeds:[logEmbed]});*/
+                        if(muteLog)muteLog.send({embeds:[logEmbed]});
                     }).catch(e=>{
                         console.log(e);
                         const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);

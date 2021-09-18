@@ -1,6 +1,7 @@
 const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
+const colors = require("../../colors.json");
 
 module.exports = {
 	name : 'ban',
@@ -10,7 +11,7 @@ module.exports = {
 	cooldown: 3,
 	category:"Moderation",
 	execute(message, args, server) {
-
+		const modLog = message.guild.channels.cache.get(server.logs.warningLog);
 		let id = checkUseres(message,args,0);
 		switch (id) {
 			case "not valid":
@@ -55,6 +56,15 @@ module.exports = {
 						.then(a=>{
 							const embed = makeEmbed("User banned.",`The user <@${target.id}> has been banned for \n\`${reason}\`\nAnd deleted messages sent by the uses in the last \`${time}\` days.`,"29C200",);
 							message.channel.send({embeds:[embed]});
+
+							const logEmbed = makeEmbed("Ban",`The user <@${message.author.id}>[${message.author.id}] has banned the user <@${target.id}>[${target.id}]`,colors.failRed,true);
+							logEmbed.setAuthor(target.user.tag, target.user.displayAvatarURL());
+							logEmbed.addFields(
+								{ name: 'Banned: ', value:`<@${target.id}>[${target.id}]`, inline:false },
+								{ name: 'Banned by: ', value:`<@${message.author.id}>`, inline:false },
+								{ name : "Reason: ", value: reason, inline:false}
+							);
+							if(modLog)modLog.send({embeds:[logEmbed]});
 							return true;
 						}).catch(e => {
 							

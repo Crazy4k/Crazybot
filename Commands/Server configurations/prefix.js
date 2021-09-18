@@ -1,7 +1,7 @@
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
 const mongo = require("../../mongo");
-let guildsCache = require("../../caches/guildsCache");
+let {guildsCache} = require("../../caches/botCache");
 const serversSchema = require("../../schemas/servers-schema");
 
 module.exports = {
