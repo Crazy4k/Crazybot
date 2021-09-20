@@ -449,8 +449,13 @@ const checkAoss = require("./aostracker/intervalpresens");
 
 
 	setInterval(async () => {
-		await checkAoss( noblox, poop, client, raiderTrackerChannelCache.channels)	
-	}, 180 * 1000);
+		try {
+			await checkAoss( noblox, poop, client, raiderTrackerChannelCache.channels)	
+		} catch (error) {
+			console.log(console.log(error));
+		}
+		
+	}, 120 * 1000);
 		
 
 	
