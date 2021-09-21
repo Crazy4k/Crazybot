@@ -458,7 +458,7 @@ const checkAoss = require("./aostracker/intervalpresens");
 			console.log(console.log(error));
 		}
 		
-	}, 20 * 1000);
+	}, 120 * 1000);
 		
 
 	
