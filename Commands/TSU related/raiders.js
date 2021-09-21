@@ -1,5 +1,5 @@
 const makeEmbed = require("../../functions/embed");
-const {raiderCache} = require("../../caches/botCache");
+const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
 
 
@@ -12,17 +12,17 @@ module.exports = {
     aliases:["trackraiders"],
     category:"ms",
 	usage:'events',
-
+    
 	async execute(message, args, server) { 
 
-        if(Object.values(raiderCache).length){
+        if(Object.values(botCache.raiderCache).length){
 
             const embed = makeEmbed("Raider tracker.","", server);
             
             
             let shittyStr = [];
-            for( let e in raiderCache){
-                let shit = raiderCache[e];
+            for( let e in botCache.raiderCache){
+                let shit = botCache.raiderCache[e];
                 
                 if(shit){
                     let name = await noblox.getUsernameFromId(e)

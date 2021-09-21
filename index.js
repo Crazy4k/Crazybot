@@ -30,7 +30,8 @@ const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
 const raiderTrackerSchema = require("./schemas/raiderTracker-schema");
 const officerPointsSchema = require("./schemas/officerPoints-schema");
-let {raiderTrackerChannelCache, guildsCache, commandCoolDownCache} = require("./caches/botCache");
+let {guildsCache, commandCoolDownCache} = require("./caches/botCache");
+let botCache = require("./caches/botCache");
 const sync = require("./functions/sync");
 const keepAlive = require('./server.js');
 const config = require("./config.json");
@@ -431,7 +432,8 @@ const checkAoss = require("./aostracker/intervalpresens");
 	await mongo().then(async (mongoose) =>{
 		try{
 			let data = await raiderTrackerSchema.findOne({_id:"69"});
-			raiderTrackerChannelCache = data;
+			botCache.raiderTrackerChannelCache = data;
+
 		} finally{
 			console.log("FETCHED TRACKER CHANNELS");
 			mongoose.connection.close();
@@ -446,16 +448,17 @@ const checkAoss = require("./aostracker/intervalpresens");
 
 	let prototype = [ ... comandos, ...doj, ...hydra, ...tic,...TDR,...OoTNR];
 	const poop = [...new Set(prototype)];
+	botCache.trackedRaiders = poop;
 
 
 	setInterval(async () => {
 		try {
-			await checkAoss( noblox, poop, client, raiderTrackerChannelCache.channels)	
+			await checkAoss( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.channels)	
 		} catch (error) {
 			console.log(console.log(error));
 		}
 		
-	}, 120 * 1000);
+	}, 20 * 1000);
 		
 
 	

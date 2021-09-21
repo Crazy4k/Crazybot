@@ -26,8 +26,11 @@ module.exports = {
         
         try {
             let evalString = args.join(" ");
-            let str = "```" +`${eval(evalString)}`+ "```"
-            const embed1 = makeEmbed("Succes ✅", str, "24D900");
+            let str = eval(evalString);
+            if(typeof str === "object") str = JSON.stringify(str); 
+            else if(typeof str !== "string") str = `${str}`
+            if(str.length > 4096)str = "Returned string is too long to fit in an embed."
+            const embed1 = makeEmbed("Succes ✅", `\`\`\`${str}\`\`\``, "24D900");
             message.channel.send({embeds: [embed1]});
 
         } catch (error) {

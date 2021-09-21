@@ -12,6 +12,7 @@ let caches = {
     muteCache : {},
     officerPointsCache : {},
     pointsCache : {},
+    trackedRaiders: [],
     raiderCache : {},
     raiderTrackerChannelCache : {},
     tempCmds : undefined,
