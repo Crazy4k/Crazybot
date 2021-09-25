@@ -33,8 +33,12 @@ module.exports = async (oldMember, newMember)=> {
 			let size = 0;
 				//nickname change
 			if(oldMember.nickname !== newMember.nickname){
-				embed.addField("Nickname before: ", oldMember.nickname,false);
-				embed.addField("Nickname after: ", newMember.nickname,false);
+				let before = oldMember.nickname;
+				if(!before) before = "None"
+				let after = newMember.nickname;
+				if(!after) after = "None"
+				embed.addField("Nickname before: ", before,false);
+				embed.addField("Nickname after: ", after,false);
 				size++;
 			}
 			//comparing roles before and after
