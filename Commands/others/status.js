@@ -36,7 +36,7 @@ module.exports = {
 			let two = moment();
 			let dataBasePing = two - one;
 
-			let minute = totalTimerCache.minutes
+			let minute = totalTimerCache.hours
 			if(minute === 0)minute = 1;
 
 			
