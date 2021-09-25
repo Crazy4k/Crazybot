@@ -447,8 +447,9 @@ const checkAoss = require("./aostracker/intervalpresens");
 	const OoTNR =  await getAosRanks(7033913);
 
 	let prototype = [ ... comandos, ...doj, ...hydra, ...tic,...TDR,...OoTNR];
-	const poop = [...new Set(prototype)];
-	botCache.trackedRaiders = poop;
+	let poop = [...new Set(prototype)];
+	botCache.trackedRaiders = poop//[941751145];
+	//poop.push(941751145)
 
 
 	setInterval(async () => {

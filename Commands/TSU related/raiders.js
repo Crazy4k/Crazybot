@@ -3,7 +3,39 @@ const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
 
 
+function whatPlace( id){
+    let str = ""
+    switch (id) {
+        
+        case "2988554876":
+            str = "MS1 border"
+            break;
+        case "3145176353":
+            str = "MS1 City"
+            break;
+        case "4454445210":
+            str = "MS1 Apartments"
+            break;
+        case "4146579025":
+            str = "MS1 Palace"
+            break;
+        case "4771888361":
+            str = "MS2 border"
+            break;
+        case "5103000243":
+            str = "MS2 city"
+            break;
+    
+        default:
+            str = "Unknown"
+            break;
+    }
+    return str;
 
+}
+function splitId(string){
+    return string.split(" ");
+}
 
 module.exports = {
 	name : 'raiders',
@@ -22,11 +54,14 @@ module.exports = {
             
             let shittyStr = [];
             for( let e in botCache.raiderCache){
-                let shit = botCache.raiderCache[e];
-                
+                let shit = splitId( botCache.raiderCache[e]);
+                //let rootPlaceId = shit[0];
+                let placeId = shit[1];
+                //let instantlink = shit[2];
+                let placeString = whatPlace(placeId);
                 if(shit){
                     let name = await noblox.getUsernameFromId(e)
-                    shittyStr.push(`[${name}](https://www.roblox.com/users/${e}/profile) is playing [MS](https://www.roblox.com/games/${shit}).`);
+                    shittyStr.push(`[${name}](https://www.roblox.com/users/${e}/profile) is playing [${placeString}](https://www.roblox.com/games/${placeId}).`);
                 }
 
             }
