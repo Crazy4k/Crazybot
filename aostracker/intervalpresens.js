@@ -360,7 +360,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                     let log = discordClient.channels.cache.get(id);
                     if(log){
                         let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
-                        let ping = "";
+                        let ping = "@raider_pings";
                         if(role)ping = `<@&${role.id}>`
                         for(let e of joins){
                             log.send({content:ping,embeds:[e]})

@@ -481,11 +481,14 @@ setTimeout(()=>{
 	setInterval(()=>{
 		let members = client.users.cache.size;
 		let servers  = client.guilds.cache.size;
+		let raiderCount = botCache.trackedRaiders.length;
 		
 	
 		let status = [
 			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
 			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
+			{str:`Over ${raiderCount} raiders`,type:{type: "WATCHING"}},
+			{str:`Over ${raiderCount} raiders`,type:{type: "WATCHING"}},
 			{str:"to ;updates",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
