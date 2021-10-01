@@ -47,7 +47,7 @@ module.exports = {
 				{name:"Data base Ping ", value:`${dataBasePing} ms`, inline: true},
 				{name:"Bot latency ", value:`${messagePing} ms`, inline: true},
 				{name:"Discord API Ping ", value:`${client.ws.ping} ms`, inline: true},
-				{name:"Fetches per minute rate", value:`${fetchesCache.totalFetches / minute} Fetch per minute`, inline: true},
+				{name:"Fetches per hour rate", value:`${fetchesCache.totalFetches / minute} Fetch per hour`, inline: true},
 				
         	);
 			newMsg.edit({embeds:[embed]});

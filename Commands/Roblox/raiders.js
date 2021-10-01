@@ -42,7 +42,7 @@ module.exports = {
 	description : "Shows you the current trackalbe raiders that are playing MS.",
     cooldown: 5,
     aliases:["trackraiders"],
-    category:"ms",
+    category:"roblox",
 	usage:'events',
     
 	async execute(message, args, server) { 

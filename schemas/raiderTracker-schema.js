@@ -7,7 +7,7 @@ const raiderTrackerSchema = mongoose.Schema({
         required: true
     },
     channels:{
-        type: Array,
+        type: Object,
         required: true
     }
 })

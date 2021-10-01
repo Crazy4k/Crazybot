@@ -4,6 +4,7 @@ const fs = require('fs');
 const mongo = require("./mongo");
 const noblox = require("noblox.js");
 require("dotenv").config();
+const moment = require("moment")
 
 //const { REST } = require('@discordjs/rest');
 //const { Routes } = require('discord-api-types/v9');
@@ -439,27 +440,35 @@ const checkAoss = require("./aostracker/intervalpresens");
 			mongoose.connection.close();
 		}
 	})
-	const comandos = await getAosRanks(9723651);
-	const doj = await getAosRanks(8224374);
-	const hydra = await getAosRanks(2981881);
-	const tic = await getAosRanks(10937425);
-	const TDR =  await getAosRanks(8675204);
-	const OoTNR =  await getAosRanks(7033913);
 
-	let prototype = [ ... comandos, ...doj, ...hydra, ...tic,...TDR,...OoTNR];
-	let poop = [...new Set(prototype)];
-	botCache.trackedRaiders = poop//[941751145];
-	//poop.push(941751145)
 
+	const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
+
+	let poop = [...new Set(groups)];
+	botCache.trackedRaiders = poop//[941751145,925533746];
+	poop.push(941751145)
 
 	setInterval(async () => {
 		try {
+			const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
+			console.log("UPDATED THE RAIDER CACHE")
+			let poop = [...new Set(groups)];
+			botCache.trackedRaiders = poop
+		} catch (error) {
+			console.log(console.log(error));
+		}
+		
+	},  6 * 60 * 60 * 1000);
+
+	setInterval(async () => {
+		try {
+
 			await checkAoss( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.channels)	
 		} catch (error) {
 			console.log(console.log(error));
 		}
 		
-	}, 120 * 1000);
+	}, 150 * 1000);
 		
 
 	
@@ -470,8 +479,7 @@ const checkAoss = require("./aostracker/intervalpresens");
 
 setTimeout(()=>{
 	setInterval(()=>{
-		let members = 0;
-		client.guilds.cache.each(e=>{members += e.memberCount;})
+		let members = client.users.cache.size;
 		let servers  = client.guilds.cache.size;
 		
 	
@@ -493,8 +501,6 @@ setTimeout(()=>{
 
 	
 },3000)
-
-
 
 
 

@@ -7,15 +7,16 @@ const {Permissions} = require("discord.js");
 let poopyArray = [];
 let int = 0;
 for (const item in updateObj) {
-	if(int === 5)break;
 	if(item !== config.version)poopyArray.push(item);
 	int++;
 }
 poopyArray.reverse();
+poopyArray.splice(5);
+
 
 module.exports = {
 	name : 'updates',
-	aliases:["patchnotes","patch-notes","patches","update"],
+	aliases:["patchnotes","patch-notes","patches"],
 	description : "Sends a message that contains a summary of the latest update.",
 	cooldown: 20,
 	worksInDMs: true,

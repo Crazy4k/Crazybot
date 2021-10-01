@@ -47,9 +47,7 @@ module.exports = {
 
 					message.channel.send({embeds:[embed1]});
 					return true;
-					break;
-				case "ms":
-				case "tsu":
+					break
 				case "events":
 					let num2 = 1;
 					let embed2 = makeEmbed("Help!","All of the commands in the `events` category.",server);
@@ -135,6 +133,20 @@ module.exports = {
 					message.channel.send({embeds:[embed7]});
 					return true;
 					break;
+					case "roblox":
+						let num8 = 1;
+						let embed8 = makeEmbed("Help!","All of the commands in the `Roblox` category.",server);
+						for (const i of hugeObj.roblox) {
+							let perms = i.whiteList;
+							if(!perms) perms = "**-**"
+							let alis = "**-**";
+							if(i.aliases)alis = i.aliases.join(", ")
+							embed8.addField(`**${num8}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
+							num8++;
+						}
+						message.channel.send({embeds:[embed8]});
+						return true;
+						break;
 				default:
 					message.channel.send("Invalid value.");
 					return false;
@@ -146,6 +158,7 @@ module.exports = {
 			embed.addFields(
 				{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
 				{name:"**events**", value:`Commands that are related to hosting events using the bot.\n\`${server.prefix}${this.name} events\` `, inline:true},
+				{name:"**Roblox**", value:`Commands that are related to Roblox and TSU.\n\`${server.prefix}${this.name} roblox\` `, inline:true},
 				{name:"**Moderation**", value:`Commands that do moderation actions.\n\`${server.prefix}${this.name} mod\` `, inline:true},
 				{name:"**points**", value:`Commands that are related to the points system.\n\`${server.prefix}${this.name} points\` `, inline:true},
 				{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}${this.name} AA\` `, inline:true},

@@ -14,12 +14,12 @@ const idleMessage = "Command cancelled due to the user being idle";
 const type0Message2 = "(type `0` to cancel / type \"`no`\" for none)\n"; 
 
 module.exports = {
-	name : 'rewards-set',
+	name : 'promotion',
 	description : "Enables the points rewards system for the server.",
     cooldown: 5,
     whiteList : 'ADMINISTRATOR',
     unique: true,
-    aliases: ["promotion-set","rewardsset","rewardset","promotionset"],
+    aliases: ["promotion-set","rewardsset","rewardset","promotionset","rewards-set","promotions"],
 	usage:'rewards-set',
     category:"points",
 	async execute(message, args, server) { 

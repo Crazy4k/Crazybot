@@ -6,6 +6,15 @@ const colors = require("../colors.json");
 const Discord = require('discord.js');
 let {raiderCache} = require("../caches/botCache");
 let cache = require("../caches/botCache");
+let gamepasses = require("./gamepasses.json");
+const getRaiderPower = require("./calculategamepasses")
+
+
+let gamepassIdsMS1 = [];
+for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i]);
+let gamepassIdsMS2 = [];
+for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i]);
+    
 
 let hydraId = 2981881;
 let TCId = 9723651;
@@ -53,10 +62,14 @@ function whatPlace( id){
     return str;
 
 }
+
 function splitId(string){
     return string.split(" ");
 }
-function findAosGroups (groups){
+
+
+
+function findAosGroups (groups, AosOrKos){
 
     let hydra = groups.find(e=>e.Id === hydraId);
     let TC = groups.find(e => e.Id === TCId);
@@ -66,38 +79,97 @@ function findAosGroups (groups){
     let orderofninth = groups.find(e => e.Id === OoTNR);
 
     let cleanArry = [];
-    if(hydra)cleanArry.push(hydra);
-    if(TC)cleanArry.push(TC);
-    if(doj)cleanArry.push(doj);
-    if(orderOfValk)cleanArry.push(orderOfValk);
-    if(Tdr)cleanArry.push(Tdr);
-    if(orderofninth)cleanArry.push(orderofninth);
-
-    return cleanArry;
-    
+    if(Tdr){
+        cleanArry.push(Tdr);
+        AosOrKos = "KoS";
+    }
+    if(orderofninth){
+        cleanArry.push(orderofninth);
+        AosOrKos = "KoS";
+    }
+    if(hydra){
+        cleanArry.push(hydra);
+        AosOrKos = "AoS";
+    }
+    if(TC){
+        cleanArry.push(TC);
+        AosOrKos = "AoS";
+    }
+    if(doj){
+        cleanArry.push(doj);
+        AosOrKos = "AoS";
+    }
+    if(orderOfValk){
+        cleanArry.push(orderOfValk);
+        AosOrKos = "AoS";
+    }
+    return [cleanArry,AosOrKos]; 
 }
+
 async function createJoinEmbed(raiderCache, I,){
     let thing = splitId(raiderCache[I]);
     let rootPlaceId = thing[0];
     let placeId = thing[1];
     let instantlink = thing[2];
-    let MS = "MS1"
-    if(rootPlaceId === "4771888361" )MS = "MS2";
+    let tag = "?";
     const username = await roblox.getUsernameFromId(I);
     const groups = await roblox.getGroups(I);
     let placeString = whatPlace(placeId);
-    let AosGroups =findAosGroups(groups);
-    
+    let wtfDoICallThisVar = findAosGroups(groups, tag);
+    tag = wtfDoICallThisVar[1]
+    let AosGroups = wtfDoICallThisVar[0]
 
-    const embed = makeEmbed("A raider joined Military simulator!",`${username} just joined ${placeString}.`,colors.successGreen,true);
-    embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
-    for(let group of AosGroups){
-        if(group)embed.addField(`${group.Name}`,`${group.Role}` ,true);
+    let ownedGamepasses = {};
+    let gamepassOwnership;
+    if(rootPlaceId === "4771888361" ){
+        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => roblox.getOwnership(I, gamepassId, "GamePass")));
+        let i = 0;
+
+        for(let gamepassName in gamepasses["MS2"]){
+            
+            const element = gamepassOwnership[i];
+            ownedGamepasses[gamepassName] = element;
+            i++;
+        }
+    }else{
+        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => roblox.getOwnership(I, gamepassId, "GamePass")));
+        let i = 0;
+
+        for(let gamepassName in gamepasses["MS1"]){
+            const element = gamepassOwnership[i];
+            ownedGamepasses[gamepassName] = element;
+            i++;
+        }
     }
     
+    let gamepassess = [];
+    for(let gamepass in ownedGamepasses)if(ownedGamepasses[gamepass])gamepassess.push(gamepass);
 
-    embed.addField("Game:",`[${MS}](https://www.roblox.com/games/${rootPlaceId})`,false);
-    embed.addField("Place link:",`[${placeString}](https://www.roblox.com/games/${placeId})`,true);
+    let raiderPower = getRaiderPower(gamepassess);
+    let raiderPowerComment = "";
+
+    if(raiderPower <= 10)raiderPowerComment = "**Extremely annoying!!!!**";
+    if(raiderPower <= 8)raiderPowerComment = "Very annoying";
+    if(raiderPower <= 6)raiderPowerComment = "Annoying";
+    if(raiderPower <= 4)raiderPowerComment = "Average";
+    if(raiderPower <= 2)raiderPowerComment = "Below average";
+    
+    
+
+   
+    
+
+    const embed = makeEmbed("A raider joined Military simulator!",`[${tag}]${username} just joined ${placeString}.`,colors.successGreen,true);
+    embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
+
+    let grps = [];
+    for(let group of AosGroups){
+        if(group)grps.push(`${group.Name}[${group.Role}]`)
+    }
+    if(grps.length)embed.addField("Groups:",`${grps.join("\n")}`)
+    if(gamepassess.length)embed.addField("Gamepasses:",`${gamepassess.join(", ")}`,false);
+    embed.addField("Raiding power",`${raiderPower} ${raiderPowerComment}`,false);
+    embed.addField("Place:",`[${placeString}](https://www.roblox.com/games/${placeId})`,true);
     embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantlink})\n(Kurka's extention required: [chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc) [Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
     embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
     return embed;
@@ -106,8 +178,8 @@ async function createJoinEmbed(raiderCache, I,){
 module.exports = async function stalk( noblox, userIds, discordClient , channelId = null){
         
     let arrayOfChannels = [];
-    for (let id of channelId) {
-        let channel =  discordClient.channels.cache.get(id);
+    for (let id in channelId) {
+        let channel =  discordClient.channels.cache.get(channelId[id]);
         if(channel)arrayOfChannels.push(channel.id);
     }
 
@@ -186,10 +258,6 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                 }
             }
             
-           /* console.log(1);
-            console.log(raiderCache);
-            console.log(2);
-            console.log(newCache);*/
             if(!Object.values(raiderCache).length  && Object.values(newCache).length ) {
                 for(let I in newCache){
                     if(!raiderCache[I] && newCache[I]){
@@ -229,16 +297,15 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         const groups = await roblox.getGroups(I);
                     
                         let AosGroups =findAosGroups(groups);
-                        
+                        let placeString = whatPlace(placeId);
                     
-                        const embed = makeEmbed("A raider switched servers!",`${username} is now playing ${MS}.`,colors.changeBlue,true);
+                        const embed = makeEmbed("A raider switched servers!",`${username} switched to ${placeString}.`,colors.changeBlue,true);
                         embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
                         for(let group of AosGroups){
                             if(group)embed.addField(`${group.Name}`,`${group.Role}` ,true);
                         }
-                        let placeString = whatPlace(placeId);
+                        
                     
-                        embed.addField("Game:",`[${MS}](https://www.roblox.com/games/${rootPlaceId})`,false);
                         embed.addField("Place link:",`[${placeString}](https://www.roblox.com/games/${placeId})`,true);
                         embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantlink})\n(Kurka's extention required: [chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc) [Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
