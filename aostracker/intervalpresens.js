@@ -301,11 +301,11 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                     
                         const embed = makeEmbed("A raider switched servers!",`${username} switched to ${placeString}.`,colors.changeBlue,true);
                         embed.addField("Profile link:",`[${username}](https://www.roblox.com/users/${I}/profile)`)
+                        let grps = [];
                         for(let group of AosGroups){
-                            if(group)embed.addField(`${group.Name}`,`${group.Role}` ,true);
+                            if(group)grps.push(`${group.Name}[${group.Role}]`)
                         }
-                        
-                    
+                        if(grps.length)embed.addField("Groups:",`${grps.join("\n")}`)
                         embed.addField("Place link:",`[${placeString}](https://www.roblox.com/games/${placeId})`,true);
                         embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantlink})\n(Kurka's extention required: [chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc) [Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
