@@ -1,3 +1,4 @@
+
 module.exports = function calculatGamepasses(arrayOfOwnedGamepasses){
     let int = 0;
     for(let gamepass of arrayOfOwnedGamepasses){
@@ -44,6 +45,24 @@ module.exports = function calculatGamepasses(arrayOfOwnedGamepasses){
             case "Alien":
                 int += 3;
                 break;
+            case "PPSH41":
+                int += 0.5;
+                break;
+            case "Mecha":
+                int += 1;
+                break;
+            case "RPG":
+                int += 1.5;
+                break;
+            case "Hitman":
+                int += 0.25;
+                break;
+            case "Juggernaut V1":
+                int += 1.5;
+                break;
+            case "Grenade Laucher":
+                int += 1.5;
+                break;
 
             //MS 2 gamepasses
 
@@ -63,7 +82,7 @@ module.exports = function calculatGamepasses(arrayOfOwnedGamepasses){
             case "Operator":
                 int += 1.5;
                 break;
-            case "Juggernaut":
+            case "Juggernaut V2":
                 int += 3;
                 break;
             case "Rocket Launcher":

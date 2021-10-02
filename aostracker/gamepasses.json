@@ -15,7 +15,13 @@
         "Icy shotgun": 7737114,
         "Skeleton": 7278530,
         "AWP": 7520141,
-        "Alien": 6832826
+        "Alien": 6832826,
+        "PPSH41":6093909,
+        "Mecha": 7207309,
+        "RPG": 7525193,
+        "Hitman":6093835,
+        "Juggernaut V1":6093890,
+        "Grenade Laucher": 7567995
     },
     "MS2":{
         "Mad Scientist":8511814,
@@ -23,7 +29,7 @@
         "AR15": 8538321,
         "Heavy Sniper":8599789,
         "Operator": 8847196,
-        "Juggernaut": 8849933,
+        "Juggernaut V2": 8849933,
         "Rocket Launcher": 8911510
 
     }

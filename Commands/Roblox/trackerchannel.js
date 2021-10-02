@@ -18,6 +18,7 @@ module.exports = {
     unique: true,
     category:"roblox",
 	async execute(message, args, server) {
+        console.log(`USED ;TRACKERS IN ${message.guild.id} by ${message.author.id}`)
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
         let  daServer;
         try {

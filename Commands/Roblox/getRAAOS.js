@@ -34,17 +34,20 @@ module.exports = {
                     let inAOS = [];
                     let coolString = [];
                     msg1.edit({embeds:[embed2]}).then(async msg2=>{
-                        let first = moment();
-
                         let iter = allGroups.length / 50;
                         let data = [];
-                        for (let i = 0; i < iter; i++) {
-                            let shit = allGroups;
-                            let poopArray = shit.slice(i * 50, i*50+50);
-                            let smolData = await Promise.all(poopArray.map(id => noblox.getGroups(id) )).catch(e=>console.log(e));
-                            
-                            if(smolData)data.push(...smolData);              
+                        try {
+                            for (let i = 0; i < iter; i++) {
+                                let shit = allGroups;
+                                let poopArray = shit.slice(i * 50, i*50+50);
+                                let smolData = await Promise.all(poopArray.map(id => noblox.getGroups(id) )).catch(e=>console.log(e));
+                                
+                                if(smolData)data.push(...smolData);              
+                            }
+                        } catch (error) {
+                            console.error();
                         }
+                        
 
                         let usersObject = {}
                         for (let i = 0; i < allGroups.length; i++) {

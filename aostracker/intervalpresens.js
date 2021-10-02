@@ -288,15 +288,14 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                 for(let I in raiderCache){
                     if(raiderCache[I] && newCache[I] && raiderCache[I] !== newCache[I] ){
                         let thing = splitId(newCache[I]);
-                        let rootPlaceId = thing[0];
                         let placeId = thing[1];
                         let instantlink = thing[2];
-                        let MS = "MS1"
-                        if(rootPlaceId === 4771888361 )MS = "MS2";
                         const username = await roblox.getUsernameFromId(I);
                         const groups = await roblox.getGroups(I);
-                    
-                        let AosGroups =findAosGroups(groups);
+                        let tag = "?"
+                        let wtfDoICallThisVar = findAosGroups(groups, tag );
+                        tag = wtfDoICallThisVar[1]
+                        let AosGroups = wtfDoICallThisVar[0]
                         let placeString = whatPlace(placeId);
                     
                         const embed = makeEmbed("A raider switched servers!",`${username} switched to ${placeString}.`,colors.changeBlue,true);

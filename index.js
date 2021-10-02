@@ -446,7 +446,6 @@ const checkAoss = require("./aostracker/intervalpresens");
 
 	let poop = [...new Set(groups)];
 	botCache.trackedRaiders = poop//[941751145,925533746];
-	poop.push(941751145)
 
 	setInterval(async () => {
 		try {
@@ -465,6 +464,7 @@ const checkAoss = require("./aostracker/intervalpresens");
 
 			await checkAoss( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.channels)	
 		} catch (error) {
+			console.log("error in line 468 bruh")
 			console.log(console.log(error));
 		}
 		
