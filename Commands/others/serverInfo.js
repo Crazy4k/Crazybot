@@ -7,15 +7,13 @@ module.exports = {
 	usage:'server-info',
     aliases: ["sinfo","guild-info","serverinfo", "guildinfo"],
     category:"other",
-    cooldown: 60 * 3,
+    cooldown: 5,
 	execute(message, args, server) {
 
        try{ let {guild} = message;
 
         let embed = makeEmbed(guild.name,"", server);
     
-
-        
             embed.addField(    "server name: ", guild.name,  true,)
             embed.addField(    "server id: ", `${guild.id}`,  true,)
             embed.addField(    "Owner: ", `<@${guild.ownerId}>`,  true,)

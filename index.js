@@ -437,7 +437,6 @@ client.once('ready', async() => {
 
 const getAosRanks = require("./aostracker/getRanks");
 const checkAoss = require("./aostracker/intervalpresens");
-const { Console } = require('console');
 
 (async () => {
 	try {

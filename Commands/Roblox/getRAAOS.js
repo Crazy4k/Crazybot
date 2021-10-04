@@ -33,12 +33,12 @@ module.exports = {
                     let inAOS = [];
                     let coolString = [];
                     msg1.edit({embeds:[embed2]}).then(async msg2=>{
-                        let iter = allGroups.length / 50;
+                        let iter = allGroups.length / 100;
                         let data = [];
                         try {
                             for (let i = 0; i < iter; i++) {
                                 let shit = allGroups;
-                                let poopArray = shit.slice(i * 50, i*50+50);
+                                let poopArray = shit.slice(i * 100, i*100+100);
                                 let smolData = await Promise.all(poopArray.map(id => noblox.getGroups(id) )).catch(e=>{console.log(e); msg2.edit({embeds:[embed7]});});
                                 
                                 if(smolData)data.push(...smolData);              

@@ -5,7 +5,7 @@ const colors = require("../../colors.json");
 
 module.exports = {
 	name : 'kick',
-	description : 'kicks any user (requires a reason)',
+	description : 'kicks a user from the servers.',
 	usage:'kick <@user or user id> [reason]',
 	whiteList:'KICK_MEMBERS',
 	cooldown: 3,

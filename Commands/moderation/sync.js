@@ -5,7 +5,7 @@ const sync = require("../../functions/sync");
 module.exports = {
 	name : 'sync',
 	description : "syncs all data between the bot's cache and the data base, removes left members from the server's data base and creates some files for the server if missing.",
-    cooldown: 5 * 60,
+    cooldown: 3 * 60,
     whiteList:'ADMINISTRATOR',
 	usage:'sync',
 	category:"Moderation",

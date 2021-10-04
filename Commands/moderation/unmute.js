@@ -11,7 +11,7 @@ const colors = require("../../colors.json");
 module.exports = {
 	name : 'unmute',
 	aliases: ["unshut","unstfu"],
-	description : 'unmutes someone.\nCancels the !mute command',
+	description : 'unmutes someone.\nCancels the mute command',
 	cooldown: 10,
 	usage:'unmute <@user> ',
 	whiteList:'MUTE_MEMBERS',

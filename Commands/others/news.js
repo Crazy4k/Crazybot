@@ -18,7 +18,7 @@ module.exports = {
 	name : 'updates',
 	aliases:["patchnotes","patch-notes","patches"],
 	description : "Sends a message that contains a summary of the latest update.",
-	cooldown: 20,
+	cooldown: 10,
 	worksInDMs: true,
 	usage:'updates [update (ex: ;updates 0.6.1)]',
     category:"other",

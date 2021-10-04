@@ -11,7 +11,7 @@ const cancerCultureMessage ="Command cancelled successfully";
 
 module.exports = {
 	name : 'trackers',
-	description : 'raider tracker',
+	description : 'Shows you the current available TSU related trackers that you can add to your server.',
 	usage:'trackers',
     cooldown: 45,
 	whiteList:'ADMINISTRATOR',
