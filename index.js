@@ -408,6 +408,11 @@ client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
 	emojiUpdate(oldEmoji,newEmoji);
 });
 
+client.on("error", async error =>{
+	console.log("cought an error sir!");
+	console.log(error);
+});
+
 
 
 	
@@ -432,6 +437,7 @@ client.once('ready', async() => {
 
 const getAosRanks = require("./aostracker/getRanks");
 const checkAoss = require("./aostracker/intervalpresens");
+const { Console } = require('console');
 
 (async () => {
 	try {

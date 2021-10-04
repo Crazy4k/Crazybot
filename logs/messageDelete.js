@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const client = require("../index");
 const mongo = require("../mongo");
 const makeEmbed = require(".././functions/embed");
@@ -43,10 +42,13 @@ module.exports =async (message) => {
 						
 						if(deleteLogs) {
 							const embed = makeEmbed('Possible ghost ping detected',"",colors.pitchBlack,true);
+							let messageContent = message.content;
+							if(messageContent.length > 1000) messageContent = "Message content too big to show.";
+
 								embed.setAuthor(message.author.username, message.author.displayAvatarURL());
 								embed.addFields(
 									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
-									{ name:'Message content', value:message.content, inline: false },
+									{ name:'Message content', value: messageContent, inline: false },
 									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
@@ -60,9 +62,11 @@ module.exports =async (message) => {
 						if(typeof deleteLogs !== 'undefined') {
 							const embed = makeEmbed('Message deleted',"",colors.failRed,true);
 							embed.setAuthor(message.author.username, message.author.displayAvatarURL());
+							let messageContent = message.content;
+							if(messageContent.length > 1000) messageContent = "Message content too big to show.";
 							embed.addFields(
 									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
-									{ name:'Message content', value:message.content, inline: false },
+									{ name:'Message content', value: messageContent, inline: false },
 									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
