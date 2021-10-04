@@ -37,7 +37,7 @@ module.exports = async(group) =>{
     }
 
     let playersArray; 
-    playersArray = await Promise.all(group.map(id => noblox.getPlayers(id, rolesIds[group.indexOf(id)])));
+    playersArray = await Promise.all(group.map(id => noblox.getPlayers(id, rolesIds[group.indexOf(id)]))).catch(e => {console.error(); console.log("getranks.js")});
 
     let players = [];
 

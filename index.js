@@ -38,6 +38,7 @@ const keepAlive = require('./server.js');
 const config = require("./config.json");
 module.exports = client;
 
+client.login(token);
 
 const turnOnRoblox = async()=>{
 	const currentUser = await noblox.setCookie(cookie)
@@ -228,6 +229,7 @@ client.on('guildDelete', async (guild) => {
 //command handler|prefix based
 //i like to devide this into multiple pieces since it's a bit weird
 client.on('messageCreate', async (message) => {
+	if(message.author.bot)return;
 	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM"){
 		const prefix = config.bot_info.dmSettings.prefix;
 			if (!message.content.startsWith(prefix) || message.author.bot)return;
@@ -246,11 +248,15 @@ client.on('messageCreate', async (message) => {
 	if(!message.guild)return;
 	//retrive guild data from data base (only once then it will be saved in a cache)
 
-	if(!guildsCache[message.guildId]){
+	if(!guildsCache[message.guildId] ){
 		await mongo().then(async (mongoose) =>{
 			try{ 
-				guildsCache[message.guildId] = await serversSchema.findOne({_id:message.guildId});
-			} finally{
+				let data = await serversSchema.findOne({_id:message.guildId});
+				guildsCache[message.guildId] = data;
+			} catch(error){
+				console.log(error);
+				console.log("LINE 257")
+			}finally{
 				console.log("FETCHED FROM DATABASE");
 				mongoose.connection.close();
 			}
@@ -421,7 +427,6 @@ client.once('ready', async() => {
 	console.log(`Bot succesfuly logged in as ${client.user.tag} [${client.user.id}]`);
 
 });
-client.login(token);
 
 
 
@@ -429,47 +434,54 @@ const getAosRanks = require("./aostracker/getRanks");
 const checkAoss = require("./aostracker/intervalpresens");
 
 (async () => {
-
-	await mongo().then(async (mongoose) =>{
-		try{
-			let data = await raiderTrackerSchema.findOne({_id:"69"});
-			botCache.raiderTrackerChannelCache = data;
-
-		} finally{
-			console.log("FETCHED TRACKER CHANNELS");
-			mongoose.connection.close();
-		}
-	})
-
-
-	const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
-
-	let poop = [...new Set(groups)];
-	botCache.trackedRaiders = poop//[941751145,925533746];
-
-	setInterval(async () => {
-		try {
-			const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
-			console.log("UPDATED THE RAIDER CACHE")
-			let poop = [...new Set(groups)];
-			botCache.trackedRaiders = poop
-		} catch (error) {
-			console.log(console.log(error));
-		}
+	try {
+		await mongo().then(async (mongoose) =>{
+			try{
+				let data = await raiderTrackerSchema.findOne({_id:"69"});
+				botCache.raiderTrackerChannelCache = data;
+	
+			} finally{
+				console.log("line 439");
+				console.log("FETCHED TRACKER CHANNELS");
+				mongoose.connection.close();
+	
+			}
+		})
+	
+	
+		const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
+	
+		let poop = [...new Set(groups)];
+		botCache.trackedRaiders = poop//[941751145,925533746];
+	
+		setInterval(async () => {
+			try {
+				const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913]).catch(e=> {console.error(); console.log("line 452")})
+				console.log("UPDATED THE RAIDER CACHE")
+				let poop = [...new Set(groups)];
+				botCache.trackedRaiders = poop
+			} catch (error) {
+				console.error(); 
+				console.log("line 457")
+			}
+			
+		},  6 * 60 * 60 * 1000);
 		
-	},  6 * 60 * 60 * 1000);
+	
+		setInterval(async () => {
+			try {
+				await checkAoss( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.channels)	
+			} catch (error) {
+				console.log("error in line 468 bruh")
+				console.log(console.log(error));
+			}
+			
+		}, 150 * 1000);
 
-	setInterval(async () => {
-		try {
-
-			await checkAoss( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.channels)	
-		} catch (error) {
-			console.log("error in line 468 bruh")
-			console.log(console.log(error));
-		}
-		
-	}, 150 * 1000);
-		
+	} catch (error) {
+		console.log(error)
+		console.log("line 477")
+	}
 
 	
 })()
@@ -486,9 +498,7 @@ setTimeout(()=>{
 	
 		let status = [
 			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
-			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
-			{str:`Over ${raiderCount} raiders`,type:{type: "WATCHING"}},
-			{str:`Over ${raiderCount} raiders`,type:{type: "WATCHING"}},
+			{str:`over ${raiderCount} raiders`,type:{type: "WATCHING"}},
 			{str:"to ;updates",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
@@ -499,7 +509,7 @@ setTimeout(()=>{
 	
 		let luckyWinner = pickRandom(status)
 		client.user.setActivity(luckyWinner.str,luckyWinner.type);
-	},1000 * 60 * 20)
+	},1000 * 60 * 15)
 	
 
 	

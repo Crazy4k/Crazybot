@@ -3,7 +3,6 @@ const getRanks = require("../../aostracker/getRanks")
 const makeEmbed = require("../../functions/embed");
 const noblox = require("noblox.js");
 const colors = require("../../colors.json");
-const moment = require("moment");
 
 module.exports = {
 	name : 'moaio',
@@ -11,25 +10,25 @@ module.exports = {
     aliases:[,"aosintsu","kosintsu",],
     category:"roblox",
     worksInDMs: true,
-    cooldown: 60 * 5,
+    cooldown: 2*60,
     unique: true,
 	usage:'moaio',
 	async execute(message, args, server ) {
         //if(!args.length){
             const embed1 = makeEmbed("Scanning...","Gathering raider groups members...", server);
+            const embed7 = makeEmbed("Error!...",`An error occurred while connecting with the Roblox API, please try again.`,colors.failRed);
 
             message.channel.send({embeds:[embed1]})
             .then(async msg1 =>{
                 try {
-
+                    
+                    
                     const raiders = await getRanks([9723651,8224374,2981881,10937425,8675204,7033913]);
-                  
-        
                     let allGroups = [... new Set([...raiders])]
         
                     const embed2 = makeEmbed("Scanning...",`Checking group data for ${allGroups.length} individuals.\n This might take a minute.`, server);
                     const embed3 = makeEmbed("Scanning...",`Assembling all data together...`,server);
-                    
+                   
                 
                     let inAOS = [];
                     let coolString = [];
@@ -40,12 +39,13 @@ module.exports = {
                             for (let i = 0; i < iter; i++) {
                                 let shit = allGroups;
                                 let poopArray = shit.slice(i * 50, i*50+50);
-                                let smolData = await Promise.all(poopArray.map(id => noblox.getGroups(id) )).catch(e=>console.log(e));
+                                let smolData = await Promise.all(poopArray.map(id => noblox.getGroups(id) )).catch(e=>{console.log(e); msg2.edit({embeds:[embed7]});});
                                 
                                 if(smolData)data.push(...smolData);              
                             }
                         } catch (error) {
                             console.error();
+                            msg2.edit({embeds:[embed7]});
                         }
                         
 
@@ -57,20 +57,18 @@ module.exports = {
                          for(let id in usersObject) {
                             let groups = usersObject[id];
                             let branchGroup
-                            if(groups)branchGroup= groups.find(group=>group.Id === 4802792 || group.Id === 4901723 || group.Id === 4849580);
+                            if(groups)branchGroup = groups.find(group=>group.Id === 4802792 || group.Id === 4901723 || group.Id === 4849580);
                             
                             //RA = 4802792
                             //Mili = 4901723
                             //CPSU = 4849580
                             if(branchGroup) inAOS.push(id);
                             
-                            
-                            
                         }
                         msg2.edit({embeds:[embed3]}).then(async msg3=>{
                             for(let id of inAOS){
                             
-                                coolString.push(`${await noblox.getUsernameFromId(id)}\n`);
+                                coolString.push(`${await noblox.getUsernameFromId(id).catch(e=>{msg2.edit({embeds:[embed7]});})}\n`);
                             }
                             if(!coolString.length)coolString.push("There is suspiciously no AOS/KOS members in any brach at all.")
                             const embed5 = makeEmbed(`Done ✅`, `**Here is a list a AoS/KoS members who are in a TSU branch:**\n\n${coolString.join(" ")}`, colors.successGreen);
@@ -84,7 +82,8 @@ module.exports = {
                 
                 return true;
                 } catch (error) {
-                    console.log(error);
+                    console.error();
+                    msg1.edit({embeds:[embed7]});
                 }
 
             
