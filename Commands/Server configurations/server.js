@@ -7,12 +7,13 @@ const checkRoles = require("../../functions/Response based Checkers/checkRoles")
 const mongo = require("../../mongo");
 let {guildsCache} = require("../../caches/botCache");
 const serversSchema = require("../../schemas/servers-schema");
+const sendAndDelete = require("../../functions/sendAndDelete");
 
 module.exports = {
 	name : 'server',
 	description : 'modifies the settings of the server',
 	usage:'server',
-    cooldown:  30 ,
+    cooldown:  15 ,
     whiteList:'ADMINISTRATOR',
     unique: true,
     category:"Server configurations",
@@ -26,27 +27,27 @@ module.exports = {
             if(!args.length){
                 const embed = makeEmbed("Server configurations", `Your server configuration look like this:`, server);
                 if(server.hiByeChannel){
-                    embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\n\`${server.prefix}${this.name} welcomeChannel\``, true);
+                    embed.addField('Welcome channel :wave:', `<#${server.hiByeChannel}>\nChange value:\n\`${server.prefix}${this.name} welcomeChannel\``, true);
                 }else {
-                    embed.addField('Welcome channel :wave:', `Empty\n\`${server.prefix}${this.name} welcomeChannel\``, true);
+                    embed.addField('Welcome channel :wave:', `Empty\nChange value:\n\`${server.prefix}${this.name} welcomeChannel\``, true);
                 }
                 if(server.hiRole){
-                    embed.addField('Welcome role :wave:', `<@&${server.hiRole}>\n\`${server.prefix}${this.name} welcomeRole\``, true);
+                    embed.addField('Welcome role :wave:', `<@&${server.hiRole}>\nChange value:\n\`${server.prefix}${this.name} welcomeRole\``, true);
                 } else {
-                    embed.addField('Welcome role :wave:',  `Empty\n\`${server.prefix}${this.name} welcomeRole\``,true);
+                    embed.addField('Welcome role :wave:',  `Empty\nChange value:\n\`${server.prefix}${this.name} welcomeRole\``,true);
                 }
                 if(daServer.muteRole){
-                    embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\n \`${server.prefix}${this.name} muteRole\``, true);
+                    embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\nChange value:\n\`${server.prefix}${this.name} muteRole\``, true);
                 } else {
-                    embed.addField('Mute role :mute:',  `Empty\n\`${server.prefix}${this.name} muteRole\``,true);
+                    embed.addField('Mute role :mute:',  `Empty\nChange value:\n\`${server.prefix}${this.name} muteRole\``,true);
                 }
 
                             
                 embed.addFields(
-                    {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\n \`${server.prefix}${this.name} deleteInLogs\``, inline:true},
-                    {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\n \`${server.prefix}${this.name} deleteFails\``, inline:true},
+                    {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\nChange value:\n\`${server.prefix}${this.name} deleteInLogs\``, inline:true},
+                    {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\nChange value:\n\`${server.prefix}${this.name} deleteFails\``, inline:true},
                     {name:'Language :abc:', value:`${server.language}`, inline:true},
-                    {name:'Prefix :information_source:', value:`${server.prefix}`, inline:true},
+                    {name:'Prefix :information_source:', value:`${server.prefix}\nChange value:\n\`${server.prefix}${this.name} prefix\``, inline:true},
                     {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
                 );
                 message.channel.send({embeds:[embed]});
@@ -141,6 +142,50 @@ module.exports = {
                             });
                             return true;
                         break;
+                        case "prefix":
+                            let embedo8 = makeEmbed("Server Settings", `(type \`0\` to cancel)\n**Enter your new command prefix ❗**`, server);
+                            message.channel.send({embeds: [embedo8]})
+                                .then(m => {
+                                    message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
+                                        .then(async a => {     
+                                            let oldPrefix = server.prefix;
+                                            const msg = a.first().content;
+                                            if (msg === "0") {
+                                                message.channel.send(cancerCultureMessage);
+                                                return false;
+                                            } else if (msg.length > 7) {
+                                                const embed = makeEmbed('Prefix too long',"Command prefix can't be longer than 7 characters.", server);
+                                                sendAndDelete(message,embed, server);
+                                                return false;
+                                            } else if(msg === oldPrefix) {
+                                                const embed = makeEmbed('Invalid prefix \nSame as before',"", server);
+                                                sendAndDelete(message,embed, server);
+                                                return false;
+                                            }
+                                            await mongo().then(async (mongoose) =>{
+                                                try{ 
+                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                        prefix:msg,  
+                                                    },{upsert:false});
+                                                    guildsCache[message.guild.id].prefix = msg;
+                                                } finally{
+                                                    console.log("WROTE TO DATABASE");
+                                                    mongoose.connection.close();
+                                                }
+                                
+                                                const embed = makeEmbed(`Prefix changed from "${oldPrefix}" to "${msg}"`,'The prefix has been changed succesfuly :white_check_mark:.',"2EFF00");
+                                                embed.setThumbnail('https://www.iconsdb.com/icons/preview/green/ok-xxl.png');
+            
+                                                message.channel.send({embeds: [embed]});
+                                                return true;
+                                            });
+                                        }).catch(e => {
+                                            console.log(e)
+                                            message.channel.send(idleMessage);
+                                        });;
+                                });
+                                return true;
+                            break;
                     case "muterole":
                         let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.🔇**`, server);
                         message.channel.send({ embeds: [embedo2]})

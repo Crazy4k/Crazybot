@@ -8,7 +8,7 @@ const {eventsCache} = require("../../caches/botCache");
 module.exports = {
 	name : 'events',
 	description : "Shows you the current hosted events that were hosted using the `;host` command.",
-    cooldown: 5,
+    cooldown: 3,
     aliases:["event", "hosted"],
     category:"ms",
 	usage:'events',

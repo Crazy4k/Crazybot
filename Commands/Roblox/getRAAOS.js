@@ -1,5 +1,5 @@
 
-const getRanks = require("../../aostracker/getRanks")
+const getRanks = require("../../aostracker/getMembers")
 const makeEmbed = require("../../functions/embed");
 const noblox = require("noblox.js");
 const colors = require("../../colors.json");

@@ -1,8 +1,8 @@
-const makeEmbed = require('../../functions/embed');
+/*const makeEmbed = require('../../functions/embed');
 const checkChannels = require("../../functions/Response based Checkers/checkChannels");
 const mongo = require("../../mongo");
 let botCache = require("../../caches/botCache");
-const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
+const robloxAccountSchema = require("../../schemas/roblox-account-schema");
 
 
 const idleMessage = "Command cancelled due to the user being idle";
@@ -10,15 +10,15 @@ const type0Message = "(type `0` to cancel / type \"`no`\" for none)\n";
 const cancerCultureMessage ="Command cancelled successfully";
 
 module.exports = {
-	name : 'trackers',
-	description : 'Shows you the current available TSU related trackers that you can add to your server.',
-	usage:'trackers',
+	name : 'verify',
+	description : 'Links your roblox account to your discord account.',
+	usage:'verify',
+    worksInDMs: true, 
     cooldown: 5,
-	whiteList:'ADMINISTRATOR',
-    unique: true,
     category:"roblox",
 	async execute(message, args, server) {
-        console.log(`USED ;TRACKERS IN ${message.guild.id} by ${message.author.id}`)
+
+
         const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
         let  daServer;
         try {
@@ -32,10 +32,10 @@ module.exports = {
                     mongoose.connection.close();
                 }
             })
-
+            
             
             if(!args.length){
-                const embed = makeEmbed("Roblox trackers", `This is your current tracker channels:`, server,false,"To ping a role when a tracked person joins, simply create a role with the same name as \"pinged role\". Exmaple: @raider_pings");
+                const embed = makeEmbed("Verify yourself!", `This is your current tracker channels:`, server,false,"To ping a role when a tracked person joins, simply create a role with the same name as \"pinged role\". Exmaple: @raider_pings");
                 if(daServer.channels[message.guild.id]){
                     embed.addField("Raider tracker:", `<#${daServer.channels[message.guild.id]}>\nChange value: \`${server.prefix}${this.name} raiders\`\nPinged role: \`@raider_pings\``, true);
                 }else{
@@ -109,4 +109,4 @@ module.exports = {
 
 }
 
-};
+};*/

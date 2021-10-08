@@ -435,8 +435,8 @@ client.once('ready', async() => {
 
 
 
-const getAosRanks = require("./aostracker/getRanks");
-const checkAoss = require("./aostracker/intervalpresens");
+const getMembers = require("./aostracker/getMembers");
+const checkAoss = require("./aostracker/getOnlineRaiders");
 
 (async () => {
 	try {
@@ -446,7 +446,6 @@ const checkAoss = require("./aostracker/intervalpresens");
 				botCache.raiderTrackerChannelCache = data;
 	
 			} finally{
-				console.log("line 439");
 				console.log("FETCHED TRACKER CHANNELS");
 				mongoose.connection.close();
 	
@@ -454,14 +453,14 @@ const checkAoss = require("./aostracker/intervalpresens");
 		})
 	
 	
-		const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913])
+		const groups = await getMembers([9723651,8224374,2981881,10937425,8675204,7033913])
 	
 		let poop = [...new Set(groups)];
 		botCache.trackedRaiders = poop//[941751145,925533746];
 	
 		setInterval(async () => {
 			try {
-				const groups = await getAosRanks([9723651,8224374,2981881,10937425,8675204,7033913]).catch(e=> {console.error(); console.log("line 452")})
+				const groups = await getMembers([9723651,8224374,2981881,10937425,8675204,7033913]).catch(e=> {console.error(); console.log("line 452")})
 				console.log("UPDATED THE RAIDER CACHE")
 				let poop = [...new Set(groups)];
 				botCache.trackedRaiders = poop
@@ -481,7 +480,7 @@ const checkAoss = require("./aostracker/intervalpresens");
 				console.log(console.log(error));
 			}
 			
-		}, 150 * 1000);
+		}, 15 * 1000);
 
 	} catch (error) {
 		console.log(error)

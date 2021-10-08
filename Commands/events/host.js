@@ -15,7 +15,7 @@ let max = 1;
 module.exports = {
 	name : 'host',
 	description : "Sends a message that is formated as an event message (pings everyone).",
-    cooldown: 10,
+    cooldown: 5,
     aliases:[],
     category:"ms",
 	usage:'host <event-type> <Supervised by> <link> [extra info]',
