@@ -1,7 +1,7 @@
 const makeEmbed = require("../../functions/embed");
 const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
-
+const Command = require("../../Classes/Command");
 
 function whatPlace( id){
     let str = ""
@@ -36,57 +36,66 @@ function whatPlace( id){
 function splitId(string){
     return string.split(" ");
 }
+let raiders = new Command("raiders");
 
-module.exports = {
-	name : 'raiders',
-	description : "Shows you the current trackalbe raiders that are playing MS.",
-    cooldown: 5,
-    aliases:["trackraiders"],
-    category:"roblox",
-	usage:'events',
+raiders.set({
+	aliases         : ["trackraiders"],
+	description     : "Shows you the current trackalbe raiders that are playing MS.",
+	usage           : "raiders",
+	cooldown        : 3,
+	unique          : false,
+	category        : "roblox",
+	whiteList       : null,
+	worksInDMs      : false,
+	isDevOnly       : false,
+	isSlashCommand  : false
+});
+
     
-	async execute(message, args, server) { 
+    raiders.execute = async function(message, args, server){ 
 
-        if(Object.values(botCache.raiderCache).length){
+    if(Object.values(botCache.raiderCache).length){
 
-            const embed = makeEmbed("Raider tracker.","", server);
-            
-            
-            let shittyStr = [];
-            for( let e in botCache.raiderCache){
-                let shit = splitId( botCache.raiderCache[e]);
-                //let rootPlaceId = shit[0];
-                let placeId = shit[1];
-                //let instantlink = shit[2];
-                let placeString = whatPlace(placeId);
-                if(shit){
-                    let name = await noblox.getUsernameFromId(e)
-                    shittyStr.push(`[${name}](https://www.roblox.com/users/${e}/profile) is playing [${placeString}](https://www.roblox.com/games/${placeId}).`);
-                }
-
-            }
-            if(shittyStr.length){
-                embed.setDescription(`**These are the trackable raiders that are playing MS right now.**\n\n${shittyStr.join("\n")}`);
-                message.channel.send({embeds: [embed]});
-                return true;
-            }else {
-                const embed = makeEmbed("No raiders.","These are currently no trackable raiders playing ms.", server);
-                message.channel.send({embeds: [embed]});
-                return true;
-            }
-            
+        const embed = makeEmbed("Raider tracker.","", server);
         
-        } else {
+        
+        let shittyStr = [];
+        for( let e in botCache.raiderCache){
+            let shit = splitId( botCache.raiderCache[e]);
+            //let rootPlaceId = shit[0];
+            let placeId = shit[1];
+            //let instantlink = shit[2];
+            let placeString = whatPlace(placeId);
+            if(shit){
+                let name = await noblox.getUsernameFromId(e)
+                shittyStr.push(`[${name}](https://www.roblox.com/users/${e}/profile) is playing [${placeString}](https://www.roblox.com/games/${placeId}).`);
+            }
+
+        }
+        if(shittyStr.length){
+            embed.setDescription(`**These are the trackable raiders that are playing MS right now.**\n\n${shittyStr.join("\n")}`);
+            message.channel.send({embeds: [embed]});
+            return true;
+        }else {
             const embed = makeEmbed("No raiders.","These are currently no trackable raiders playing ms.", server);
             message.channel.send({embeds: [embed]});
             return true;
-
         }
         
-
-        
-
-
+    
+    } else {
+        const embed = makeEmbed("No raiders.","These are currently no trackable raiders playing ms.", server);
+        message.channel.send({embeds: [embed]});
+        return true;
 
     }
-};
+    
+
+    
+
+
+
+}
+
+
+module.exports =raiders; 

@@ -1,13 +1,14 @@
 const makeEmbed = require("./embed");
 const sendAndDelete = require("./sendAndDelete");
 const moment = require('moment');
-const reportBug = require("../functions/reportErrorToDev");
+const reportBug = require("./reportErrorToDev");
 const {Permissions} = require("discord.js");
 const colors = require("../colors.json");
+const config = require("../config.json");
 
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 
-module.exports = async (command, message, args, server,client, recentlyRan,isDM = false ) => {
+module.exports = async (command, message, args, server, client, recentlyRan, isDM = false ) => {
 	//this checks if the property "whitlist" in a command exists and if does check if the author of the message is able to execute the command.
 	
 	const cooldownStringInDMs = `${message.author.id}-${command.name}`;
@@ -28,6 +29,7 @@ module.exports = async (command, message, args, server,client, recentlyRan,isDM 
 				sendAndDelete(message, embed, server, false, true);
 				return false;
 			} else{
+				
 				const booly = await command.execute(message, args, server, true);
 			
 			if(booly){
@@ -93,7 +95,7 @@ module.exports = async (command, message, args, server,client, recentlyRan,isDM 
 			}
 			catch(error) {
 				console.error(error);
-				const embed = makeEmbed("ERROR 101", 'There was an issue executing the command \ncThe developer has been notified about the problem', 'FF0000');
+				const embed = makeEmbed("ERROR 101", 'There was an issue executing the command \nThe developer has been notified about the problem', 'FF0000');
 				reportBug(error,message,client,command);
 				message.channel.send( {embeds: [embed]} );
 			}

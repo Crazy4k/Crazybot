@@ -1,0 +1,152 @@
+{
+    "MS1":{
+        "Jet Pack":{
+            "id":7167194,
+            "power": 2 
+        },
+        "Ak-4k Hog Blaster": {
+            "id":6618983,
+            "power": 3 
+        },
+        "Ghost": {
+            "id":7278529,
+            "power": 2.5 
+        },
+        "Grouch": {
+            "id":7737821,
+            "power": 2 
+        },
+        "Raider Bundle":{
+            "id":7049306,
+            "power": 1.5 
+        },
+        "Premier's Chosen":{
+            "id":6331020,
+            "power": 0 
+        },
+        "Grenade Bundle":{
+            "id":7049309,
+            "power": 1 
+        },
+        "Mafia Boss":{
+            "id":7458944,
+            "power": 1
+         },
+        "Snow man": {
+            "id":7737822,
+            "power": 1 
+        },
+        "Bunny": {"id":8921262,
+            "power": 2 
+        },
+        "Grim Reaper": {
+            "id":12497219,
+            "power": 1
+         },
+        "Santa": {
+            "id":13341785,
+            "power": 0.5 
+        },
+        "Icy shotgun": {
+            "id":7737114,
+            "power": 0.5 
+        },
+        "Skeleton": {
+            "id":7278530,
+            "power": 1 
+        },
+        "AWP": {
+            "id":7520141,
+            "power": 1
+         },
+        "Alien": {
+            "id":6832826,
+            "power": 2.5 
+        },
+        "PPSH41":{
+            "id":6093909,
+            "power": 0.5
+         },
+        "Mecha": {
+            "id":7207309,
+            "power": 1 
+        },
+        "RPG": {
+            "id":7525193,
+            "power": 1.5 
+        },
+        "Hitman":{
+            "id":6093835,
+            "power": 0.25 
+        },
+        "Juggernaut V1":{
+            "id":6093890,
+            "power": 1.5 
+        },
+        "Grenade Laucher": {
+            "id":7567995,
+            "power": 1.5
+        },
+        "Starter Pack": {
+            "id":7047576,
+            "power": 1.5 
+        }
+    },
+    "MS2":{
+        "Mad Scientist":{
+            "id":8511814,
+            "power": 1 
+        },
+        "AK-47m": {
+            "id":8525827,
+            "power": 1.5 
+        },
+        "AR15": {
+            "id":8538321,
+            "power": 2 
+        },
+        "Heavy Sniper":{
+            "id":8599789,
+            "power": 3 
+        },
+        "Operator": {
+            "id":8847196,
+            "power": 1.5 
+        },
+        "Juggernaut V2": {
+            "id":8849933,
+            "power": 3 
+        },
+        "Rocket Launcher": {
+            "id":8911510,
+            "power": 3 
+        },
+        "M1A1": {
+            "id":8562613,
+            "power": 1 
+        },
+        "Desert Eagle": {
+            "id":8846614,
+            "power": 1 
+        },
+        "Colt 1911": {
+            "id":8846607,
+            "power": 0.25 
+        },
+        "V2 Clearance 4": {
+            "id":8611468,
+            "power": 0 
+        },
+        "V2 Clearance 3":{
+            "id":8611465,
+            "power": 0 
+        },
+        "AK-47":{
+            "id":8599796,
+            "power": 2 
+        }
+
+
+    }
+    
+}
