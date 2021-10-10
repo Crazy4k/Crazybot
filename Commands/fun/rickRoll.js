@@ -67,8 +67,8 @@ rr.execute = function(message, args, server) {
 			return false;
 			break;
 		case "no args": 
-	
-			message.channel.send('should i rick roll you or what ?');
+			const embed2 = makeEmbed('Missing argument',this.usage, server);
+			sendAndDelete(message,embed2, server);
 			return false;
 		break;
 		default:
@@ -94,7 +94,7 @@ rr.execute = function(message, args, server) {
 		sendAndDelete(message,'you can\'t rick roll an admin', server);
 		return false;
 	} if(reciver.user.bot){
-		message.channel.send("Bots are too powerful to rickrool ");
+		message.channel.send("Bots are too powerful to rickroll ");
 		return false;
 	}else {
 
