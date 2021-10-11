@@ -14,7 +14,7 @@ ban.set({
 	cooldown        : 3,
 	unique          : false,
 	category        : "Moderation",
-	whiteList       : "BAN_MEMBER",
+	whiteList       : "BAN_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

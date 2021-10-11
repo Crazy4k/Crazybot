@@ -14,7 +14,7 @@ slowmode.set({
 	cooldown        : 5,
 	unique          : false,
 	category        : "Moderation",
-	whiteList       : "MANAGE_CHANNELS",
+	whiteList       : "MANAGE_MESSAGES",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

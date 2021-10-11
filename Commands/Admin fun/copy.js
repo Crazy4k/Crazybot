@@ -13,10 +13,10 @@ copy.set({
     cooldown        : 3 * 60,
     category        : "admin fun",
     whiteList       : "ADMINISTRATOR",
-    unique          : false,
-    worksInDMs      : true,
+    unique          : true,
+    worksInDMs      : false,
     isDevOnly       : false,
-    isSlashCommand  : true,
+    isSlashCommand  : false,
     isTestOnly      : false,
     usage           : "copy <user>"
 })

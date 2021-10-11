@@ -12,7 +12,7 @@ pointsRole.set({
     
 	aliases         : ["p-role","pointsrole","prole"],
 	description     : "Sets the role that will be able to modify other user's points.",
-	usage           : "rewards-set",
+	usage           : "points-role",
 	cooldown        : 5,
 	unique          : true,
 	category        : "points",

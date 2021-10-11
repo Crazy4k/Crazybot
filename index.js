@@ -297,7 +297,7 @@ client.on('messageCreate', async (message) => {
 							message.channel.send('You can\'t send a message in the logs ❌')
 								.then(msg=>{
 									setTimeout(()=>{
-										if(msg.channel.messages.cache.get(msg.id));msg.delete().cactch(err=>console.log(err));
+										if(msg.channel.messages.cache.get(msg.id));msg.delete().catch(err=>console.log(err));
 									},4000) 
 								}).catch(console.error);
 								return;
@@ -498,7 +498,7 @@ const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlin
 
 				console.log("UPDATED THE RAIDER CACHE")
 				let poop = [...new Set(groups)];
-				botCache.raiderTrackerChannelCache.raiders = poop
+				botCache.trackedRaiders.raiders = poop
 			} catch (error) {
 				console.error(); 
 				console.log("Error in line 457")
@@ -597,6 +597,7 @@ setTimeout(()=>{
 			{str:"to ;updates",type:{type: "LISTENING"}},
 			{str:"to ;help",type:{type: "LISTENING"}},
 			{str:"over your points",type:{type: "WATHCING"}},
+			{str:"developed by crazy4k#0091",type:{type: "PLAYING"}},
 			{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
 	
 		];
