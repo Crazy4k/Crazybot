@@ -1,7 +1,7 @@
 
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const Command = require("../../Classes/Command");
 
 let unban = new Command("unban");

@@ -22,7 +22,6 @@ const client = new Discord.Client({ intents: intentArray ,partials:["CHANNEL"]})
 const token = process.env.DISCORD_BOT_TOKEN;
 const cookie = process.env.NBLXJS_COOKIE;
 
-const pickRandom = require("./functions/pickRandom");
 const executeCommand = require("./functions/executeCommand");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
@@ -32,8 +31,7 @@ const officerPointsSchema = require("./schemas/officerPoints-schema");
 let {guildsCache, commandCoolDownCache} = require("./caches/botCache");
 let botCache = require("./caches/botCache");
 const sync = require("./functions/sync");
-const keepAlive = require('./server.js');
-const config = require("./config.json");
+const config = require("./config/config.json");
 module.exports = client;
 
 client.login(token);
@@ -44,7 +42,6 @@ const turnOnRoblox = async()=>{
 	
 }
 turnOnRoblox();
-keepAlive();
 
 client.commands = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
@@ -582,34 +579,37 @@ const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlin
 })()
 
 
+let iter = 0;
 
 
-setTimeout(()=>{
-	setInterval(()=>{
-		let members = client.users.cache.size;
-		let servers  = client.guilds.cache.size;
-		let raiderCount = botCache.trackedRaiders.length;
-		
+setInterval(()=>{
+	client.guilds.fetch();
+	let members = 0; 
+	client.guilds.cache.each(guild => members += guild.memberCount);
+	let servers  = client.guilds.cache.size;
+	let raiderCount = botCache.trackedRaiders.length;
 	
-		let status = [
-			{str:` ${members} member in ${servers} servers `,type:{type: "WATCHING"}},
-			{str:`over ${raiderCount} raiders`,type:{type: "WATCHING"}},
-			{str:"to ;updates",type:{type: "LISTENING"}},
-			{str:"to ;help",type:{type: "LISTENING"}},
-			{str:"over your points",type:{type: "WATHCING"}},
-			{str:"developed by crazy4k#0091",type:{type: "PLAYING"}},
-			{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
-	
-		];
-	
-	
-		let luckyWinner = pickRandom(status)
-		client.user.setActivity(luckyWinner.str,luckyWinner.type);
-	},1000 * 60 * 15)
+
+	let status = [
+		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
+		{str:`${raiderCount} raiders`,type:{type: "WATCHING"}},
+		{str:"to ;updates",type:{type: "LISTENING"}},
+		{str:"to ;help",type:{type: "LISTENING"}},
+		{str:"over your points",type:{type: "WATHCING"}},
+		{str:"developed by crazy4k#0091",type:{type: "PLAYING"}},
+		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
+
+	];
+
+
+	let luckyWinner = status[iter];
+	if(status.length - 1 === iter)iter = 0;
+	else iter++;
+	client.user.setActivity(luckyWinner.str,luckyWinner.type);
+},1000 * 60 *15);
 	
 
 	
-},3000)
 
 
 

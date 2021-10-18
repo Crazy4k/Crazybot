@@ -13,7 +13,7 @@ prefix.set({
 	usage           : "preifx <new prefix>",
 	cooldown        : 20,
 	unique          : true,
-	category        : "server configurations",
+	category        : "config",
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 const mongo = require("../../mongo")
-const {bot_info} = require("../../config.json");
+const {bot_info} = require("../../config/config.json");
 const makeEmbed = require('../../functions/embed');
 const authorID = bot_info.authorID;
 const checkUseres = require("../../functions/checkUser");
@@ -12,6 +12,8 @@ const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
 const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
 const Command = require("../../Classes/Command");
+const serverSchema = require("../../schemas/servers-schema");
+const rover = require("rover-api");
 
 let evalCommand = new Command("eval");
 evalCommand.set({

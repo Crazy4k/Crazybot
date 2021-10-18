@@ -18,7 +18,7 @@ logs.set({
 	usage           : "logs",
 	cooldown        : 30,
 	unique          : true,
-	category        : "server configurations",
+	category        : "config",
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,

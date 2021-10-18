@@ -24,7 +24,8 @@ module.exports = class Command{
         this.isDevOnly = undefined;
         this.isSlashCommand = undefined;
         this.isTestOnly = undefined;
-        this.usage = undefined
+        this.usage = undefined;
+        this.requiredArgs
 	}
     set = function(object = obj){
         for(let property in object){

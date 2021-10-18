@@ -1,7 +1,7 @@
 const makeEmbed = require('../../functions/embed.js');
 const checkChannels = require("../../functions/checkChannels");
 const sendAndDelete = require("../../functions/sendAndDelete");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const Command = require("../../Classes/Command");
 
 let slowmode = new Command("slowmode");

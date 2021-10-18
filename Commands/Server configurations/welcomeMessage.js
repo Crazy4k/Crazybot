@@ -3,7 +3,7 @@ const sync = require("../../functions/sync");
 const mongo = require("../../mongo");
 const serversSchema = require("../../schemas/servers-schema");
 const {guildsCache} = require("../../caches/botCache");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const Command = require("../../Classes/Command");
 
 let welcomeMessage = new Command("welcome-message");
@@ -14,7 +14,7 @@ welcomeMessage.set({
 	usage           : "welcome-message",
 	cooldown        : 10,
 	unique          : true,
-	category        : "server configurations",
+	category        : "config",
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,

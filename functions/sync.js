@@ -3,7 +3,7 @@ let {pointsCache, guildsCache, warnCache } = require("../caches/botCache");
 const pointsSchema = require("../schemas/points-schema");
 const guildsSchema = require("../schemas/servers-schema");
 const warnSchema = require("../schemas/warn-schema");
-const officerPointsSchema = require("../schemas/officerPoints-schema");
+
 
 const mongo = require("../mongo");
 
@@ -18,7 +18,11 @@ module.exports = async (message,) => {
     let data1;
     let data2;
     let data3;
-    let data4;
+
+    message.guild.members.fetch();
+    message.guild.channels.fetch();
+    message.guild.roles.fetch();
+
     
     await mongo().then(async (mongoose) =>{
         try{ 

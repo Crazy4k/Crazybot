@@ -1,4 +1,4 @@
-const {authorID} = require("../config.json").bot_info;
+const {authorID} = require("../config/config.json").bot_info;
 const makeEmbed = require("../functions/embed");
 
 module.exports = (error, message, client, command) => {

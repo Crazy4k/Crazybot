@@ -3,7 +3,7 @@ const moment = require('moment');
 const mongo = require("../mongo");
 let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
-const colors =require("../colors.json");
+const colors =require("../config/colors.json");
 
 module.exports = async (emoji) =>{
 

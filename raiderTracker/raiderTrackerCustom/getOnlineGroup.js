@@ -1,6 +1,6 @@
 const roblox = require('noblox.js');
 const makeEmbed = require("../../functions/embed");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const Discord = require('discord.js');
 let {customRaiderCache} = require("../../caches/botCache");
 let cache = require("../../caches/botCache");

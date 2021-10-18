@@ -1,7 +1,7 @@
 const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
-const config = require("../../config.json");
-const updateObj = require("../../updates.json");
+const config = require("../../config/config.json");
+const updateObj = require("../../config/updates.json");
 const {Permissions} = require("discord.js");
 const Command = require("../../Classes/Command");
 

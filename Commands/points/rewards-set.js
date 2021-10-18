@@ -4,7 +4,7 @@ let cache = require("../../caches/botCache").pointsCache;
 const mongo = require("../../mongo");
 const pointsSchema = require("../../schemas/points-schema");
 const enable = require("../../functions/enablePoints");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const checkRoles = require("../../functions/Response based Checkers/checkRoles")
 
 

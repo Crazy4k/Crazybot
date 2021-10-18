@@ -7,7 +7,7 @@ const pointsSchema = require("../../schemas/points-schema");
 //const checkUseres = require("../../functions/checkUser");
 const enable = require("../../functions/enablePoints");
 const {Permissions} = require("discord.js");
-const colors = require("../../colors.json");
+const colors = require("../../config/colors.json");
 const promote = require("../../functions/promote");
 const Command = require("../../Classes/Command");
 

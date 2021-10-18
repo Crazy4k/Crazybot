@@ -3,8 +3,8 @@ const sendAndDelete = require("./sendAndDelete");
 const moment = require('moment');
 const reportBug = require("./reportErrorToDev");
 const {Permissions} = require("discord.js");
-const colors = require("../colors.json");
-const config = require("../config.json");
+const colors = require("../config/colors.json");
+const config = require("../config/config.json");
 
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 

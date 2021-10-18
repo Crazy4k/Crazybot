@@ -18,7 +18,7 @@ server.set({
 	usage           : "server",
 	cooldown        : 15,
 	unique          : true,
-	category        : "server configurations",
+	category        : "config",
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,

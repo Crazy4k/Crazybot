@@ -129,7 +129,7 @@ help.execute =  function(message, args, server) {
 			case "config":
 				let num7 = 1;
 				let embed7 = makeEmbed("Help!","All of the commands in the `config` category.",server);
-				for (const i of hugeObj["Server configurations"]) {
+				for (const i of hugeObj["config"]) {
 					let perms = i.whiteList;
 					if(!perms) perms = "**-**"
 					let alis = "**-**";
