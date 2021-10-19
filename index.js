@@ -344,27 +344,41 @@ Event handlers Event handlers Event handlers Event handlers
 //
 const guildMemberAdd = require("./logs/guildMemberAdd");
 client.on('guildMemberAdd', (member)=> {
-	guildMemberAdd(member);
-	
+	try {
+		guildMemberAdd(member);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 	
 const guildMemberUpdate = require("./logs/guildMemberUpdate");
 client.on('guildMemberUpdate', (oldMember, newMember)=> {
-	guildMemberUpdate(oldMember, newMember);
-	
+	try {
+		guildMemberUpdate(oldMember, newMember);
+	} catch (error) {
+		console.log(error);
+	}	
 });
 // bye message/log
 const guildMemberRemove = require("./logs/guildMemberRemove");
 client.on('guildMemberRemove', (member) => {
-	guildMemberRemove(member);
+	try {
+		guildMemberRemove(member);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 // message deletion logs
 const messageDelete = require("./logs/messageDelete");
 client.on('messageDelete', (message) => {
-	messageDelete(message);
+	try {
+		messageDelete(message);
+	} catch (error) {
+		console.log(error);
+	}	
 });
 
 
@@ -372,7 +386,11 @@ client.on('messageDelete', (message) => {
 // server logs (roles, channels)
 const channelCreate = require("./logs/channelCreate.js");
 client.on('channelCreate', (channel) => {
-	channelCreate(channel);
+	try {
+		channelCreate(channel);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
@@ -380,40 +398,63 @@ client.on('channelCreate', (channel) => {
 // channel delete logs
 const channelDelete = require("./logs/channelDelete");
 client.on('channelDelete', (channel) => {
-	channelDelete(channel);	
+	try {
+		channelDelete(channel);	
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 //channel update logging(still under development and will probably still be for ever lol. It's just i cant figure this shit out)
 const channelUpdate = require("./logs/channelUpdate");
 client.on('channelUpdate', (oldChannel, newChannel)=> {
-	channelUpdate(oldChannel,newChannel);
+	try {
+		channelUpdate(oldChannel,newChannel);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 //message update logging
 const messageUpdate = require("./logs/messageUpdate");
 client.on('messageUpdate', (oldMessage, newMessage) => {
-	messageUpdate(oldMessage, newMessage);
+	try {
+		messageUpdate(oldMessage, newMessage);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 const emojiCreate = require("./logs/emojiCreate");
 client.on("emojiCreate", async emoji =>{
-	emojiCreate(emoji);
+	try {
+		emojiCreate(emoji);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 const emojiDelete = require("./logs/emojiDelete");
 client.on("emojiDelete", async emoji =>{
-	emojiDelete(emoji);
-	
+	try {
+		emojiDelete(emoji);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 
 const emojiUpdate = require("./logs/emojiUpdate");
 client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
-	emojiUpdate(oldEmoji,newEmoji);
+	try {
+		emojiUpdate(oldEmoji,newEmoji);
+	} catch (error) {
+		console.log(error);
+	}
 });
 
 client.on("error", async error =>{
@@ -460,6 +501,7 @@ const getMembers = require("./raiderTracker/getMembers");
 const trackRaiders = require("./raiderTracker/getOnlineRaiders");
 const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlineGroup");
+const { Console } = require('console');
 
 (async () => {
 	try {
