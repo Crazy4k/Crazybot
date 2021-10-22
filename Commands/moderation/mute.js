@@ -115,8 +115,9 @@ mute.execute = function(message, args, server) {
                         logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
                         logEmbed.addFields(
                             { name:'Duration', value:muteTimeString, inline:true },
+                            { name:'Muted:', value:`<@${toCheck}>`, inline:true },
                             { name:'Muted by: ', value:`<@${message.author.id}>`, inline:true },
-                            { name:'Roles: ', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
+                            { name:'Roles:', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
                             { name : "Reason:", value:reason, inline:true}
                         
                         );
