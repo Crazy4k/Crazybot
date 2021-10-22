@@ -14,6 +14,7 @@ unban.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "BAN_MEMBERS",
+	requiredPerms	: "BAN_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

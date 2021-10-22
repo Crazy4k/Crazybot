@@ -15,6 +15,7 @@ ban.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "BAN_MEMBERS",
+	requiredPerms	: "BAN_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false
@@ -39,6 +40,11 @@ ban.execute = function(message, args, server)  {
 		default:
 			const target = message.guild.members.cache.get(id);
 
+			if(target.permissions.has(this.whiteList)){
+				const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
+				sendAndDelete(message,embed1, server);
+				return false;
+			}
 			let copyOfArgs = [...args];
 
 			let time = 1;

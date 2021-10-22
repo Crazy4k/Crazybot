@@ -6,9 +6,9 @@ let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors =require("../config/colors.json");
 
-module.exports = async (oldEmoji, newEmoji) =>{
+module.exports = async (oldEmoji, newEmoji, client) =>{
 
-
+	if(!oldEmoji.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 	try {
 		let i = guildsCache[oldEmoji.guild.id];
 		if(!i){
@@ -28,9 +28,9 @@ module.exports = async (oldEmoji, newEmoji) =>{
 			embed.addFields(
 				{name:"Old emoji name:", value: `${oldEmoji.name}`, inline:true},
 				{name:"New emoji name:", value: `${newEmoji.name}`, inline:true},
-				{name:"Created at:", value:`${moment(oldEmoji.createdAt).fromNow()} /\n${moment(oldEmoji.createdAt).format('MMM Do YY')}`, inline:true},
+				{name:"Created at:", value:`<t:${parseInt(oldEmoji.createdTimestamp / 1000)}:F>\n<t:${parseInt(oldEmoji.createdTimestamp / 1000)}:R>`, inline:true},
 			);
-			log.send({embeds: [embed]}).then(m=> m.react(newEmoji.id));
+			log.send({embeds: [embed]}).then(m=> m.react(newEmoji.id)).catch(e=> console.log(e));
 		}			
 	}catch (err) {console.log(err)}
 

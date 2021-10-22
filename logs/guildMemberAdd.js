@@ -5,9 +5,10 @@ let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors = require("../config/colors.json");
 
-module.exports = async (member)=> {
+module.exports = async (member, client)=> {
 	try {
 		let i = guildsCache[member.guild.id];
+		if(!member.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		if(!i){
 			await mongo().then(async (mongoose) =>{
 				try{ 
@@ -37,11 +38,11 @@ module.exports = async (member)=> {
 			const embed = makeEmbed("member joined","",colors.successGreen,true);
 			embed.setAuthor(member.displayName, member.user.displayAvatarURL())
 			embed.addFields(
-				{ name :'account age', value :`${moment(member.user.createdAt).fromNow()} /\n${moment(member.user.createdAt).format('MMM Do YY')}`, inline : true },
+				{ name :'account age', value :`<t:${parseInt(member.createdTimestamp / 1000)}:F>\n<t:${parseInt(member.createdTimestamp / 1000)}:R>`, inline : true },
 				{ name :'member count', value :'#' + member.guild.memberCount, inline : true },
 				{ name :'ID', value :member.id, inline : true },
 			);
-			log.send({embeds: [embed]});
+			log.send({embeds: [embed]}).catch(e=> console.log(e));
 		}
 		if(!member.bot){
 			if (role) {

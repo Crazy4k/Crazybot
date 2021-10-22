@@ -73,7 +73,7 @@ pointsLeaderboard.execute = async function(message, args, server) {
 
 
     const emb = makeEmbed("points leaderboard", `${arrayOfStrings.join(" ")}`, server,false)
-    message.channel.send({ embeds: [emb]});                                    
+    message.channel.send({ embeds: [emb]}).catch(e=> console.log(e));                                    
     return true;
 }
 module.exports = pointsLeaderboard;

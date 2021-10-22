@@ -4,9 +4,9 @@ const mongo = require("../mongo");
 let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 
-module.exports = async (oldMember, newMember)=> {
+module.exports = async (oldMember, newMember, client)=> {
 	try {
-
+		if(!oldMember.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		let i = guildsCache[oldMember.guild.id];
 		if(!i){
 			await mongo().then(async (mongoose) =>{
@@ -90,7 +90,7 @@ module.exports = async (oldMember, newMember)=> {
 				if(removed.length)embed.addField(`Roles removed: `, `<@&${removed.join("> <@&")}>`,false);
 				size++;
 			}
-		if(size)log.send({embeds: [embed]});
+		if(size)log.send({embeds: [embed]}).catch(e=> console.log(e));
 		}
 					
 					

@@ -101,7 +101,7 @@ pointsSet.execute = async function(message, args, server){
                 })
                 await promote(message,target,server);
                 const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
-                message.channel.send({embeds:[emb]});     
+                message.channel.send({embeds:[emb]}).catch(e=> console.log(e));     
                 if(log){
                     let embed = makeEmbed("Points changed.","","3987FF",true);
                     embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
@@ -112,7 +112,7 @@ pointsSet.execute = async function(message, args, server){
                     {name: "Amount after:", value: `${servery.members[target]}`, inline:true},
                     {name: "Reason:", value: reason, inline:true},      
                     );
-                    log.send({embeds:[embed]});
+                    log.send({embeds:[embed]}).catch(e=> console.log(e));
                     return true;
                 }
             } 

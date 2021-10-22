@@ -5,8 +5,9 @@ const serversSchema = require("../schemas/servers-schema");
 const colors =require("../config/colors.json");
 const moment = require('moment');
 
-module.exports = async (emoji) =>{
+module.exports = async (emoji, client) =>{
 	const maker = await emoji.fetchAuthor();
+	if(!emoji.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 	try {
 		let i = guildsCache[emoji.guild.id];
 		if(!i){
@@ -26,9 +27,9 @@ module.exports = async (emoji) =>{
 				{name:"Emoji name:", value: `${emoji.name}`, inline:true},
 				{name:"Emoji ID:", value: `${emoji.id}`, inline:true},
 				{name:"Created by:", value: `<@${maker.id}>`, inline:true},
-				{name:"Created at:", value: `${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
+				{name:"Created at:", value: `<t:${parseInt(emoji.createdTimestamp / 1000)}:F>\n<t:${parseInt(emoji.createdTimestamp / 1000)}:R>`, inline:true},
 			);
-			log.send({embeds: [embed]}).then(m=>m.react(emoji.id));
+			log.send({embeds: [embed]}).then(m=>m.react(emoji.id)).catch(e=> console.log(e));
 		}
 						
 	}catch (err) {console.log(err)}

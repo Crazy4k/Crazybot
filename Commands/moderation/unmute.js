@@ -16,6 +16,7 @@ unmute.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "MUTE_MEMBERS",
+	requiredPerms   : "MANAGE_ROLES",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

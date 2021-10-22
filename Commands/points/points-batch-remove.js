@@ -160,7 +160,7 @@ pointsbatchRemove.execute = async function(message, args, server) {
                         members:servery.members    
                     },{upsert:true});
 
-                    message.channel.send({embeds:[embed]});
+                    message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
 
                     if(log){
                         
@@ -172,7 +172,7 @@ pointsbatchRemove.execute = async function(message, args, server) {
                             for(let e in edited){
                                 logEmbed.addField(`Modified: `,`Removed **${edited[e][0]}** points from <@${e}> for \`${edited[e][1]}\` `, false);
                             }
-                            log.send({embeds: [logEmbed]});
+                            log.send({embeds: [logEmbed]}).catch(e=> console.log(e));
                         }
                         
                         

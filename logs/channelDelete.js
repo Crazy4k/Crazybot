@@ -7,10 +7,10 @@ const serversSchema = require("../schemas/servers-schema");
 const makeEmbed = require(".././functions/embed");
 const colors =require("../config/colors.json");
 
-module.exports =async(channel) => {
+module.exports = async(channel, client) => {
 	if(channel.type === 'DM') return;
 	if(!channel.guild) return;
-
+	if(!channel.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 	try {
 		let i = guildsCache[channel.guild.id];
 		if(!i){
@@ -31,10 +31,10 @@ module.exports =async(channel) => {
 				embed.addFields(
 					{ name:'name', value: channel.name, inline: false },
 					{ name:'Category', value: `${channel.parent}`, inline: false },
-					{ name:'created at', value: `${moment(channel.createdAt).format('MMMM Do YYYY, h:mm:ss a')}`, inline: false },
+					{ name:'created at', value: `<t:${parseInt(channel.createdTimestamp / 1000)}:F>\n<t:${parseInt(channel.createdTimestamp / 1000)}:R>`, inline: false },
 					{ name:'ID', value: channel.id, inline: false },
 				);
-			serverLogs.send({embeds: [embed]});
+			serverLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 		}
 				
 	}catch (err) {console.log(err);}

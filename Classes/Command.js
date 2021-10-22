@@ -1,16 +1,21 @@
+const {Permissions} = require("discord.js");
+
 let obj = {
     aliases : undefined,
     description : undefined,
-    cooldown : undefined,
+    cooldown : 3,
     category : undefined,
-    whiteList : undefined,
+    whiteList : Permissions.FLAGS.SEND_MESSAGES,
     unique : undefined,
-    worksInDMs : undefined,
-    isDevOnly : undefined,
-    isSlashCommand :  undefined,
-    isTestOnly : undefined,
-    usage : undefined
-}
+    worksInDMs : false,
+    isDevOnly : false,
+    isSlashCommand :  false,
+    isTestOnly : false,
+    usage : undefined,
+    requiredArgs : [],
+    requiredPerms : Permissions.FLAGS.SEND_MESSAGES
+}//Default options^^
+
 module.exports = class Command{
 	constructor(name){
 		this.name = name;
@@ -25,12 +30,17 @@ module.exports = class Command{
         this.isSlashCommand = undefined;
         this.isTestOnly = undefined;
         this.usage = undefined;
-        this.requiredArgs
-	}
-    set = function(object = obj){
+        this.requiredArgs = [];
+        this.requiredPerms = Permissions.FLAGS.SEND_MESSAGES;
+	}//pass object as an argument with values that you want
+
+    set = function(object ){
+        for(let property in obj){
+            this[property] = obj[property];
+        }
         for(let property in object){
             this[property] = object[property];
         }
-    }
+    }//setting the default values first then overwriting them with the given ones so that if you dont provide a property, it will convert into the default one
     
 }

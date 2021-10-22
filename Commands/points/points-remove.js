@@ -100,7 +100,7 @@ pointsRemove.set({
                         await promote(message,persona,server);
 
                         const variable = makeEmbed("points Removed ✅",`Removed ${pointsToGive} points from <@${persona}>`, server);
-                        message.channel.send({embeds:[variable]});
+                        message.channel.send({embeds:[variable]}).catch(e=> console.log(e));
                         if(log){
                             let embed = makeEmbed("Points Removed.","","FF4040",true);
                             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
@@ -110,7 +110,7 @@ pointsRemove.set({
                                 {name: "Amount removed:", value: pointsToGive, inline:true},
                                 {name: "Reason:", value: reason, inline:true},      
                             );
-                            log.send({embeds:[embed]});
+                            log.send({embeds:[embed]}).catch(e=> console.log(e));
                         }
 
                     } finally{

@@ -5,10 +5,10 @@ let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors =require("../config/colors.json");
 
-module.exports = async (emoji) =>{
+module.exports = async (emoji, client) =>{
 
 	try {
-			
+		if(!emoji.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		let i = guildsCache[emoji.guild.id];
 		if(!i){
 			await mongo().then(async (mongoose) =>{
@@ -26,9 +26,10 @@ module.exports = async (emoji) =>{
 			embed.addFields(
 				{name:"Emoji name:", value: `${emoji.name}`, inline:true},
 				{name:"Emoji ID:", value: `${emoji.id}`, inline:true},
-				{name:"Created at:", value: `${moment(emoji.createdAt).fromNow()} /\n${moment(emoji.createdAt).format('MMM Do YY')}`, inline:true},
+
+				{name:"Created at:", value: `<t:${parseInt(emoji.createdTimestamp / 1000)}:F>\n<t:${parseInt(emoji.createdTimestamp / 1000)}:R>`, inline:true},
 			);
-			log.send({embeds: [embed]});
+			log.send({embeds: [embed]}).catch(e=> console.log(e));
 		}
 							
 	}catch (err) {console.log(err)}

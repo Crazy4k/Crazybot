@@ -83,28 +83,26 @@ async function createJoinEmbed(customRaiderCache, userId){
     return embed;
 }
 
-module.exports = async function stalk( noblox, userIds, groupId, discordClient , channelId ){
-        
+module.exports = async ( noblox, userIds, groupId, discordClient , channelObject ) => {
     let arrayOfChannels = [];
-    for (let id in channelId) {
-        
+    for (let id in channelObject) {
         let channel;
-        if(channelId[id].trackedGroups.includes(groupId))channel = discordClient.channels.cache.get(channelId[id]);
+        if(channelObject[id].trackedGroups.includes(`${groupId}`))channel = discordClient.channels.cache.get(channelObject[id].channelID);
         if(channel)arrayOfChannels.push(channel.id);
     }
 
     if(arrayOfChannels.length){
-        let iter = userIds.length / 100;
+        let iter = userIds[groupId].length / 100;
         let data = [];
         for (let i = 0; i < iter; i++) {
             let shit = userIds;
-            let poopArray = shit.slice(i * 100, i*100+100);
+            let poopArray = shit[groupId].slice(i * 100, i*100+100);
             let smolData = await noblox.getPresences(poopArray).catch(e=>console.log(e))
             
             data.push(...smolData.userPresences);              
         }
         
-
+        if(!customRaiderCache[groupId]) customRaiderCache[groupId] = {};
         
 
         if(!Object.values(customRaiderCache[groupId]).length){
@@ -112,7 +110,7 @@ module.exports = async function stalk( noblox, userIds, groupId, discordClient ,
             let joins = [];
             for(let user of data){
                 if(user.userPresenceType === 2 && user.rootPlaceId === 2988554876  || user.rootPlaceId === 4771888361){
-                    raiderCache[user.userId] = `${user.rootPlaceId} ${user.placeId} placeId=${user.placeId}&gameId=${user.gameId}`;
+                    customRaiderCache[groupId][user.userId] = `${user.rootPlaceId} ${user.placeId} placeId=${user.placeId}&gameId=${user.gameId}`;
                 }
             }
             

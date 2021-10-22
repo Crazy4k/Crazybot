@@ -9,14 +9,10 @@ module.exports = (message, args, num = 0) => {
             return message.mentions.members.first().id;
         }else if(args[num] === "me") {			
 			return message.author.id;
-		}else {
-			let e = message.guild.members.cache.find(user => user.displayName.toLowerCase() === args[num].toLowerCase())
-			if(e){
-				return e.id;
-			}else if(message.mentions.everyone) {
-				return "everyone";
-			} else return "not useable";
-		} 
+		}else if(message.mentions.everyone) {
+			return "everyone";
+		} else return "not useable";
+		
     } else return "no args";
 }
 

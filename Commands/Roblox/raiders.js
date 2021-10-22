@@ -45,7 +45,6 @@ raiders.set({
 	cooldown        : 3,
 	unique          : false,
 	category        : "roblox",
-	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

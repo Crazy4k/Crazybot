@@ -20,7 +20,8 @@ host.set({
 	cooldown        : 5,
 	unique          : false,
 	category        : "ms",
-	whiteList       : null,
+	whiteList       : "MENTION_EVERYONE",
+    requiredPerms   : "MENTION_EVERYONE",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

@@ -12,7 +12,7 @@ cat.set({
 	cooldown        : 4,
 	unique          : false,
 	category        : "fun",
-	whiteList       : null,
+	requiredPerms	: "EMBED_LINKS",
 	worksInDMs      : true,
 	isDevOnly       : false,
 	isSlashCommand  : false

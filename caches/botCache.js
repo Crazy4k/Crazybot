@@ -16,7 +16,7 @@ let caches = {
     customTrackedRaiders: {},
     raiderCache : {},
     customRaiderCache : {},
-    raiderTrackerChannelCache : {},
+    raiderTrackerChannelCache : {raiders: null, custom : null},
     tempCmds : undefined,
     timerCache : [timer.getTimeValues(), timer.getTotalTimeValues()],
     warnCache : {}

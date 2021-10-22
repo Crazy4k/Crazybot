@@ -17,6 +17,7 @@ mute.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "MUTE_MEMBERS",
+    requiredPerms   : "MANAGE_ROLES",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false
@@ -53,6 +54,11 @@ mute.execute = function(message, args, server) {
                 let muteTime = args[1];
                 let muteTimeString = args[1];
                 const member = message.guild.members.cache.get(toCheck);
+                if(member.permissions.has(this.whiteList)){
+                    const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
+                    sendAndDelete(message,embed1, server);
+                    return false;
+                }
                 let multi = 1000 * 60;
     
                 if(!muteTime){

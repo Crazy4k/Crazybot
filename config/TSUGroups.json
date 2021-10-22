@@ -1,0 +1,158 @@
+{
+    "4802792":{
+        "name"      : "Red Army",
+        "link"      : "https://www.roblox.com/groups/4802792",
+        "isBranch"  : true,
+        "isDivision": false,
+        "isRaider"  : false,
+        "id"        : 4802792,
+        "highRanks" : [32120309, 32120310, 32120311],
+        "HICOMRanks": [32120316, 32120318, 55373485, 32120325, 32120326, 32120286],
+        "VIPRanks"  : [32120316, 32120318, 55373485, 32120325, 32120326, 32120286],
+        "managementAndStaff": [43030184, 32120278, 32120053]
+    },
+    "4849580":{
+        "name"      : "CPSU",
+        "link"      : "https://www.roblox.com/groups/4849580",
+        "isBranch"  : true,
+        "isDivision": false,
+        "isRaider"  : false,
+        "id"        : 4849580,
+        "highRanks" : [32402704, 32402709, 32402711, 34198026],
+        "HICOMRanks": [34198027, 32402712, 32402717, 32495230],
+        "VIPRanks"  : [32402711, 34198026, 34198027, 32402712, 32402717, 32495230],
+        "managementAndStaff": [33158322, 40775043, 32402095]
+    },
+    "4901723": {
+        "name"      : "Militsiya",
+        "link"      : "https://www.roblox.com/groups/4901723",
+        "isBranch"  : true,
+        "isDivision": false,
+        "isRaider"  : false,
+        "id"        : 4901723,
+        "highRanks" : [33455352, 33455355, 33455356, 69643454],
+        "HICOMRanks": [33455358, 69643441, 33455359, 33455361, 33548094],
+        "managementAndStaff": [33455367, 33548096, 32727821]
+    },
+    "6018695":{
+        "name"      : "OMON",
+        "link"      : "https://www.roblox.com/groups/6018695",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 6018695,
+        "highRanks" : [39268902, 39268908, 39268911],
+        "HICOMRanks": [39268915, 39268920, 39268937, 39268947 ],
+        "managementAndStaff": [39268942, 39268577 ]
+    },
+    "11934361":{
+        "name"      : "Militsiya Detective Division",
+        "link"      : "https://www.roblox.com/groups/11934361",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 11934361,
+        "highRanks" : [69650947, 69650983, 69651211, 69651015],
+        "HICOMRanks": [69651021, 69651047, 69651084, 69651096, 69651098 ],
+        "managementAndStaff": [69651837, 69650763 ]
+    },
+    "5855498":{
+        "name"      : "The Soviet Media",
+        "link"      : "https://www.roblox.com/groups/5855498",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 5855498,
+        "highRanks" : [39020198, 38699132, 38383705, 39020384],
+        "HICOMRanks": [39020390, 39020423, 38383704, 38383724, 38699177 ],
+        "managementAndStaff": [38699179, 38383703 ]
+    },
+    "4849688":{
+        "name"      : "Ministry of Defense",
+        "link"      : "https://www.roblox.com/groups/4849688",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 4849688,
+        "highRanks" : [32402766, 56070656],
+        "HICOMRanks": [32402767, 32402772, 32402773, 34766559 ],
+        "managementAndStaff": [32402720 ]
+    },
+    "5902649":{
+        "name"      : "109th Infantry",
+        "link"      : "https://www.roblox.com/groups/5902649",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 5902649,
+        "highRanks" : [39260204, 39260216, 39260222],
+        "HICOMRanks": [39260233, 39260257, 38643688 ],
+        "managementAndStaff": [41659022, 38643687 ]
+    },
+    "5737557":{
+        "name"      : "CRU",
+        "link"      : "https://www.roblox.com/groups/5737557",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 5737557,
+        "highRanks" : [37720654, 37720596 ],
+        "HICOMRanks": [37720628, 37720686, 37720692, 37720701],
+        "managementAndStaff": [37720702, 37720547 ]
+    },
+    "5687123":{
+        "name"      : "TFOC",
+        "link"      : "https://www.roblox.com/groups/5687123",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 5687123,
+        "highRanks" : [37436126 ],
+        "HICOMRanks": [37436144, 37436146, 37436148, 37433720],
+        "managementAndStaff": [37436157, 37433719]
+    },
+    "4948472":{
+        "name"      : "5th Rifle Division",
+        "link"      : "https://www.roblox.com/groups/4948472",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 4948472,
+        "highRanks" : [33905929, 33020999, 33021000],
+        "HICOMRanks": [33021001, 33021007, 33021017],
+        "managementAndStaff": [33020985, 33020984 ]
+    },
+    "4808054":{
+        "name"      : "Spetsnaz",
+        "link"      : "https://www.roblox.com/groups/4808054",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 4808054,
+        "highRanks" : [32181284, 32181285],
+        "HICOMRanks": [32181286, 32181287, 32495229],
+        "managementAndStaff": [32817117, 32152620 ]
+    },
+    "4805062": {
+        "name"      : "Red Guard",
+        "link"      : "https://www.roblox.com/groups/4805062",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 4805062,
+        "highRanks" : [32134268, 32776937 ],
+        "HICOMRanks": [32134272, 32134277, 32134280],
+        "managementAndStaff": [32134284, 32134298, 41206031, 32134208 ]
+    },
+    "4805092":{
+        "name"      : "KGB",
+        "link"      : "https://www.roblox.com/groups/4805092",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 4805092,
+        "highRanks" : [32134514, 32134515, 32134517, 32134518, 32134523],
+        "HICOMRanks": [32134526, 32134527, 32134528],
+        "managementAndStaff": [33443713, 32134384]
+    }
+}

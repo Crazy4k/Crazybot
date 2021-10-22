@@ -19,7 +19,8 @@ pointsRole.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : false,
+    
 })
 
 
@@ -85,13 +86,13 @@ pointsRole.execute = async function(message, args, server) {
                     cache[message.guild.id].whiteListedRole = whiteListedRole;
 
                     const embed = makeEmbed(`✅ officer role has been updated.`,`Poeple with the role <@&${whiteListedRole}> can now modify other user's points.`, "#24D900");
-                    message.channel.send({embeds:[embed]});
+                    message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
                     return true;
             });
     } else{
         
         const embed = makeEmbed(`You already have an officer role set.`,`Current officer role: <@&${servery.whiteListedRole}>**\nType \`reset\` to reset it..**`, server);
-        message.channel.send({embeds:[embed]});
+        message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
 
         const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
         message.channel.awaitMessages({filter: gayFilter, max: 1, time : 20000, errors: ['time']})

@@ -93,7 +93,7 @@ points.execute = async function(message, args, server) {
                 }
                 await promote(message,target,server);
                 const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
-                message.channel.send({embeds:[emb]});                                    
+                message.channel.send({embeds:[emb]}).catch(e=> console.log(e));                                    
                 return true;
 
             }

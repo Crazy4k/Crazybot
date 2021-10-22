@@ -11,7 +11,6 @@ events.set({
 	cooldown        : 3,
 	unique          : false,
 	category        : "ms",
-	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

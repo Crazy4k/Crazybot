@@ -11,10 +11,10 @@ sus.set({
 	cooldown        : 3,
 	unique          : false,
 	category        : "fun",
-	whiteList       : null,
 	worksInDMs      : true,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : false,
+	requiredPerms	: "EMBED_LINKS"
 })
 
 

@@ -16,6 +16,7 @@ kick.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "KICK_MEMBERS",
+	requiredPerms	: "KICK_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false
@@ -41,6 +42,13 @@ kick.execute = function(message, args, server) {
 		default:
 
 			const target = message.guild.members.cache.get(id);
+
+			if(target.permissions.has(this.whiteList)){
+				const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
+				sendAndDelete(message,embed1, server);
+				return false;
+			}
+
 			let reason = args.slice(1).join(' ');
 			if(!reason)reason = "No reason given.";
 

@@ -5,9 +5,11 @@ let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors = require(".././config/colors.json");
 
-module.exports =async (message) => {
+module.exports = async (message, client) => {
 	
-	let isCommand = false;	
+	let isCommand = false;
+	if(!message.guild)return;
+	if(!message.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;	
 	try {
 
 		let i = guildsCache[message.guild.id];
@@ -52,7 +54,7 @@ module.exports =async (message) => {
 									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
-							deleteLogs.send({embeds: [embed]});
+							deleteLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 							return;
 					
 						}
@@ -64,13 +66,14 @@ module.exports =async (message) => {
 							embed.setAuthor(message.author.username, message.author.displayAvatarURL());
 							let messageContent = message.content;
 							if(messageContent.length > 1000) messageContent = "Message content too big to show.";
+							if(messageContent.length === 0) messageContent = "Empty message content";
 							embed.addFields(
 									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
 									{ name:'Message content', value: messageContent, inline: false },
 									{ name: "Author", value:`<@${message.author.id}>`, inline: false},
 									
 								);
-							deleteLogs.send({embeds: [embed]});
+							deleteLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 							return;
 				
 						}

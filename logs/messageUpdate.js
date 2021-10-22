@@ -4,11 +4,12 @@ const serversSchema = require("../schemas/servers-schema");
 const makeEmbed =require("../functions/embed");
 const colors = require("../config/colors.json");
 
-module.exports = async(oldMessage, newMessage) => {
+module.exports = async(oldMessage, newMessage, client) => {
 
 		try{			
+			if(!message.guild)return;
 			if(oldMessage.author.bot) return;
-
+			if(!oldMessage.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;	
 			let i = guildsCache[oldMessage.guild.id];
 			if(!i){
 				await mongo().then(async (mongoose) =>{
@@ -57,6 +58,8 @@ module.exports = async(oldMessage, newMessage) => {
 					let afterContent = newMessage.content;
 					if(beforeContent.length > 1000) beforeContent = "Message content too big to show.";
 					if(afterContent.length > 1000) afterContent = "Message content too big to show.";
+					if(beforeContent.length === 0) beforeContent = "Empty message content";
+					if(afterContent.length === 0) afterContent = "Empty message content";
 
 					embed.setAuthor(oldMessage.author.username, oldMessage.author.displayAvatarURL())
 						.addFields(
@@ -66,7 +69,7 @@ module.exports = async(oldMessage, newMessage) => {
 							{ name: "Author", value: `<@${oldMessage.author.id}>`, inline: false },
 							{ name:"Message link :e_mail:", value: `[message](${oldMessage.url} "message link")`, inline: false}
 						);
-					deleteLogs.send({embeds: [embed]});
+					deleteLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 				}			
 			
 			

@@ -111,7 +111,7 @@ promotion.execute = async function(message, args, server) {
             embed1.addField(`**${num}) reward:**`,`Required points: ${servery.rewards[I][0]}\nRole reward: ${shit}\n Change value: \n\`${server.prefix}${this.name} ${I}\``,true)
             num++
         }
-        message.channel.send({embeds:[embed1]});
+        message.channel.send({embeds:[embed1]}).catch(e=> console.log(e));
         return true;
     } else {
         if(args[0]){
@@ -232,7 +232,7 @@ promotion.execute = async function(message, args, server) {
                         {name:`**Given role:**`,value:`${shit}\nChange Value: \`${server.prefix}${this.name} ${thing} role\``,inline:false},
                         {name:`**Achievable?:**`,value:`${achievable}`,inline:false},
                     );
-                    message.channel.send({embeds:[embed]});
+                    message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
                     return false;
                 }
             }else {
@@ -248,7 +248,7 @@ promotion.execute = async function(message, args, server) {
                 embed1.addField(`**${num}) reward:**`,`Required points: **${servery.rewards[I][0]}**\nRole reward: ${shit}\n Change value: \n\`${server.prefix}${this.name} ${I}\``,true)
                 num++
             }
-            message.channel.send({embeds:[embed1]});
+            message.channel.send({embeds:[embed1]}).catch(e=> console.log(e));
             return false;
         }
 

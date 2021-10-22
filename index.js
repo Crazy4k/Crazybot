@@ -69,7 +69,6 @@ for(let category of bigcommandfile){
 	for(const file of smallCommandFile) {
 
 		const command = require(`./Commands/${category}/${file}`);
-		
 		if(command.isSlashCommand)client.slashCommands.set(command.name, command);
 	}
 }
@@ -342,10 +341,11 @@ Event handlers Event handlers Event handlers Event handlers
 Event handlers Event handlers Event handlers Event handlers
 */ 
 //
+
 const guildMemberAdd = require("./logs/guildMemberAdd");
 client.on('guildMemberAdd', (member)=> {
 	try {
-		guildMemberAdd(member);
+		guildMemberAdd(member, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -355,7 +355,7 @@ client.on('guildMemberAdd', (member)=> {
 const guildMemberUpdate = require("./logs/guildMemberUpdate");
 client.on('guildMemberUpdate', (oldMember, newMember)=> {
 	try {
-		guildMemberUpdate(oldMember, newMember);
+		guildMemberUpdate(oldMember, newMember, client);
 	} catch (error) {
 		console.log(error);
 	}	
@@ -364,7 +364,7 @@ client.on('guildMemberUpdate', (oldMember, newMember)=> {
 const guildMemberRemove = require("./logs/guildMemberRemove");
 client.on('guildMemberRemove', (member) => {
 	try {
-		guildMemberRemove(member);
+		guildMemberRemove(member, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -375,7 +375,7 @@ client.on('guildMemberRemove', (member) => {
 const messageDelete = require("./logs/messageDelete");
 client.on('messageDelete', (message) => {
 	try {
-		messageDelete(message);
+		messageDelete(message, client);
 	} catch (error) {
 		console.log(error);
 	}	
@@ -387,7 +387,7 @@ client.on('messageDelete', (message) => {
 const channelCreate = require("./logs/channelCreate.js");
 client.on('channelCreate', (channel) => {
 	try {
-		channelCreate(channel);
+		channelCreate(channel, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -399,7 +399,7 @@ client.on('channelCreate', (channel) => {
 const channelDelete = require("./logs/channelDelete");
 client.on('channelDelete', (channel) => {
 	try {
-		channelDelete(channel);	
+		channelDelete(channel, client);	
 	} catch (error) {
 		console.log(error);
 	}
@@ -410,7 +410,7 @@ client.on('channelDelete', (channel) => {
 const channelUpdate = require("./logs/channelUpdate");
 client.on('channelUpdate', (oldChannel, newChannel)=> {
 	try {
-		channelUpdate(oldChannel,newChannel);
+		channelUpdate(oldChannel,newChannel, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -421,7 +421,7 @@ client.on('channelUpdate', (oldChannel, newChannel)=> {
 const messageUpdate = require("./logs/messageUpdate");
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	try {
-		messageUpdate(oldMessage, newMessage);
+		messageUpdate(oldMessage, newMessage, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -431,7 +431,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 const emojiCreate = require("./logs/emojiCreate");
 client.on("emojiCreate", async emoji =>{
 	try {
-		emojiCreate(emoji);
+		emojiCreate(emoji, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -441,7 +441,7 @@ client.on("emojiCreate", async emoji =>{
 const emojiDelete = require("./logs/emojiDelete");
 client.on("emojiDelete", async emoji =>{
 	try {
-		emojiDelete(emoji);
+		emojiDelete(emoji, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -451,7 +451,7 @@ client.on("emojiDelete", async emoji =>{
 const emojiUpdate = require("./logs/emojiUpdate");
 client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
 	try {
-		emojiUpdate(oldEmoji,newEmoji);
+		emojiUpdate(oldEmoji,newEmoji, client);
 	} catch (error) {
 		console.log(error);
 	}
@@ -501,7 +501,6 @@ const getMembers = require("./raiderTracker/getMembers");
 const trackRaiders = require("./raiderTracker/getOnlineRaiders");
 const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlineGroup");
-const { Console } = require('console');
 
 (async () => {
 	try {
@@ -596,7 +595,7 @@ const { Console } = require('console');
 		}, 6* 60 * 60 * 1000); 
 			
 	
-		/*setInterval(async () => {
+		setInterval(async () => {
 			try {
 				for(let groupId in groupsObj){
 					await trackCustomRaiders( noblox, botCache.customTrackedRaiders, groupId, client, botCache.raiderTrackerChannelCache.custom.channels)	
@@ -607,7 +606,7 @@ const { Console } = require('console');
 				console.log(console.log(error));
 			}
 			
-		}, 150 * 1000);*/
+		}, 170 * 1000);
 
 
 

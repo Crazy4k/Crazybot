@@ -15,6 +15,7 @@ nickname.set({
 	unique          : false,
 	category        : "Moderation",
 	whiteList       : "MANAGE_NICKNAMES",
+	requiredPerms   : "MANAGE_NICKNAMES",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

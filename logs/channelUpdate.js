@@ -4,7 +4,8 @@ const serversSchema = require("../schemas/servers-schema");
 const makeEmbed = require(".././functions/embed");
 const colors =require("../config/colors.json");
 
-module.exports = async(oldChannel, newChannel)=> {
+module.exports = async(oldChannel, newChannel, client)=> {
+	if(!oldChannel.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 	if(oldChannel.type === 'DM') return;
 	if(!oldChannel.guild) return;
 	try {
@@ -64,7 +65,7 @@ module.exports = async(oldChannel, newChannel)=> {
 						embed.addField('Permissions modified ✅❌', "`No Info`", false);
 					}
 				}
-				serverLogs.send({embeds: [embed]});
+				serverLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 			} catch(error) {
 				console.log(error);
 			}

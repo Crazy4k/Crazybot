@@ -48,7 +48,7 @@ rr.set({
 	cooldown        : 60 * 10,
 	unique          : true,
 	category        : "fun",
-	whiteList       : null,
+	requiredPerms	: "MANAGE_MESSAGES",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : false

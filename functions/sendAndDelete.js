@@ -8,8 +8,8 @@ module.exports = (message, msgToSend, server, ignoreDefaultSetting = false, isDM
                 setTimeout(()=>{
                     let M = m.channel.messages.cache.get(m.id);
                     let MESSAGE  = message.channel.messages.cache.get(message.id);
-                    if(M)m.delete().catch(e=>console.log(e));
-                    if(MESSAGE) message.delete().catch(e=>console.log(e));
+                    if(M)m.delete().catch(e=>e);
+                    if(MESSAGE) message.delete().catch(e=>e);
                     
                 },server.deleteFailedMessagedAfter)
                return;
@@ -25,8 +25,8 @@ module.exports = (message, msgToSend, server, ignoreDefaultSetting = false, isDM
                 setTimeout(()=>{
                     let M = m.channel.messages.cache.get(m.id);
                     let MESSAGE  = message.channel.messages.cache.get(message.id);
-                    if(M)m.delete().catch(e=>console.log(e));
-                    if(MESSAGE) message.delete().catch(e=>console.log(e));
+                    if(M)m.delete().catch(e=>e);
+                    if(MESSAGE) message.delete().catch(e=>e);
                     
                 },server.deleteFailedMessagedAfter)
                return;

@@ -113,7 +113,7 @@ if(message.guild.members.cache.get(message.author.id).permissions.has( Permissio
                         {name: "Amount added:", value: pointsToGive, inline:true},
                         {name: "Reason:", value: reason, inline:true},      
                     );
-                    log.send({embeds: [embed]});
+                    log.send({embeds: [embed]}).catch(e=> console.log(e));
                 }
                 
             } finally{
