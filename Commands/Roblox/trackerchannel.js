@@ -51,7 +51,21 @@ trackers.execute = async function(message, args, server) {
                 mongoose.connection.close();
             }
         });
+        if(!customRaidersCache.channels[message.guild.id]){
+            customRaidersCache.channels[message.guild.id] = {channelID : "",trackedGroups : []};
+            await mongo().then(async (mongoose) =>{
+                try{
+                    await raiderTrackerSchema.findOneAndUpdate({_id:"420"},{
+                        channels: customRaidersCache.channels,
+                    },{upsert:false});
+        
+                } finally{
+                    console.log("UPDATED RAIDER TRACKER CHANNELS");
+                    mongoose.connection.close();
+                }
+            });
 
+        }
         
         if(!args.length){
             const embed = makeEmbed("Roblox trackers 📡", `This is your current tracker channels:`, server,false,"To ping a role when a tracked person joins, simply create a role with the same name as \"pinged role\". Exmaple: @raider_pings");

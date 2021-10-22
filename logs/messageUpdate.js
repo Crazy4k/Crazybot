@@ -7,7 +7,7 @@ const colors = require("../config/colors.json");
 module.exports = async(oldMessage, newMessage, client) => {
 
 		try{			
-			if(!message.guild)return;
+			if(!oldMessage.guild)return;
 			if(oldMessage.author.bot) return;
 			if(!oldMessage.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;	
 			let i = guildsCache[oldMessage.guild.id];
