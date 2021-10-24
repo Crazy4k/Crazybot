@@ -52,7 +52,7 @@ help.execute =  function(message, args, server) {
 					num1++;
 				}
 
-				message.channel.send({embeds:[embed1]});
+				message.channel.send({embeds:[embed1]}).catch(err=>console.log(err));
 				return true;
 				break
 			case "events":
@@ -66,7 +66,7 @@ help.execute =  function(message, args, server) {
 					embed2.addField(`**${num2}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num2++;
 				}
-				message.channel.send({embeds:[embed2]});
+				message.channel.send({embeds:[embed2]}).catch(err=>console.log(err));
 				return true;
 				break;
 			case "moderation":
@@ -81,7 +81,7 @@ help.execute =  function(message, args, server) {
 					embed3.addField(`**${num3}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num3++;
 				}
-				message.channel.send({embeds:[embed3]});
+				message.channel.send({embeds:[embed3]}).catch(err=>console.log(err));
 				return true;
 				break;
 			case "other":
@@ -95,7 +95,7 @@ help.execute =  function(message, args, server) {
 					embed4.addField(`**${num4}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num4++;
 				}
-				message.channel.send({embeds:[embed4]});
+				message.channel.send({embeds:[embed4]}).catch(err=>console.log(err));
 				return true;
 				break;
 			case "points":
@@ -109,7 +109,7 @@ help.execute =  function(message, args, server) {
 					embed5.addField(`**${num5}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num5++;
 				}
-				message.channel.send({embeds:[embed5]});
+				message.channel.send({embeds:[embed5]}).catch(err=>console.log(err));
 				return true;
 				break;
 			case "aa":
@@ -123,7 +123,7 @@ help.execute =  function(message, args, server) {
 					embed6.addField(`**${num6}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num6++;
 				}
-				message.channel.send({embeds:[embed6]});
+				message.channel.send({embeds:[embed6]}).catch(err=>console.log(err));
 				return true;
 				break;
 			case "config":
@@ -137,7 +137,7 @@ help.execute =  function(message, args, server) {
 					embed7.addField(`**${num7}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 					num7++;
 				}
-				message.channel.send({embeds:[embed7]});
+				message.channel.send({embeds:[embed7]}).catch(err=>console.log(err));
 				return true;
 				break;
 				case "roblox":
@@ -151,11 +151,11 @@ help.execute =  function(message, args, server) {
 						embed8.addField(`**${num8}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 						num8++;
 					}
-					message.channel.send({embeds:[embed8]});
+					message.channel.send({embeds:[embed8]}).catch(err=>console.log(err));
 					return true;
 					break;
 			default:
-				message.channel.send("Invalid value.");
+				message.channel.send("Invalid value.").catch(err=>console.log(err));
 				return false;
 				break;
 		}
@@ -173,7 +173,7 @@ help.execute =  function(message, args, server) {
 			{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
 		);
 		embed.setURL("https://discord.gg/vSFp7SjHWp");
-		message.channel.send( {embeds:[embed]} );
+		message.channel.send( {embeds:[embed]} ).catch(err=>console.log(err));
 		return true;
 		
 	}

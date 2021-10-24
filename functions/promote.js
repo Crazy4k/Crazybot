@@ -67,7 +67,7 @@ module.exports = async (message, guildMember, server) => {
             }
         }
     } catch (error) {
-        
+        console.log("error in promote.js")
     }
     
 

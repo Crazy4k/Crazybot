@@ -75,6 +75,7 @@
         "isRaider"  : false,
         "id"        : 4849688,
         "highRanks" : [32402766, 56070656],
+        "VIPRanks"  : [32402766, 56070656, 32402767, 32402772, 32402773 ],
         "HICOMRanks": [32402767, 32402772, 32402773, 34766559 ],
         "managementAndStaff": [32402720 ]
     },
@@ -154,5 +155,16 @@
         "highRanks" : [32134514, 32134515, 32134517, 32134518, 32134523],
         "HICOMRanks": [32134526, 32134527, 32134528],
         "managementAndStaff": [33443713, 32134384]
+    },
+    "5117666":{
+        "name"      : "Biopreparat",
+        "link"      : "https://www.roblox.com/groups/5117666",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "id"        : 5117666,
+        "highRanks" : [34104082, 34104087, 34104088],
+        "HICOMRanks": [34103948, 35046953, 37504455],
+        "managementAndStaff": [35046964, 37504423, 34103947]
     }
 }

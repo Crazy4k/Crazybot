@@ -18,7 +18,7 @@ serverInfo.set({
 
 
 serverInfo.execute = function(message, args, server) {
-
+    console.log(message.createdTimestamp);
     try{ let {guild} = message;
 
     let embed = makeEmbed(guild.name,"", server);
@@ -31,7 +31,7 @@ serverInfo.execute = function(message, args, server) {
         embed.addField(    "Channels: ", `${guild.channels.cache.size}`,  false,)
         embed.addField(    "Roles: ", `${guild.roles.cache.size}`,  false,)
         embed.addField(    "Emojis: ", `${guild.emojis.cache.size}`,  false,)
-        embed.addField(    "Created at: ", `${moment(guild.createdAt).format("LLL")}`,  true,)
+        embed.addField(    "Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,)
     
     let banner = guild.bannerURL({format:"png"});
     if(banner) embed.addField("Banner: ",`[banner](${banner})`)

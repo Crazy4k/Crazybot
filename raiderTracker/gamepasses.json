@@ -90,7 +90,55 @@
         "Starter Pack": {
             "id":7047576,
             "power": 1.5 
+        },
+        "M16":{
+            "id": 6093970,
+            "power": 1.5
+        },
+        "Special forces":{
+            "id": 6360322,
+            "power": 0
+        },
+        "Famas":{
+            "id": 6513022,
+            "power": 1
+        },
+        "Flame thrower":{
+            "id": 6425969,
+            "power": 1.5
+        },
+        "Tommy Gun":{
+            "id": 7521676,
+            "power": 1
+        },
+        "M4A1":{
+            "id": 6513023,
+            "power": 2
+        },
+        "Alien Pulse Rifle":{
+            "id": 6860281,
+            "power": 2
+        },
+        "Alien Energy Sword":{
+            "id": 6819211,
+            "power": 1.5
+        },
+        "Alien Blaster":{
+            "id": 6803320,
+            "power": 2
+        },
+        "Egg Gift":{
+            "id": 8921266,
+            "power": 1.5
+        },
+        "Gingerbread Gun":{
+            "id": 7737825,
+            "power": 1
+        },"Christmas RPG":{
+            "id": 7737812,
+            "power": 2
         }
+
     },
     "MS2":{
         "Mad Scientist":{

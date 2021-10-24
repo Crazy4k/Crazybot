@@ -56,7 +56,7 @@ try {
             {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\nChange value:\n\`${server.prefix}${this.name} deleteFails\``, inline:true},
             {name:'Language :abc:', value:`${server.language}`, inline:true},
             {name:'Prefix :information_source:', value:`${server.prefix}\nChange value:\n\`${server.prefix}${this.name} prefix\``, inline:true},
-            {name:'Default embed color :white_large_square:', value:`${server.defaultEmbedColor}`, inline:true}
+            {name:'Default embed color 🎨', value:`${server.defaultEmbedColor}\nChange value:\n\`${server.prefix}${this.name} color\``, inline:true}
         );
         message.channel.send({embeds:[embed]});
         return false;
@@ -150,6 +150,74 @@ try {
                     });
                     return true;
                 break;
+                case "color":
+                case "colour":
+                case "embed":
+                    let embedo9 = makeEmbed("Server Settings", `(type \`0\` to cancel / type "\`reset\`" to reset it to default (*#F7F7F7*)\n**Enter the hexadecimal color value you want the embeds sent by the bot to have 🎨**\nExample: #F7F7F7, #1FFA01\nUse this [Website](https://htmlcolorcodes.com) to find a hex color value quickly`, server);
+                    message.channel.send({embeds: [embedo9]})
+                        .then(m => {
+                            message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
+                                .then(async a => {   
+                                    let oldColor = daServer.defaultEmbedColor;
+                                    let newColor = a.first().content;
+                                    switch(newColor.toLowerCase()){
+                                        case "0":
+                                            message.channel.send(cancerCultureMessage);
+                                            return false;
+                                            break;
+                                        case "reset":
+                                            newColor = "#F7f7f7"
+                                            break;
+
+                                    }
+                                    const testEmbed = makeEmbed("Are you sure?",`This is what "${newColor}" looks like\n<\n<\n<\n<\n<\n<\n<\n Click ✅ to confirm\n Click ❌ to cancel`,newColor,false,"");
+                                    message.channel.send({embeds: [testEmbed]})
+                                    .then(async m => {
+                                        m.react("✅");
+                                        m.react("❌");
+                                        m.awaitReactions({filter: reactionFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
+                                            .then(async a =>{
+                                                
+                                                switch (a.first().emoji.name) {
+                                                    case "✅":
+                                                        daServer.defaultEmbedColor = newColor;
+                                                        break;
+                                                    case "❌":
+                                                        message.channel.send(cancerCultureMessage);
+                                                        return false;
+                                                        break;
+                                                    default:
+                                                        message.channel.send(cancerCultureMessage);
+                                                        return false;
+                                                        break;
+                                                }
+
+                                                await mongo().then(async (mongoose) =>{
+                                                try{ 
+                                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                                        defaultEmbedColor: newColor
+                                                    },{upsert:false});
+                                                    message.channel.send(`**Default embed color has been successfully updated from \`${oldColor}\` to \`${newColor}\`.**`)
+                                                    guildsCache[message.guild.id] = daServer;
+                                                } finally{
+                                                    console.log("WROTE TO DATABASE");
+                                                    mongoose.connection.close();
+                                                }
+                                    });
+
+
+                                        }).catch(e => {
+                                            message.channel.send(idleMessage);
+                                        });
+                                    })
+                                  
+                                    
+                                }).catch(e => {
+                                    message.channel.send(idleMessage);
+                                });
+                        });
+                        return true;
+                    break;      
                 case "prefix":
                     let embedo8 = makeEmbed("Server Settings", `(type \`0\` to cancel)\n**Enter your new command prefix ❗**`, server);
                     message.channel.send({embeds: [embedo8]})
@@ -194,6 +262,7 @@ try {
                         });
                         return true;
                     break;
+                    
             case "muterole":
                 let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.🔇**`, server);
                 message.channel.send({ embeds: [embedo2]})
