@@ -143,9 +143,11 @@ check.execute = async (message, args, server) =>{
                 branches.forEach(group => {notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointOfficers.includes(group.RoleId))lebels.push("Branch officer");else if(jointHicom.includes(group.RoleId))lebels.push("Branch HICOM");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else lebels.push("Branch member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId))lebels.push("has cuffs");});
                 divisions.forEach(group =>{notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointDivOfficers.includes(group.RoleId))lebels.push("Division officer");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else if(jointDivHicom.includes(group.RoleId))lebels.push("Division HICOM");else lebels.push("Division member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId) || jointCuffRanks.includes(group.Id))lebels.push("has cuffs");});
                 raiders.forEach(group => {raiderGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
-                
-                if(!notableTSU.length)lebels.push("Immigrant");
-                else if(raiderGroups.length)lebels.push("Raider");
+            
+                if(!notableTSU.length){
+                    if(raiderGroups.length)lebels.push("Raider");
+                    else lebels.push("Immigrant");
+                }      
 
                 if(lebels.includes("Branch officer") || lebels.includes("Branch HICOM") || lebels.includes("Staff team/ Management"))lebels.push("has admin");
                 
