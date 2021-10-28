@@ -4,7 +4,6 @@ const fs = require('fs');
 const mongo = require("./mongo");
 const noblox = require("noblox.js");
 require("dotenv").config();
-const moment = require("moment")
 
 //const { REST } = require('@discordjs/rest');
 //const { Routes } = require('discord-api-types/v9');
@@ -22,6 +21,8 @@ const client = new Discord.Client({ intents: intentArray ,partials:["CHANNEL"]})
 const token = process.env.DISCORD_BOT_TOKEN;
 const cookie = process.env.NBLXJS_COOKIE;
 
+const makeEmbed = require("./functions/embed");
+const colors = require("./config/colors.json")
 const executeCommand = require("./functions/executeCommand");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
@@ -168,7 +169,19 @@ client.on('guildCreate', async (guild)  => {
 					mongoose.connection.close();
 				}
 			});	
-			console.log(`joined a new server. name: ${guild.name}`);
+			let log = client.channels.cache.get(config.bot_info.clientLogs);
+		if(log){
+			const embed = makeEmbed("Joined a server","", colors.successGreen,true);
+			embed.addField("Name",`${guild.name} | ${guild.id}`);
+			let owner = await guild.fetchOwner();
+			embed.addField("info", `owner: ${owner.displayName} | ${owner.id}\n member count: ${guild.memberCount} `);
+			embed.addField(    "Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
+			embed.setThumbnail(guild.iconURL({format:"png"}));
+
+			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
+
+
+		}
 		} catch (err) {console.log(err);}
 	
 
@@ -227,8 +240,18 @@ client.on('guildDelete', async (guild) => {
 				mongoose.connection.close();
 			}
 		});			
-		console.log(`Left a  server. name: ${guild.name}`);
-			
+		let log = client.channels.cache.get(config.bot_info.clientLogs);
+		if(log){
+			const embed = makeEmbed("Left a server","", colors.failRed,true);
+			embed.addField("Name",`${guild.name} | ${guild.id}`);
+			embed.addField("info", ` member count: ${guild.memberCount} `);
+			embed.addField(    "Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
+			embed.setThumbnail(guild.iconURL({format:"png"}));
+
+			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
+
+
+		}	
 	} catch (err) {console.log(err);}
 });
 
@@ -253,6 +276,7 @@ client.on('messageCreate', async (message) => {
 			
 		}
 	if(!message.guild)return;
+	
 	//retrive guild data from data base (only once then it will be saved in a cache)
 
 	if(!guildsCache[message.guildId] ){
@@ -277,6 +301,7 @@ client.on('messageCreate', async (message) => {
 				sync(message);
 				return;
 			}
+			if(!server)return;
 
 
 				if (!message.author.bot){
@@ -406,7 +431,7 @@ client.on('channelDelete', (channel) => {
 });
 
 
-//channel update logging(still under development and will probably still be for ever lol. It's just i cant figure this shit out)
+//channel update log
 const channelUpdate = require("./logs/channelUpdate");
 client.on('channelUpdate', (oldChannel, newChannel)=> {
 	try {

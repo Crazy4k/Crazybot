@@ -25,7 +25,7 @@ check.execute = async (message, args, server) =>{
     let embed;
 
     if(isVerified){
-        embed = makeEmbed(`Welcome back, ${robloxBody.robloxUsername}`,`Click [HERE](https://rover.link/my/verification) to modify and control you linked account!`,server,false,"Powered by Rover.link");
+        embed = makeEmbed(`Welcome back, ${robloxBody.robloxUsername}`,`Click [HERE](https://rover.link/my/verification) to modify and control your linked account!`,server,false,"Powered by Rover.link");
         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${robloxBody.robloxId}&width=420&height=420&format=png`);
     } else{
         embed = makeEmbed(`Hello there!`,`Click [HERE](https://rover.link/my/verification) to verify and link your Roblox account!\n After you've verified, your Roblox account will be connected to your Discord account.`,server,false,"Powered by Rover.link");

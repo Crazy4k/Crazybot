@@ -5,7 +5,7 @@ let obj = {
     description : undefined,
     cooldown : 3,
     category : undefined,
-    whiteList : Permissions.FLAGS.SEND_MESSAGES,
+    whiteList : null,
     unique : undefined,
     worksInDMs : false,
     isDevOnly : false,

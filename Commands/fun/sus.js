@@ -5,7 +5,7 @@ let sus = new Command("sus");
 
 sus.set({
     
-	aliases         : [],
+	aliases         : ["amogus"],
 	description     : "very sus",
 	usage           : "sus",
 	cooldown        : 3,

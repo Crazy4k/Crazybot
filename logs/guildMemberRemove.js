@@ -1,4 +1,3 @@
-const moment = require('moment');
 const mongo = require("../mongo");
 const makeEmbed = require("../functions/embed");
 let {guildsCache} = require("../caches/botCache");
@@ -8,6 +7,7 @@ const colors = require("../config/colors.json");
 module.exports = async (member, client) => {
 		
 	try {
+		if(!member.guild)return;
 		if(!member.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		let i = guildsCache[member.guild.id];
 		if(!i){

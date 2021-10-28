@@ -1,5 +1,4 @@
 const makeEmbed = require("../../functions/embed");
-const moment = require("moment");
 const Command = require("../../Classes/Command");
 let serverInfo = new Command("server-info");
 
@@ -18,7 +17,6 @@ serverInfo.set({
 
 
 serverInfo.execute = function(message, args, server) {
-    console.log(message.createdTimestamp);
     try{ let {guild} = message;
 
     let embed = makeEmbed(guild.name,"", server);

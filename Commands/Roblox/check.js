@@ -24,6 +24,7 @@ let jointHicom = [];
 let jointDivHicom = [];
 let jointStaff = [];
 let jointVIPs = [];
+let jointCuffRanks = [];
 
 for(let group of raiderGroups){
     TSUgroups[group.id] = group;
@@ -39,12 +40,19 @@ for(let index in TSUgroups){
         jointHicom.push(...group.HICOMRanks);
         jointStaff.push(...group.managementAndStaff);
         if(group.VIPRanks)jointVIPs.push(...group.VIPRanks);
+        if(group.hasCuffs){
+           jointCuffRanks.push(...group.cuffsRanks)
+        }
     }else if(group.isDivision){
         jointDivGroupIds.push(group.id);
         jointDivOfficers.push(...group.highRanks);
         jointDivHicom.push(...group.HICOMRanks);
         jointStaff.push(...group.managementAndStaff);
         if(group.VIPRanks)jointVIPs.push(...group.VIPRanks);
+        if(group.hasCuffs){
+            if(group.cuffsRanks)jointCuffRanks.push(...group.cuffsRanks);
+            else jointCuffRanks.push(group.id);
+        }
     }  else{
         if(group.isRaider){
             jointRaiderGroups.push(group.id);
@@ -132,13 +140,14 @@ check.execute = async (message, args, server) =>{
                 let lebels      = [];
                 let notableTSU  = [];
                 let raiderGroups= [];
-                branches.forEach(group => {notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointOfficers.includes(group.RoleId))lebels.push("Branch officer");else if(jointHicom.includes(group.RoleId))lebels.push("Branch HICOM");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else lebels.push("Branch member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");});
-                divisions.forEach(group =>{notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointDivOfficers.includes(group.RoleId))lebels.push("Division officer");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else if(jointDivHicom.includes(group.RoleId))lebels.push("Division HICOM");else lebels.push("Division member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");});
+                branches.forEach(group => {notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointOfficers.includes(group.RoleId))lebels.push("Branch officer");else if(jointHicom.includes(group.RoleId))lebels.push("Branch HICOM");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else lebels.push("Branch member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId))lebels.push("has cuffs");});
+                divisions.forEach(group =>{notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointDivOfficers.includes(group.RoleId))lebels.push("Division officer");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else if(jointDivHicom.includes(group.RoleId))lebels.push("Division HICOM");else lebels.push("Division member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId) || jointCuffRanks.includes(group.Id))lebels.push("has cuffs");});
                 raiders.forEach(group => {raiderGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
                 
                 if(!notableTSU.length)lebels.push("Immigrant");
                 else if(raiderGroups.length)lebels.push("Raider");
 
+                if(lebels.includes("Branch officer") || lebels.includes("Branch HICOM") || lebels.includes("Staff team/ Management"))lebels.push("has admin");
                 
                 //GET GAMEPASSES
 
@@ -208,7 +217,7 @@ check.execute = async (message, args, server) =>{
                 if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
                 embed.addField(`Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
                 embed.addField(`Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
-                embed.addField(`Lebels`,`\`${uniqueLebels.join("`, `")}\``);
+                embed.addField(`Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
                 embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
                 message.channel.send({embeds:[embed]});
                 return true;

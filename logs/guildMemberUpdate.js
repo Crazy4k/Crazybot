@@ -6,6 +6,7 @@ const serversSchema = require("../schemas/servers-schema");
 
 module.exports = async (oldMember, newMember, client)=> {
 	try {
+		if(!newMember.guild)return;
 		if(!oldMember.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		let i = guildsCache[oldMember.guild.id];
 		if(!i){
