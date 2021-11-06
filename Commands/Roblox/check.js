@@ -25,6 +25,7 @@ let jointDivHicom = [];
 let jointStaff = [];
 let jointVIPs = [];
 let jointCuffRanks = [];
+let other = [];
 
 for(let group of raiderGroups){
     TSUgroups[group.id] = group;
@@ -56,7 +57,7 @@ for(let index in TSUgroups){
     }  else{
         if(group.isRaider){
             jointRaiderGroups.push(group.id);
-        }
+        }else other.push(group.id);
     }
 }
 
@@ -137,12 +138,15 @@ check.execute = async (message, args, server) =>{
                 let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));
                 let divisions   = groups.filter((group)=>jointDivGroupIds.includes(group.Id));
                 let raiders     = groups.filter((group)=>jointRaiderGroups.includes(group.Id));
+                let others      = groups.filter((group)=>other.includes(group.Id));
                 let lebels      = [];
+                let globalGroups= [];
                 let notableTSU  = [];
                 let raiderGroups= [];
                 branches.forEach(group => {notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointOfficers.includes(group.RoleId))lebels.push("Branch officer");else if(jointHicom.includes(group.RoleId))lebels.push("Branch HICOM");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else lebels.push("Branch member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId))lebels.push("has cuffs");});
                 divisions.forEach(group =>{notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointDivOfficers.includes(group.RoleId))lebels.push("Division officer");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else if(jointDivHicom.includes(group.RoleId))lebels.push("Division HICOM");else lebels.push("Division member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId) || jointCuffRanks.includes(group.Id))lebels.push("has cuffs");});
                 raiders.forEach(group => {raiderGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
+                others.forEach(group => {globalGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
             
                 if(!notableTSU.length){
                     if(raiderGroups.length)lebels.push("Raider");
@@ -194,17 +198,22 @@ check.execute = async (message, args, server) =>{
                 let raiderPowerV2 = getRaiderPower(ownedGamepassesInV2Array);
                 let raiderPowerV1 = getRaiderPower(ownedGamepassesInV1Array);
 
-                if(raiderPowerV1 + raiderPowerV2)lebels.push("Armed");
-                if(raiderPowerV1 + raiderPowerV2 && lebels.includes("Immigrant")){
-                    lebels.splice(lebels.indexOf("Immigrant"),1);
-                    lebels.push("Possible raider");
-                }
-
                 if(branches.length || divisions.length){
                     raiderPowerV1++;raiderPowerV2++;
                     if(raiderPowerV1 > 10) raiderPowerV1 = 10;
                     if(raiderPowerV2 > 10) raiderPowerV2 = 10; 
                 }
+                if(lebels.includes("has cuffs")){
+                    raiderPowerV1++;raiderPowerV2++;
+                    if(raiderPowerV1 > 10) raiderPowerV1 = 10;
+                    if(raiderPowerV2 > 10) raiderPowerV2 = 10; 
+                }
+
+                if(raiderPowerV1 + raiderPowerV2)lebels.push("Armed");
+                if(raiderPowerV1 + raiderPowerV2 && lebels.includes("Immigrant")){
+                    lebels.splice(lebels.indexOf("Immigrant"),1);
+                    lebels.push("Possible raider");
+                }  
 
                 if(!ownedGamepassesInV1Array.length)ownedGamepassesInV1Array.push("**-**");
                 if(!ownedGamepassesInV2Array.length)ownedGamepassesInV2Array.push("**-**");
@@ -216,6 +225,7 @@ check.execute = async (message, args, server) =>{
                 embed.addField(`Profile link`,`[CLICK HERE](https://www.roblox.com/users/${id})`,true);
 
                 if(notableTSU.length)embed.addField("The Soviet Union groups:",`${notableTSU.join("\n")}`,false);
+                if(globalGroups.length)embed.addField("Noteable groups",globalGroups.join("\n"),false)
                 if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
                 embed.addField(`Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
                 embed.addField(`Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);

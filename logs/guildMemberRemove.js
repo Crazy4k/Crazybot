@@ -8,6 +8,8 @@ module.exports = async (member, client) => {
 		
 	try {
 		if(!member.guild)return;
+		if(!member.guild.available)return;
+		await member.guild.members.fetch();
 		if(!member.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		let i = guildsCache[member.guild.id];
 		if(!i){

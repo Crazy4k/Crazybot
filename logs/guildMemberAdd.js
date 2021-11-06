@@ -7,6 +7,8 @@ const colors = require("../config/colors.json");
 module.exports = async (member, client)=> {
 	try {
 		if(!member.guild)return;
+		if(!member.guild.available)return;
+		await member.guild.members.fetch();
 		let i = guildsCache[member.guild.id];
 		if(!member.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
 		if(!i){

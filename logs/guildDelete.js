@@ -1,0 +1,72 @@
+const mongo = require("../mongo");
+const serversSchema = require("../schemas/servers-schema");
+const warnSchema = require("../schemas/warn-schema");
+const pointsSchema = require("../schemas/points-schema");
+const config = require("../config/config.json");
+let {guildsCache} = require("../caches/botCache");
+const makeEmbed = require("../functions/embed");
+const colors = require("../config/colors.json");
+
+module.exports = async (guild, client) => {
+    console.log(1);
+
+    guildsCache[guild.id] = null;
+	try {
+        console.log(guild);
+
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				let data = await serversSchema.findOne({_id:guild.id});
+				if(data !== null) await serversSchema.findOneAndRemove({_id:guild.id});
+			} catch(err){
+                console.log(err)
+            }finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});
+
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				let data = await pointsSchema.findOne({_id:guild.id});
+				if(data !== null) await pointsSchema.findOneAndRemove({_id:guild.id});
+
+			}catch(err){
+                console.log(err)
+            } finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});	
+		
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				let data = await warnSchema.findOne({_id:guild.id});
+				if(data !== null) await warnSchema.findOneAndRemove({_id:guild.id});
+			} catch(err){
+                console.log(err)
+            }finally{
+				console.log("WROTE TO DATABASE");
+				mongoose.connection.close();
+			}
+		});		
+				
+		let log = client.channels.cache.get(config.bot_info.clientLogs);
+		if(log){
+			const embed = makeEmbed("Left a server","", colors.failRed,true);
+			embed.addField("Name",`${guild.name} | ${guild.id}`);
+			embed.addField("info", ` member count: ${guild.memberCount} `);
+			embed.addField("Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
+			embed.setThumbnail(guild.iconURL({format:"png"}));
+
+			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
+
+
+		}	
+	} catch (err) {
+
+        console.log(err);
+    }
+
+
+}

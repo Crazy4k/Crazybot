@@ -11,7 +11,7 @@ prefix.set({
 	aliases         : [],
 	description     : "changes the prefix of the bot",
 	usage           : "preifx <new prefix>",
-	cooldown        : 20,
+	cooldown        : 15,
 	unique          : true,
 	category        : "config",
 	whiteList       : "ADMINISTRATOR",

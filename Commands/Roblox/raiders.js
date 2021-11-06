@@ -42,7 +42,7 @@ raiders.set({
 	aliases         : ["trackraiders"],
 	description     : "Shows you the current trackalbe raiders that are playing MS.",
 	usage           : "raiders",
-	cooldown        : 3,
+	cooldown        : 2,
 	unique          : false,
 	category        : "roblox",
 	worksInDMs      : false,

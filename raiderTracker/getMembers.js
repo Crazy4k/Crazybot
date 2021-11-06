@@ -11,7 +11,7 @@ module.exports = async(group) =>{
 
     for(let I of rolesArray)rolesIds.push(I.id);
 
-    const playersArray = await noblox.getPlayers(group, rolesIds);
+    const playersArray = await noblox.getPlayers(group, rolesIds).catch(error=>console.log(error));
 
     let players = [];
 

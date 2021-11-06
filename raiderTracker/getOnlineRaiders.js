@@ -178,9 +178,10 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
 
             } else if(Object.values(raiderCache).length && !Object.values(newCache).length ) {
                 for(let I in raiderCache){
-                    
                         if(raiderCache[I] && !newCache[I]){
-                        const username = await roblox.getUsernameFromId(I);
+                        let isValid = 1;
+                        const username = await roblox.getUsernameFromId(I).catch(isValid = 0);
+                        if(!isValid)continue;
                         const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
                         

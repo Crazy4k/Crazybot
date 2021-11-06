@@ -34,6 +34,7 @@ let botCache = require("./caches/botCache");
 const sync = require("./functions/sync");
 const config = require("./config/config.json");
 module.exports = client;
+let isReady = false;
 
 client.login(token);
 
@@ -74,191 +75,25 @@ for(let category of bigcommandfile){
 	}
 }
 
-client.on('guildCreate', async (guild)  => {
-		
-	try {
-		const serverObject = {
-			guildId: guild.id,
-			hiByeChannel:"",
-			hiRole: "",
-			hiString:`:green_circle: {<member>} Welcome to the server, have a great time :+1:`,
-			byeString:`:red_circle: {<member>} just left the server, bye bye :wave:`,
-			language:"English",
-			prefix : ";",
-			muteRole:"",
-			defaultEmbedColor:"#f7f7f7",
-			deleteFailedMessagedAfter: 10000,
-			deleteMessagesInLogs : true,
-			deleteFailedCommands : false,
-			isSet:false,
-			pointsEnabled: false,
-			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:"",eventsLog:"",pointsLog:""},
-			
-		};
-
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				await serversSchema.findOneAndUpdate({_id:guild.id},{
-					_id: serverObject.guildId,
-					hiByeChannel: serverObject.hiByeChannel,
-					hiRole: serverObject.hiRole,
-					hiString:serverObject.hiString,
-					byeString:serverObject.byeString,
-					language: serverObject.language,
-					prefix: serverObject.prefix,
-					muteRole: serverObject.muteRole,
-					defaultEmbedColor: serverObject.defaultEmbedColor,
-					deleteFailedMessagedAfter: serverObject.deleteFailedMessagedAfter,
-					deleteMessagesInLogs: serverObject.deleteMessagesInLogs,
-					deleteFailedCommands: serverObject.deleteFailedCommands,
-					isSet: serverObject.isSet,
-					pointsEnabled: serverObject.pointsEnabled,
-					logs: serverObject.logs,   
-				},{upsert:true});
-				guildsCache[guild.id] = serverObject;
-			} catch(err){
-                console.log(err)
-            }finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});
-
-			await mongo().then(async (mongoose) =>{
-				try{
-					await pointsSchema.findOneAndUpdate({_id:guild.id},{
-						_id:guild.id,
-						whiteListedRole:"",
-						members:{}   
-					},{upsert:true});
-				}catch(err){
-					console.log(err)
-				} finally{
-					
-					console.log("WROTE TO DATABASE");
-					mongoose.connection.close();
-				}
-			});	
-			await mongo().then(async (mongoose) =>{
-				try{
-					await officerPointsSchema.findOneAndUpdate({_id:guild.id},{
-						_id:guild.id,
-						whiteListedRole:"",
-						members:{}   
-					},{upsert:true});
-				} catch(err){
-					console.log(err)
-				}finally{
-					
-					console.log("WROTE TO DATABASE");
-					mongoose.connection.close();
-				}
-			});	
-			await mongo().then(async (mongoose) =>{
-				try{
-					await warnSchema.findOneAndUpdate({_id:guild.id},{
-						_id:guild.id,
-						whiteListedRole:"",
-						members:{}   
-					},{upsert:true});
-				} catch(err){
-					console.log(err)
-				}finally{
-					
-					console.log("WROTE TO DATABASE");
-					mongoose.connection.close();
-				}
-			});	
-			let log = client.channels.cache.get(config.bot_info.clientLogs);
-		if(log){
-			const embed = makeEmbed("Joined a server","", colors.successGreen,true);
-			embed.addField("Name",`${guild.name} | ${guild.id}`);
-			let owner = await guild.fetchOwner();
-			embed.addField("info", `owner: ${owner.displayName} | ${owner.id}\n member count: ${guild.memberCount} `);
-			embed.addField(    "Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
-			embed.setThumbnail(guild.iconURL({format:"png"}));
-
-			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
-
-
-		}
-		} catch (err) {console.log(err);}
-	
-
-});
-
-
-client.on('guildDelete', async (guild) => {
-
-	guildsCache[guild.id] = null;
-	try {
-
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				let data = await serversSchema.findOne({_id:guild.id});
-				if(data !== null) await serversSchema.findOneAndRemove({_id:guild.id});
-			} catch(err){
-                console.log(err)
-            }finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});
-
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				let data = await pointsSchema.findOne({_id:guild.id});
-				if(data !== null) await pointsSchema.findOneAndRemove({_id:guild.id});
-
-			}catch(err){
-                console.log(err)
-            } finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});	
-		
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				let data = await warnSchema.findOne({_id:guild.id});
-				if(data !== null) await warnSchema.findOneAndRemove({_id:guild.id});
-			} catch(err){
-                console.log(err)
-            }finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});		
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				let data = await officerPointsSchema.findOne({_id:guild.id});
-				if(data !== null) await officerPointsSchema.findOneAndRemove({_id:guild.id});
-			} catch(err){
-                console.log(err)
-            }finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});			
-		let log = client.channels.cache.get(config.bot_info.clientLogs);
-		if(log){
-			const embed = makeEmbed("Left a server","", colors.failRed,true);
-			embed.addField("Name",`${guild.name} | ${guild.id}`);
-			embed.addField("info", ` member count: ${guild.memberCount} `);
-			embed.addField(    "Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
-			embed.setThumbnail(guild.iconURL({format:"png"}));
-
-			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
-
-
-		}	
-	} catch (err) {console.log(err);}
-});
+const guildCreate		= require('./logs/guildCreate');
+const guildDelete		= require('./logs/guildDelete');
+const guildMemberAdd	= require("./logs/guildMemberAdd");	
+const guildMemberUpdate	= require("./logs/guildMemberUpdate");
+const guildMemberRemove	= require("./logs/guildMemberRemove");
+const messageDelete		= require("./logs/messageDelete");
+const channelCreate		= require("./logs/channelCreate.js");
+const channelDelete		= require("./logs/channelDelete");
+const channelUpdate		= require("./logs/channelUpdate");
+const messageUpdate		= require("./logs/messageUpdate");
+const emojiCreate		= require("./logs/emojiCreate");
+const emojiDelete		= require("./logs/emojiDelete");
+const emojiUpdate		= require("./logs/emojiUpdate");
 
 
 //command handler|prefix based
 
 client.on('messageCreate', async (message) => {
+	if(!isReady)return
 	if(message.author.bot)return;
 	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM"){//handle DM commands
 		const prefix = config.bot_info.dmSettings.prefix;//universal prefix is ;
@@ -367,133 +202,6 @@ Event handlers Event handlers Event handlers Event handlers
 */ 
 //
 
-const guildMemberAdd = require("./logs/guildMemberAdd");
-client.on('guildMemberAdd', (member)=> {
-	try {
-		guildMemberAdd(member, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-	
-const guildMemberUpdate = require("./logs/guildMemberUpdate");
-client.on('guildMemberUpdate', (oldMember, newMember)=> {
-	try {
-		guildMemberUpdate(oldMember, newMember, client);
-	} catch (error) {
-		console.log(error);
-	}	
-});
-// bye message/log
-const guildMemberRemove = require("./logs/guildMemberRemove");
-client.on('guildMemberRemove', (member) => {
-	try {
-		guildMemberRemove(member, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-// message deletion logs
-const messageDelete = require("./logs/messageDelete");
-client.on('messageDelete', (message) => {
-	try {
-		messageDelete(message, client);
-	} catch (error) {
-		console.log(error);
-	}	
-});
-
-
-
-// server logs (roles, channels)
-const channelCreate = require("./logs/channelCreate.js");
-client.on('channelCreate', (channel) => {
-	try {
-		channelCreate(channel, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-
-// channel delete logs
-const channelDelete = require("./logs/channelDelete");
-client.on('channelDelete', (channel) => {
-	try {
-		channelDelete(channel, client);	
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-//channel update log
-const channelUpdate = require("./logs/channelUpdate");
-client.on('channelUpdate', (oldChannel, newChannel)=> {
-	try {
-		channelUpdate(oldChannel,newChannel, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-//message update logging
-const messageUpdate = require("./logs/messageUpdate");
-client.on('messageUpdate', (oldMessage, newMessage) => {
-	try {
-		messageUpdate(oldMessage, newMessage, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-const emojiCreate = require("./logs/emojiCreate");
-client.on("emojiCreate", async emoji =>{
-	try {
-		emojiCreate(emoji, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-const emojiDelete = require("./logs/emojiDelete");
-client.on("emojiDelete", async emoji =>{
-	try {
-		emojiDelete(emoji, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-
-const emojiUpdate = require("./logs/emojiUpdate");
-client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
-	try {
-		emojiUpdate(oldEmoji,newEmoji, client);
-	} catch (error) {
-		console.log(error);
-	}
-});
-
-client.on("error", async error =>{
-	console.log("cought an error sir!");
-	console.log(error);
-});
-
-
-client.on("interactionCreate",async (interaction)=>{ 
-	if(!interaction.isCommand())return;
-	console.log("uwu"); 
-});
-
-	
 client.once('ready', async() => {
 
 	await mongo().then(mongoose =>{
@@ -518,8 +226,147 @@ client.once('ready', async() => {
 	commands?.create(client.slashCommands.get("ping"));*/
 
 	console.log(`Bot succesfuly logged in as ${client.user.tag} [${client.user.id}]`);
+	isReady = true;
+
 
 });
+client.on('guildCreate', async (guild)  => {
+	if(!isReady)return		
+	try {
+		guildCreate(guild, client);
+	} catch (error) {
+		console.log(error);
+		console.log("guildCreate error");
+	}
+});
+
+client.on('guildDelete', async (guild, client) => {
+	if(!isReady)return
+	try {
+		guildDelete(guild, client);
+	} catch (error) {
+		console.log(error);
+		console.log("guildDelete error");
+	}
+});
+
+client.on('guildMemberAdd', (member)=> {
+	if(!isReady)return
+	try {
+		guildMemberAdd(member, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+client.on('guildMemberUpdate', (oldMember, newMember)=> {
+	if(!isReady)return
+	try {
+		guildMemberUpdate(oldMember, newMember, client);
+	} catch (error) {
+		console.log(error);
+	}	
+});
+
+// bye message/log
+client.on('guildMemberRemove', (member) => {
+	if(!isReady)return
+	try {
+		guildMemberRemove(member, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+// message deletion logs
+client.on('messageDelete', (message) => {
+	if(!isReady)return
+	try {
+		messageDelete(message, client);
+	} catch (error) {
+		console.log(error);
+	}	
+});
+
+// server logs (roles, channels)
+client.on('channelCreate', (channel) => {
+	if(!isReady)return
+	try {
+		channelCreate(channel, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+// channel delete logs
+client.on('channelDelete', (channel) => {
+	if(!isReady)return
+	try {
+		channelDelete(channel, client);	
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+//channel update log
+client.on('channelUpdate', (oldChannel, newChannel)=> {
+	if(!isReady)return
+	try {
+		channelUpdate(oldChannel,newChannel, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+//message update logging
+client.on('messageUpdate', (oldMessage, newMessage) => {
+	if(!isReady)return
+	try {
+		messageUpdate(oldMessage, newMessage, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+client.on("emojiCreate", async emoji =>{
+	if(!isReady)return
+	try {
+		emojiCreate(emoji, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+client.on("emojiDelete", async emoji =>{
+	if(!isReady)return
+	try {
+		emojiDelete(emoji, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+client.on("emojiUpdate", async (oldEmoji, newEmoji) =>{
+	if(!isReady)return
+	try {
+		emojiUpdate(oldEmoji,newEmoji, client);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+client.on("error", async error =>{
+	console.log("cought an error sir!");
+	console.log(error);
+});
+
+client.on("interactionCreate",async (interaction)=>{ 
+	if(!isReady)return
+	if(!interaction.isCommand())return;
+	console.log("uwu"); 
+});
+
+
 
 
 const getMembers = require("./raiderTracker/getMembers");

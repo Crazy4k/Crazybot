@@ -185,5 +185,50 @@
         "highRanks" : [34104082, 34104087, 34104088],
         "HICOMRanks": [34103948, 35046953, 37504455],
         "managementAndStaff": [35046964, 37504423, 34103947]
+    },
+    "4804809":{
+        "name"      : "The Soviet Aristocracy",
+        "link"      : "https://www.roblox.com/groups/4804809",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 4804809
+    },
+    "4800484":{
+        "name"      : "The Soviet Union",
+        "link"      : "https://www.roblox.com/groups/4800484",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 4800484
+    },
+    "7036991":{
+        "name"      : "V&K IAD",
+        "link"      : "https://www.roblox.com/groups/7036991",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 7036991
+    },
+    "6960002":{
+        "name"      : "V&K Moderation Team",
+        "link"      : "https://www.roblox.com/groups/7036991",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 7036991
+    },
+    "6066453":{
+        "name"      : "V&K Industries",
+        "link"      : "https://www.roblox.com/groups/6066453",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 6066453
     }
 }

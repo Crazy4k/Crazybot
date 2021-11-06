@@ -16,7 +16,7 @@ logs.set({
 	aliases         : [],
 	description     : "Modifies the logs of the server",
 	usage           : "logs",
-	cooldown        : 30,
+	cooldown        : 15,
 	unique          : true,
 	category        : "config",
 	whiteList       : "ADMINISTRATOR",
