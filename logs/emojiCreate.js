@@ -6,8 +6,9 @@ const colors =require("../config/colors.json");
 const moment = require('moment');
 
 module.exports = async (emoji, client) =>{
-	const maker = await emoji.fetchAuthor();
 	if(!emoji.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
+	const maker = await emoji.fetchAuthor();
+	
 	try {
 		let i = guildsCache[emoji.guild.id];
 		if(!i){
