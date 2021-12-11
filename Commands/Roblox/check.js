@@ -1,7 +1,6 @@
 const Command = require("../../Classes/Command");
 const rover = require("rover-api");
 const makeEmbed = require("../../functions/embed");
-const sendAndDelete = require("../../functions/sendAndDelete");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
 const TSUgroups = require("../../config/TSUGroups.json");
@@ -41,9 +40,8 @@ for(let index in TSUgroups){
         jointHicom.push(...group.HICOMRanks);
         jointStaff.push(...group.managementAndStaff);
         if(group.VIPRanks)jointVIPs.push(...group.VIPRanks);
-        if(group.hasCuffs){
-           jointCuffRanks.push(...group.cuffsRanks)
-        }
+        if(group.hasCuffs)jointCuffRanks.push(...group.cuffsRanks);
+        
     }else if(group.isDivision){
         jointDivGroupIds.push(group.id);
         jointDivOfficers.push(...group.highRanks);
@@ -57,7 +55,10 @@ for(let index in TSUgroups){
     }  else{
         if(group.isRaider){
             jointRaiderGroups.push(group.id);
-        }else other.push(group.id);
+        }else {
+            if(group.hasCuffs)jointCuffRanks.push(group.id);
+            other.push(group.id);
+        }
     }
 }
 
@@ -73,25 +74,58 @@ check.set({
     category        : "roblox",
     worksInDMs      : false,
     isDevOnly       : false,
-    isSlashCommand  : false,
+    isSlashCommand  : true,
+    options			: [{
+		name : "roblox_username",
+		description : "The Roblox username to check for.",
+		required : false,
+		autocomplete: false,
+		type: 3,
+		},{
+        name : "discord_username",
+        description : "Check for the Roblox account of a Discord user.",
+        required : false,
+        autocomplete: false,
+        type: 6,
+        }
+	],
     
 });
 
 check.execute = async (message, args, server) =>{
 
-    let args0 = args[0]
-    let username = checkUser(message, args, 0);
     let isAuthor = false;
-    let isPing = false;
+    let isSlash = false;
     let res;
     let status;
     let id;
+    let username;
+    
+    if(message.type === "APPLICATION_COMMAND"){
+        isSlash = true;
+        if(args[0]){
+            if(args[0].name === "roblox_username")username = args[0].value;
+            else if(args[0].name === "discord_username")username = args[0].value;
+
+        }
+        else {
+            username = message.user.id;
+            isAuthor = true;
+        }
+    } else username = checkUser(message, args, 0);
+
+    let args0 = args[0]
+    if(isSlash){
+        if(args[0]){
+            args0 = args[0].value;
+        } else args0 = undefined;
+    }
 
         switch (username) {
            
             case "everyone":	
                 const embed = makeEmbed('invalid username',"Did you really ping everyone for this?", server);
-                message.channel.send({embeds: [embed]});
+                message.reply({embeds: [embed]});
                 return false;
                 break;
             case "not valid":
@@ -104,22 +138,34 @@ check.execute = async (message, args, server) =>{
                 }
                 break;
             case "no args": 
-                username = message.author.id;
+                if(!isSlash)username = message.author.id;
+                else username = message.user.id;
                 isAuthor = true;
-                isPing = true;
+
             default:
-                isPing = true;
-                if(username === message.author.id)isAuthor = true;
+
+                if(!isSlash)if(username === message.author.id)isAuthor = true;
+                else if(username === message.user.id)isAuthor = true;
+                if(username === args0 && isSlash && args[0].name === "roblox_username"){
+                    
+                    id = await noblox.getIdFromUsername(username).catch(e=>id = 0);
+                    if(!id){
+                        let robloxUsername = await noblox.getUsernameFromId(username).catch(e=>id = 0);
+                        if(robloxUsername)username = args0;
+                    }
+                    break;
+                }
+                            
                 status = 1;
                 res = await rover(username).catch(err => status = 0);
                 if(!status){
                     if(isAuthor){
                         const embed = makeEmbed("User not found", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\` or enter your roblox username like this: \`${server.prefix}check [Roblox username or ID]\``,server);
-                        message.channel.send({embeds:[embed]});
+                        message.reply({embeds:[embed]});
                         return true;
                     }else{
                         const embed = makeEmbed("User not found", "Couldn't find the Roblox profile of this Discord account because the user isn't verified",server);
-                        message.channel.send({embeds:[embed]});
+                        message.reply({embeds:[embed]});
                         return true;
                     }
                     
@@ -146,7 +192,7 @@ check.execute = async (message, args, server) =>{
                 branches.forEach(group => {notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointOfficers.includes(group.RoleId))lebels.push("Branch officer");else if(jointHicom.includes(group.RoleId))lebels.push("Branch HICOM");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else lebels.push("Branch member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId))lebels.push("has cuffs");});
                 divisions.forEach(group =>{notableTSU.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if(jointDivOfficers.includes(group.RoleId))lebels.push("Division officer");else if(jointStaff.includes(group.RoleId))lebels.push("Staff team/ Management");else if(jointDivHicom.includes(group.RoleId))lebels.push("Division HICOM");else lebels.push("Division member");if(jointVIPs.includes(group.RoleId))lebels.push("VIP assigned by the system");if(jointCuffRanks.includes(group.RoleId) || jointCuffRanks.includes(group.Id))lebels.push("has cuffs");});
                 raiders.forEach(group => {raiderGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
-                others.forEach(group => {globalGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`)});
+                others.forEach(group => {globalGroups.push(`**${TSUgroups[group.Id].name}**(${group.Role})`); if (jointCuffRanks.includes(group.Id))lebels.push("has cuffs"); if(group.Id === 4291835 || group.Id === 5157127)lebels.push("is REDACTED")});
             
                 if(!notableTSU.length){
                     if(raiderGroups.length)lebels.push("Raider");
@@ -166,7 +212,7 @@ check.execute = async (message, args, server) =>{
                 gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
                 if(isBanned){
                     const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
-                    message.channel.send({embeds:[embed]});
+                    message.reply({embeds:[embed]});
                     return true
                 }
                 let i = 0;
@@ -179,7 +225,7 @@ check.execute = async (message, args, server) =>{
                 gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
                 if(isBanned){
                     const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
-                    message.channel.send({embeds:[embed]});
+                    message.reply({embeds:[embed]});
                     return true
                 }
                 i = 0;
@@ -231,16 +277,16 @@ check.execute = async (message, args, server) =>{
                 embed.addField(`Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
                 embed.addField(`Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
                 embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
-                message.channel.send({embeds:[embed]});
+                message.reply({embeds:[embed]});
                 return true;
 
         } else if(isAuthor){
             const embed = makeEmbed("User not found", "**You're not verfied**\n please connect your Roblox account using `;verify`",server);
-            message.channel.send({embeds:[embed]});
+            message.reply({embeds:[embed]});
             return true;
         } else{
             const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr an error could've occured.",server);
-            message.channel.send({embeds:[embed]});
+            message.reply({embeds:[embed]});
             return true;
         }
 

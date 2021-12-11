@@ -6,13 +6,14 @@ const config = require("../config/config.json");
 let {guildsCache} = require("../caches/botCache");
 const makeEmbed = require("../functions/embed");
 const colors = require("../config/colors.json");
+let client = require("../index.js");
 
-module.exports = async (guild, client) => {
-    console.log(1);
+module.exports = async (guild) => {
+   
 
     guildsCache[guild.id] = null;
 	try {
-        console.log(guild);
+        
 
 		await mongo().then(async (mongoose) =>{
 			try{ 

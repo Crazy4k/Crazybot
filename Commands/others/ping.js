@@ -3,7 +3,7 @@ const Command = require("../../Classes/Command");
 let ping = new Command("ping");
 ping.set({
     aliases: [],
-    description         : "Replies with pomg",
+    description         : "Replies with pong",
     cooldown            : 0,
     category            : "others",
     whiteList           : false,

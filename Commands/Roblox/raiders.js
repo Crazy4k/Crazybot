@@ -47,7 +47,7 @@ raiders.set({
 	category        : "roblox",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 });
 
     
@@ -73,18 +73,18 @@ raiders.set({
         }
         if(shittyStr.length){
             embed.setDescription(`**These are the trackable raiders that are playing MS right now.**\n\n${shittyStr.join("\n")}`);
-            message.channel.send({embeds: [embed]});
+            message.reply({embeds: [embed]});
             return true;
         }else {
             const embed = makeEmbed("No raiders.","These are currently no trackable raiders playing ms.", server);
-            message.channel.send({embeds: [embed]});
+            message.reply({embeds: [embed]});
             return true;
         }
         
     
     } else {
         const embed = makeEmbed("No raiders.","These are currently no trackable raiders playing ms.", server);
-        message.channel.send({embeds: [embed]});
+        message.reply({embeds: [embed]});
         return true;
 
     }

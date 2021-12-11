@@ -98,7 +98,7 @@ module.exports = async ( noblox, userIds, groupId, discordClient , channelObject
             let shit = userIds;
             let poopArray = shit[groupId].slice(i * 100, i*100+100);
             let smolData = await noblox.getPresences(poopArray).catch(e=>console.log(e))
-            
+            if(!smolData) return console.log("failed at getting raiders")
             data.push(...smolData.userPresences);              
         }
         

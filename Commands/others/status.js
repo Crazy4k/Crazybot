@@ -19,7 +19,7 @@ status.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 });
 
 
@@ -27,10 +27,8 @@ status.execute = async function(message, args, server) {
 
 	const timerCache = timerArray[0];
 	const totalTimerCache = timerArray[1];
-
-	message.channel.send({embeds: [makeEmbed("Calculating....","","",false,"")]}).then(async (newMsg) =>{
-		const messagePing = newMsg.createdTimestamp- message.createdTimestamp;
-
+	
+	message.reply({embeds: [makeEmbed("Calculating....","","",false,"")]}).then(async (newMsg) =>{
 
 		let one = moment();
 		await mongo().then(async (mongoose) =>{
@@ -52,14 +50,14 @@ status.execute = async function(message, args, server) {
 
 		const embed = makeEmbed("Bot's status report!", "", server, true);
 		embed.addFields(
-			{name:"Online for", value:`${totalTimerCache.days} days ${timerCache.hours} hours ${timerCache.minutes} minutes ${timerCache.seconds} seconds`, inline: true},
+			{name:"Online since", value:`<t:${parseInt(client.readyTimestamp / 1000)  }:R> | <t:${parseInt(client.readyTimestamp / 1000)}:F>`, inline: true},
 			{name:"Data base Ping ", value:`${dataBasePing} ms`, inline: true},
-			{name:"Bot latency ", value:`${messagePing} ms`, inline: true},
 			{name:"Discord API Ping ", value:`${client.ws.ping} ms`, inline: true},
 			{name:"Fetches per hour rate", value:`${fetchesCache.totalFetches / minute} Fetch per hour`, inline: true},
 			
 		);
-		newMsg.edit({embeds:[embed]});
+		if(message.type === "APPLICATION_COMMAND")message.editReply({embeds:[embed]});
+		else newMsg.edit({embeds: [embed]})
 		return true;
 
 	});

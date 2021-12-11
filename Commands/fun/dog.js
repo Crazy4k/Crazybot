@@ -17,14 +17,14 @@ dog.set({
 	requiredPerms	: "EMBED_LINKS",
 	worksInDMs      : true,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 })
 
 dog.execute = function(message, args, server) {
 	try {
 		axios.get('https://dog.ceo/api/breeds/image/random')
 
-			.then((res)=>{message.channel.send(res.data.message)})
+			.then((res)=>{message.reply(res.data.message)})
 			.catch((err)=>console.log(err));
 			return true;
 	} catch (error) {

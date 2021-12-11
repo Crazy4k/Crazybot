@@ -230,5 +230,23 @@
         "isRaider"  : false,
         "hasCuffs"  : false,
         "id"        : 6066453
+    },
+    "5157127":{
+        "name"      : "Monarch",
+        "link"      : "https://www.roblox.com/groups/5157127",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : true,
+        "id"        : 5157127
+    },
+    "4291835":{
+        "name"      : "Phoenix",
+        "link"      : "https://www.roblox.com/groups/4291835",
+        "isBranch"  : false,
+        "isDivision": false,
+        "isRaider"  : false,
+        "hasCuffs"  : true,
+        "id"        : 4291835
     }
 }

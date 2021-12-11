@@ -15,7 +15,7 @@ cat.set({
 	requiredPerms	: "EMBED_LINKS",
 	worksInDMs      : true,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 })
 
 
@@ -23,7 +23,7 @@ cat.execute = async function (message, args, server) {
 	try {
 		axios.get('https://api.thecatapi.com/v1/images/search?api_key= key goes here ')
 
-			.then((res)=>{message.channel.send(`${res.data[0].url}`)})
+			.then((res)=>{message.reply(`${res.data[0].url}`)})
 			.catch((err)=>console.log(err));
 			return true;
 	} catch (error) {

@@ -78,6 +78,7 @@ async function createJoinEmbed(raiderCache, userId){
     if(ownedGamepassesArray.length)embed.addField("Gamepasses:",`${ownedGamepassesArray.join(", ")}`,false);
     embed.addField("Raiding power",`${raiderPower} ${raiderPowerComment}`,false);
     embed.addField("Place:",`[${placeString}](https://www.roblox.com/games/${placeId})`,true);
+    embed.addField("Joined at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
     embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantlink})\n(Extention required:[chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc),[Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
     embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`)
     return embed;
@@ -230,6 +231,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                             
                             const username = await roblox.getUsernameFromId(I);
                             const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
+                            embed.addField("Left at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
                             embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
                             
                             changes.set(`${I}-${raiderCache[I]}`,embed);

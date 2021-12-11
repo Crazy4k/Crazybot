@@ -6,9 +6,16 @@ module.exports = (error, message, client, command) => {
         const authorUser = client.users.cache.get(authorID);
         if(authorID){
             let channel;
+            let authoID;
+            let prefix = ";";
             if(!message.guild) channel = "`DM OR ELSE`";
             else channel = `${message.guild.name}(${message.guild.id})`;
-            const embed = makeEmbed("Error report!",`The user <@${message.author.id}> (${message.author.id}) has caused an error in the server (${channel}) using the command \`;${command.name}\` with the message \n\`\`\`${message.content}\`\`\`\n\n\nError details: \n\n${error}`);
+            if(message.type === "APPLICATION_COMMAND"){
+                authoID = message.user.id;
+                prefix = "/"
+            }
+            else authorID = message.author.id
+            const embed = makeEmbed("Error report!",`The user <@${authorID}> (${authorID}) has caused an error in the server (${channel}) using the command \`${prefix}${command.name}\` with the message \n\`\`\`${message.content}\`\`\`\n\n\nError details: \n\n${error}`);
             authorUser.send({embeds:[embed]}).catch(e=>console.log(e));
 
 

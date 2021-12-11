@@ -8,7 +8,7 @@ let help = new Command("help");
 
 help.set({
 	aliases         : ["cmds","commands"],
-	description     : "Helps",
+	description     : "Shows you the list of commands the bot has in categories",
 	usage           : "help [name of a category]",
 	cooldown        : 3,
 	unique          : false,
@@ -16,7 +16,17 @@ help.set({
 	whiteList       : null,
 	worksInDMs      : true,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [{
+		name : "category",
+		description : "The name of the command category.",
+		required : false,
+		autocomplete: true,
+		choices: [{name: "Fun", value: "fun"}, {name: "Events", value: "events"}, {name: "Roblox", value: "roblox"}, {name: "Moderation", value: "mod"}, {name: "Points", value: "points"}, {name: "Admin fun", value: "aa"}, {name: "Server configurations", value: "config"}, {name: "Other", value: "other"}],
+		type: 3,
+		}
+
+	],
 });
 
 help.execute =  function(message, args, server) {
@@ -37,6 +47,10 @@ help.execute =  function(message, args, server) {
 		}
 	}
 	let args0 = args[0];
+	if(message.type === "APPLICATION_COMMAND"){
+		if(args[0])args0 = args[0].value;
+		else args0 = undefined;
+	}
 	let index = "";
 
 	if(args0){
@@ -81,7 +95,7 @@ help.execute =  function(message, args, server) {
 			embed.addField(`**${num}- ${server.prefix}${i.name}**`,`**Description**: ${i.description}\n\n**Usage**: \`${server.prefix}${i.usage}\`\n\n**Cooldown time**: ${i.cooldown} seconds.\n\n**Required permissions**: ${perms}\n\n**Aliases**: ${alis}\n\n`,true);						
 			num++;
 		}
-		message.channel.send({embeds:[embed]}).catch(err=>console.log(err));
+		message.reply({embeds:[embed]}).catch(err=>console.log(err));
 		return true;
 		
 	}else{
@@ -97,7 +111,7 @@ help.execute =  function(message, args, server) {
 			{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
 		);
 		embed.setURL("https://discord.gg/vSFp7SjHWp");
-		message.channel.send( {embeds:[embed]} ).catch(err=>console.log(err));
+		message.reply( {embeds:[embed]} ).catch(err=>console.log(err));
 		return true;
 		
 	}

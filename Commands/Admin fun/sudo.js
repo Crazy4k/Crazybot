@@ -14,15 +14,43 @@ sudo.set({
 	whiteList	: "ADMINISTRATOR",
 	worksInDMs	: false,
 	isDevOnly	: false,
-	isSlashCommand	: false
+	isSlashCommand	: true,
+	options			: [
+		{
+			name : "message",
+			description : "What you want the bot to send",
+			required : true,
+			autocomplete: false,
+			type: 3,
+		},
+		{
+			name : "channel",
+			description : "Where to send the message in",
+			required : false,
+			autocomplete: false,
+			type: 7,
+		},
+
+	],
 })
 
 sudo.execute = function execute(message, args, server) {
 
 
-	const sudoStuff = args.slice(1).join(' ');
-
-	let channel = checkChannels(message,args,0);
+	let sudoStuff 
+	let channel 
+	let isSlash = false;
+	if(message.type === "APPLICATION_COMMAND"){
+		isSlash = true;
+		sudoStuff = args[0].value;
+		if(args[1])channel = args[1].value;
+		else channel = message.channel.id
+	} else{
+		sudoStuff =args.slice(1).join(' ');
+		channel = checkChannels(message,args,0);
+	}
+	
+	
 	switch (channel) {
 		case "not valid":
 		case "not useable":
@@ -62,11 +90,16 @@ sudo.execute = function execute(message, args, server) {
 			}
 			const location = message.guild.channels.cache.get(channel);
 			 
-				message.delete();
-	
+			if(isSlash){
+				message.reply({content : "done", ephemeral : true});
 				location.send(sudoStuff);
-	
 				return true;
+			} else {
+				message.delete();
+				location.send(sudoStuff);
+				return true;
+			}
+				
 	}
 	
 

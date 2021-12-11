@@ -38,11 +38,11 @@ const randomGreeting =[
 ];
 
 
-let rr = new Command("rr");
+let rr = new Command("rickroll");
 
 rr.set({
     
-	aliases         : ["rick-roll","rickroll","send-rick-roll","2008"],
+	aliases         : ["rick-roll","rr","send-rick-roll","2008"],
 	description     : "sends a dm with a Rick roll to a given user.",
 	usage           : "rr <@user>",
 	cooldown        : 60 * 10,
@@ -51,70 +51,92 @@ rr.set({
 	requiredPerms	: "MANAGE_MESSAGES",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [{
+		name : "user",
+		description : "The user you want to send the rickroll to",
+		required : true,
+		autocomplete: false,
+		type: 6,
+		}
+
+	],
+	
 })
 
 	
 rr.execute = function(message, args, server) {
 
-	try{let id = checkUseres(message,args,0);
-	switch (id) {
-		case "not valid":
-		case "everyone":	
-		case "not useable":
-			const embed = makeEmbed('invalid username',this.usage, server);
-			sendAndDelete(message,embed, server);
-			return false;
+	try{
+		let authorID;
+		let person
+		let isSlash = false;
+		if(message.type === "APPLICATION_COMMAND"){
+			isSlash = true;
+			if(args[0])person = args[0].value;
+			else person = undefined;
+			authorID = message.user.id; 
+		} else person = checkUseres(message, args, 0);
+
+		switch (person) {
+			case "not valid":
+			case "everyone":	
+			case "not useable":
+				const embed = makeEmbed('invalid username',this.usage, server);
+				sendAndDelete(message,embed, server);
+				return false;
+				break;
+			case "no args": 
+				const embed2 = makeEmbed('Missing argument',this.usage, server);
+				sendAndDelete(message,embed2, server);
+				return false;
 			break;
-		case "no args": 
-			const embed2 = makeEmbed('Missing argument',this.usage, server);
-			sendAndDelete(message,embed2, server);
+			default:
+
+				let sender 
+				if(isSlash) sender = message.user;
+				else sender= message.author;
+				let reciver = message.guild.members.cache.get(person);
+
+		// if the user is rick rolling themselves
+
+		if(sender.id === reciver.id) {
+			message.reply('wtf');	
+			const embed = makeEmbed('imagine Rick rolling yourself', `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
+
+			reciver.createDM().then(dm =>{
+				
+				dm.send({embeds:[embed]}).catch(e=> console.log(e));
+				
+			}).catch(e=> console.log(e));
 			return false;
-		break;
-		default:
+		}
+		// if the reciver is the owner
+		else if(reciver.permissions.has(Permissions.FLAGS["ADMINISTRATOR"])) {
+			sendAndDelete(message,'you can\'t rick roll an admin', server);
+			return false;
+		} if(reciver.user.bot){
+			message.reply("Bots are too powerful to rickroll ");
+			return false;
+		}else {
 
-			const sender = message.author;
-			const reciver = message.guild.members.cache.get(id);
+			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', colors.successGreen);
 
-	// if the user is rick rolling themselves
-
-	if(message.author.id === reciver.id) {
-		message.channel.send('wtf');	
-		const embed = makeEmbed('imagine Rick rolling yourself', `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
-
-		reciver.createDM().then(dm =>{
-			
-			dm.send({embeds:[embed]}).catch(e=> console.log(e));
-			
-		}).catch(e=> console.log(e));
-		return false;
-	}
-	// if the reciver is the owner
-	else if(reciver.permissions.has(Permissions.FLAGS["ADMINISTRATOR"])) {
-		sendAndDelete(message,'you can\'t rick roll an admin', server);
-		return false;
-	} if(reciver.user.bot){
-		message.channel.send("Bots are too powerful to rickroll ");
-		return false;
-	}else {
-
-		const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', colors.successGreen);
-
-		const embed = makeEmbed(`${sender.tag} ${pickRandom(randomGreeting)}`, `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
-		embed.setAuthor(`${message.author.tag}`, message.author.displayAvatarURL());
+			const embed = makeEmbed(`${sender.tag} ${pickRandom(randomGreeting)}`, `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
+			embed.setAuthor(`${sender.tag}`, sender.displayAvatarURL());
 
 
 
-		sendAndDelete(message,embedToPublic,server, true)
-		reciver.createDM().then(dm =>{
-			
-			dm.send({embeds:[embed]}).catch(e=> console.log(e));	
-		}).catch(e=> console.log(e));
-		return true;
-	}
-	}}catch(yes){
-		console.log(yes);
-	}
+			sendAndDelete(message,embedToPublic,server, true)
+			reciver.createDM().then(dm =>{
+				
+				dm.send({embeds:[embed]}).catch(e=> console.log(e));	
+			}).catch(e=> console.log(e));
+			return true;
+		}
+		}}catch(yes){
+			console.log(yes);
+		}
 
 }
 

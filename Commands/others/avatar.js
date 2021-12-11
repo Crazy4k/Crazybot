@@ -15,14 +15,28 @@ avatar.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [{
+		name : "user",
+		description : "The user to get the avatar of",
+		required : false,
+		autocomplete: false,
+		type: 6,
+		}
+
+	],
 });
 
 avatar.execute =  function(message, args, server) {
 	//if there was no arguments, send the avatar of the sender
+let authorID;
+let person
+if(message.type === "APPLICATION_COMMAND"){
+	if(args[0])person = args[0].value;
+	else person = undefined;
+	authorID = message.user.id; 
+} else person = checkUseres(message, args, 0);
 
-
-	let person =checkUseres(message, args, 0);
 	switch (person) {
 		case "not valid":
 		case "everyone":	
@@ -37,14 +51,12 @@ avatar.execute =  function(message, args, server) {
 			return true;
 			break;	
 		default:
-			const dude = message.guild.members.cache.get(person);
+			if(!person)person = authorID
+			let dude = message.guild.members.cache.get(person);
 			const image1 = dude.user.displayAvatarURL();
-			message.channel.send(image1);
+			message.reply(image1);
 			return true;
-			break;
 	}
-	
-	
 }
 
 module.exports = avatar;

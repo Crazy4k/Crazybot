@@ -12,7 +12,7 @@ serverInfo.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 });
 
 
@@ -36,7 +36,7 @@ serverInfo.execute = function(message, args, server) {
     embed.setThumbnail(guild.iconURL({format:"png"}));
 
     
-    message.channel.send({embeds:[embed]});
+    message.reply({embeds:[embed]});
     return true;
 }catch(e){console.log(e)}
 }

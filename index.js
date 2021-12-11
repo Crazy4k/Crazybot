@@ -24,6 +24,7 @@ const cookie = process.env.NBLXJS_COOKIE;
 const makeEmbed = require("./functions/embed");
 const colors = require("./config/colors.json")
 const executeCommand = require("./functions/executeCommand");
+const executeSlashCommand = require("./functions/executeSlashCommand");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
 const warnSchema = require("./schemas/warn-schema");
@@ -216,14 +217,17 @@ client.once('ready', async() => {
 		}
 	});
 
-	/*const testGuild = client.guilds.cache.get(config.bot_info.testGuildId);
+	const testGuild = client.guilds.cache.get(config.bot_info.testGuildId);
 	let commands;
 	if(testGuild){
 		commands = testGuild.commands;
 	} else {
 		commands = client.application?.commands;
 	}
-	commands?.create(client.slashCommands.get("ping"));*/
+	client.slashCommands.each(command => {
+		commands?.create(command).catch(e=>console.log(e));
+	})
+	
 
 	console.log(`Bot succesfuly logged in as ${client.user.tag} [${client.user.id}]`);
 	isReady = true;
@@ -363,7 +367,42 @@ client.on("error", async error =>{
 client.on("interactionCreate",async (interaction)=>{ 
 	if(!isReady)return
 	if(!interaction.isCommand())return;
-	console.log("uwu"); 
+
+	if(!interaction.guild){
+		let {commandName, options} = interaction;
+		let command = client.slashCommands.get(commandName);
+		executeSlashCommand(command, interaction, options["_hoistedOptions"], config.bot_info.dmSettings, client, commandCoolDownCache);
+	}
+
+	if(!guildsCache[interaction.guildId] ){
+		await mongo().then(async (mongoose) =>{
+			try{ 
+				let data = await serversSchema.findOne({_id:interaction.guildId});
+				guildsCache[interaction.guildId] = data;
+			} catch(error){
+				console.log(error);
+				console.log("ERROR IN LINE 379")
+			}finally{
+				console.log("FETCHED FROM DATABASE");
+				mongoose.connection.close();
+			}
+		});
+	}
+	try {
+		let server = guildsCache[interaction.guildId];
+		if(server === null ) {
+			sync(interaction);
+			return;
+		}
+		if(!server)return;
+
+		let {commandName, options} = interaction;
+		let command = client.slashCommands.get(commandName)
+		executeSlashCommand(command, interaction, options["_hoistedOptions"], server, client, commandCoolDownCache);
+		
+			
+	} catch (err) {console.log(err);}
+
 });
 
 

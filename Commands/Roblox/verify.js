@@ -14,14 +14,17 @@ check.set({
     category        : "roblox",
     worksInDMs      : true,
     isDevOnly       : false,
-    isSlashCommand  : false,
+    isSlashCommand  : true,
     
 });
 
 check.execute = async (message, args, server) =>{
 
     let isVerified = true;
-    const robloxBody = await rover(message.author.id).catch(err => isVerified = false);
+    let authorId;
+    if(message.type === "APPLICATION_COMMAND")authorId = message.user.id;
+    else authorId = message.author.id;
+    const robloxBody = await rover(authorId).catch(err => isVerified = false);
     let embed;
 
     if(isVerified){
@@ -32,7 +35,7 @@ check.execute = async (message, args, server) =>{
         embed.setImage("https://cdn.discordapp.com/attachments/867797536223133706/901473724614713414/image0.png");
     }
 
-    message.channel.send({embeds: [embed]}).catch(err=>err);
+    message.reply({embeds: [embed]}).catch(err=>err);
     return true;
 
 };
