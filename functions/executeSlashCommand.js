@@ -33,7 +33,7 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 			} else{
                 let booly;
 				if(command.worksInDMs){
-                    booly =command.execute(message, args, server, true);
+                    booly = command.execute(message, args, server, true);
                 } else{
                     const embed = makeEmbed("Command failed!",  `This command isn't executable in DMs!`, colors.defaultWhite);
                     sendAndDelete(message, embed, server, false, true);

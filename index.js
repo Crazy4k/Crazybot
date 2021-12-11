@@ -372,6 +372,7 @@ client.on("interactionCreate",async (interaction)=>{
 		let {commandName, options} = interaction;
 		let command = client.slashCommands.get(commandName);
 		executeSlashCommand(command, interaction, options["_hoistedOptions"], config.bot_info.dmSettings, client, commandCoolDownCache, true);
+		return;
 	}
 
 	if(!guildsCache[interaction.guildId] ){
