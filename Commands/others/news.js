@@ -61,7 +61,7 @@ updates.execute =  function(message, args, server) {
 	}
 	let bool = true;
 	let guy = message.author || message.user
-	if(message.guild.members.cache.get(guy.id).permissions.has(Permissions.FLAGS.ADMINISTRATOR))bool = false;
+	if(!message.guild || message.guild.members.cache.get(guy.id).permissions.has(Permissions.FLAGS.ADMINISTRATOR))bool = false;
 
 	
 const embed = makeEmbed(`CrazyBot patch ${update}`,updateObj[update],server,false,"It's advised to use `;sync` after an update");
