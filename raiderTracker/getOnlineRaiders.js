@@ -99,7 +99,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
             let shit = userIds;
             let poopArray = shit.slice(i * 100, i*100+100);
             let smolData = await noblox.getPresences(poopArray).catch(e=>console.log(e))
-            
+            if(!smolData)return;
             data.push(...smolData.userPresences);              
         }
         

@@ -20,14 +20,65 @@ mute.set({
     requiredPerms   : "MANAGE_ROLES",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [
+        {
+            name : "user",
+            description : "The person to mute",
+            required : true,
+            type: 6,
+		},
+        {
+            name : "time",
+            description : "hours, minutes, seconds",
+            choices: [ {name:"seconds",value:"s"}, {name:"minutes",value:"m"}, {name:"hours",value:"h"},],
+            required : true,
+            type: 3,
+		},{
+            name : "duration",
+            description : "How long to mute the user using the previous unit?",
+            required : true,
+            type: 4,
+		},
+		{
+            name : "reason",
+            description : "The reason behind the mute",
+            required : true,
+            type: 3,
+		}
+        
+
+	],
 });
 
-mute.execute = function(message, args, server) {
+mute.execute = function(message, args, server, isSlash) {
+    let author;
+    let reason;
+    let toCheck;
+    let muteTime;
+    let muteTimeString; 
+    let number;
+    if(isSlash){
+        author = message.user;
+        toCheck = args[0].value;
+        reason = args[3].value;
+        muteTime = muteTimeString = args[2].value + args[1].value
+        number = args[2].value;
+    } else{
+        author = message.author;
+        toCheck = checkUseres(message,args,0);
+        reason = args.splice(2).join(" ");
+        muteTime = muteTimeString = number = args[1]
+        
+    }
+
+    if(!reason) reason = "`No reason given`";
+
+
     try {
         const muteRole = message.guild.roles.cache.get(server.muteRole);
-        let reason = args.splice(2).join(" ");
-        if(!reason) reason = "`No reason given`";
+        
+        
     
         if(!muteRole){
             const embed1 = makeEmbed("Couldn't mute","It appears that you don't have a mute role configured\nDo `"+server.prefix+"server` to configure your server roles.", server);
@@ -35,7 +86,6 @@ mute.execute = function(message, args, server) {
             return false;
         }
         const muteLog = message.guild.channels.cache.get(server.logs.warningLog);
-        let toCheck =checkUseres(message,args,0);
         switch (toCheck) {
             case "not valid":
             case "everyone":	
@@ -51,8 +101,6 @@ mute.execute = function(message, args, server) {
                 break;
             default:
     
-                let muteTime = args[1];
-                let muteTimeString = args[1];
                 const member = message.guild.members.cache.get(toCheck);
                 if(member.permissions.has(this.whiteList)){
                     const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
@@ -60,12 +108,11 @@ mute.execute = function(message, args, server) {
                     return false;
                 }
                 let multi = 1000 * 60;
-    
                 if(!muteTime){
                     muteTime = 30 //default time is 30 minutes
                     muteTimeString = "30 minutes";
                 }
-                else {
+                else {   
                     if(muteTime.endsWith("h")) multi *= 60;
                     else if(muteTime.endsWith("m"));
                     else if(muteTime.endsWith("s"))multi /=60;
@@ -74,66 +121,91 @@ mute.execute = function(message, args, server) {
                         sendAndDelete(message,embed, server);
                         return false;
                     }  
-                    muteTime = parseInt(args[1]);
-                    if(isNaN(parseInt(args[1]))){
+                    muteTime = parseInt(number);
+                    if(isNaN(parseInt(number))){
                         const embed = makeEmbed('Invalid time was provided',this.usage+'\nA valid format looks like this: "60s", "5m", "10h"', server);
                         sendAndDelete(message,embed, server);
                         return false;
                     }
                 }
-    
-                let hisRoles = [];
-                member.roles.cache.each(rolee=>{
-                    
-                    if(rolee.id !== message.guildId && !rolee.managed && rolee.id !== muteRole.id)hisRoles.push(rolee.id);
-                    
-                })
-                hisRoles.reverse();
                 
-                if(muteCache[`${message.author.id}-${message.guild.id}`]){
+                let hisRoles = [];
+                if(member.roles.cache.size){
+                    member.roles.cache.each(rolee=>{
+                    
+                        if(rolee.id !== message.guild.id && !rolee.managed && rolee.id !== muteRole.id)hisRoles.push(rolee.id);
+                        
+                    })
+                    hisRoles.reverse();
+                }    
+                
+                if(muteCache[`${author.id}-${message.guild.id}`]){
                     const embed = makeEmbed('User already muted',`That user is already muted. Instead, try using ${server.prefix}unmute`, server);
                     sendAndDelete(message,embed, server);
                     return false;
                 }
-                muteCache[`${message.author.id}-${message.guild.id}`] = hisRoles;
+                
                 
                 if(member.manageable){
-                    try {
+                    
+                    
                     member.roles.remove(hisRoles, "mute").then(e=> {
-                        member.roles.add(muteRole.id);
-                        const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${muteTimeString} for \`${reason}\`` , colors.successGreen);
-                        message.channel.send({embeds:[embed1]});
-                        setTimeout(()=>{
-                            try{if(muteCache[`${message.author.id}-${message.guild.id}`] !== null){
-                                member.roles.add(hisRoles).then(e=>{
-                                    member.roles.remove(muteRole.id).catch(e=>console.log(e));
-                                })
-                                muteCache[`${message.author.id}-${message.guild.id}`] = null;
-                            }}catch(e){console.log(e)}
-                        },muteTime * multi);
-                        const logEmbed = makeEmbed("Mute","","002EFE",true);
-                        logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
-                        logEmbed.addFields(
-                            { name:'Duration', value:muteTimeString, inline:true },
-                            { name:'Muted:', value:`<@${toCheck}>`, inline:true },
-                            { name:'Muted by: ', value:`<@${message.author.id}>`, inline:true },
-                            { name:'Roles:', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
-                            { name : "Reason:", value:reason, inline:true}
-                        
-                        );
-                        if(muteLog)muteLog.send({embeds:[logEmbed]});
+                        if(muteRole){
+                            member.roles.add(muteRole.id).then(role=>{
+
+                                const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${muteTimeString} for \`${reason}\`` , colors.successGreen);
+                                message.reply({embeds:[embed1]});
+                                muteCache[`${author.id}-${message.guild.id}`] = hisRoles;
+                                setTimeout(()=>{
+                                    try{
+                                        if(muteCache[`${author.id}-${message.guild.id}`] !== null){
+                                        if(hisRoles.length){
+                                            if(member.roles.cache.get(muteRole.id)){
+                                                member.roles.add(hisRoles).then(e=>{
+                                                    member.roles.remove(muteRole.id).catch(e=>console.log(e));
+                                                }).catch(e=>console.log(e));
+                                            }
+                                            
+                                        } else if(member.roles.cache.get(muteRole.id))member.roles.remove(muteRole.id).catch(e=>console.log(e));
+    
+                                        message.channel.send(`<@${member.id}> has been unmuted for: expired mute`)
+                                        muteCache[`${author.id}-${message.guild.id}`] = null;
+                                    }}catch(e){
+                                        console.log(e)
+                                    }
+                                },muteTime * multi);
+                                const logEmbed = makeEmbed("Mute","","002EFE",true);
+                                logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
+                                logEmbed.addFields(
+                                    { name:'Duration', value:muteTimeString, inline:true },
+                                    { name:'Muted:', value:`<@${toCheck}>`, inline:true },
+                                    { name:'Muted by: ', value:`<@${author.id}>`, inline:true },
+                                    { name:'Roles:', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
+                                    { name : "Reason:", value:reason, inline:true}
+                                
+                                );
+                                if(muteLog)muteLog.send({embeds:[logEmbed]});
+
+                            }).catch(e=>{   
+                                const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the mute role isn't accessable!\nTry putting the mute role under the bot's role", server);
+                                sendAndDelete(message,embed1, server);
+                                return false;
+                            });
+                            
+                        }else{
+                            const embed1 = makeEmbed('Missing Permíssion',"Missing mute role!, use the `;server` command to setup a new mute role.", server);
+                            sendAndDelete(message,embed1, server);
+                            return false;	
+                        }
                     }).catch(e=>{
                         console.log(e);
                         const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
                         sendAndDelete(message,embed1, server);
                         return false;
                     });
-                }catch (error) {
-                    console.log(error);
-                    const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
-                    sendAndDelete(message,embed1, server);
-                    return false;	
-                }
+                    
+                    
+               
             } else {
                 const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
                 sendAndDelete(message,embed1, server);

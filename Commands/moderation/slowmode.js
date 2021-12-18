@@ -10,82 +10,91 @@ slowmode.set({
     
 	aliases         : ["sm","slowm","chatcooldow"],
 	description     : "Changes the slowmode duration of a channel",
-	usage           : "Slowmode <seconds> [#channel or id]",
+	usage           : "Slowmode <seconds>",
 	cooldown        : 5,
 	unique          : false,
 	category        : "Moderation",
-	whiteList       : "MANAGE_MESSAGES",
+	whiteList       : null,
     requiredPerms   : "MANAGE_CHANNELS",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [
+        {
+            name : "seconds",
+            description : "For mods: change the slowmode to a new number between 1 sec to 6 hours",
+            required : false,
+            type: 4,
+		}
+
+	],
 });
 
 
-slowmode.execute = function(message, args, server) {
+slowmode.execute = async function(message, args, server, isSlash) {
+    let author;
+    let newTime;
+    if(isSlash){
+        author = message.user;
+        if(args[0])newTime = args[0].value;
+    } else{
+        author = message.author;
+        newTime = args[0];
+    }
 
-    if(!args[0]){
-        message.channel.send(`The current Slowmode is ${message.channel.rateLimitPerUser}.`);
+    if(!newTime){
+        message.reply(`The current Slowmode is ${message.channel.rateLimitPerUser} seconds.`);
         return false;
     }
-    const modLog = message.guild.channels.cache.get(server.logs.warningLog);
-    let id = checkChannels(message,args,1);
-    switch (id) {
-        case "not valid":
-        case "everyone":	
-        case "not useable":
-            const embed1 = makeEmbed('invalid username',this.usage, server);
-            sendAndDelete(message,embed1, server );
-            return false;	
-            break;
-        case "no args": 
-            id = message.channel.id;
+    const dude = await message.guild.members.cache.get(author.id);
+    if(dude.permissions.has("MANAGE_MESSAGES")) {
+        const modLog = message.guild.channels.cache.get(server.logs.warningLog);
+   
+
+        
+        const time = parseInt(newTime);
+        if(isNaN(time)){
+            const embed = makeEmbed("Command failed", `First argument must be a number!`,server);
+            sendAndDelete(message,embed,server);
+            return false;
+        }
+        if(time > 21600){
+            const embed = makeEmbed("Command failed", `Slowmode cannot go above 6 hours!`,server);
+            sendAndDelete(message,embed,server);
+            return false;
+        }
+        try {
+            let before = message.channel.rateLimitPerUser;
+            message.channel.edit({rateLimitPerUser: time}).then(e=>{
+
+                message.reply(`Changed the slowmode to ${time} seconds successfully ✅.`)
+
+                const logEmbed = makeEmbed("Slowmode","",colors.changeBlue,true);
+                logEmbed.setAuthor(author.tag, author.displayAvatarURL());
+                logEmbed.addFields(
+                    { name: 'Changes: ', value: `Changed slowmode from ${before} to ${message.channel.rateLimitPerUser}`, inline:false },
+                    { name: 'Changed by: ', value: `<@${author.id}>-${author.id}`, inline:false },
+                    { name : "Changed in: ", value: `<#${message.channel.id}>-${message.channel.id}`, inline:false}
+                );
+                if(modLog)modLog.send({embeds:[logEmbed]});
+            })
+
+            return true;
+        } catch (error) {
+            const embed = makeEmbed("Command failed", `And error accoured and could not execute this command.`,server);
+            sendAndDelete(message,embed,server);
+            console.log(error);
+            return false;
             
-        default:
-
-            const target = message.guild.channels.cache.get(id);
-            
-            const time = parseInt(args[0]);
-            if(isNaN(time)){
-                const embed = makeEmbed("Command failed", `First argument must be a number!`,server);
-                sendAndDelete(message,embed,server);
-                return false;
-            }
-            if(time > 21600){
-                const embed = makeEmbed("Command failed", `Slowmode cannot go above 6 hours!`,server);
-                sendAndDelete(message,embed,server);
-                return false;
-            }
-            try {
-                let before = message.channel.rateLimitPerUser;
-                target.edit({rateLimitPerUser: time}).then(e=>{
-
-                    message.channel.send(`Changed the slowmode of <#${target.id}> to ${time} seconds successfully.`)
-
-                    const logEmbed = makeEmbed("Slowmode","",colors.changeBlue,true);
-                    logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                    logEmbed.addFields(
-                        { name: 'Changes: ', value: `Changed slowmode from ${before} to ${message.channel.rateLimitPerUser}`, inline:false },
-                        { name: 'Changed by: ', value: `<@${message.author.id}>-${message.author.id}`, inline:false },
-                        { name : "Changed in: ", value: `<#${message.channel.id}>-${message.channel.id}`, inline:false}
-                    );
-                    if(modLog)modLog.send({embeds:[logEmbed]});
-                })
-
-                return true;
-            } catch (error) {
-                const embed = makeEmbed("Command failed", `And error accoured and could not execute this command.`,server);
-                sendAndDelete(message,embed,server);
-                console.log(error);
-                return false;
-                
-            }
-
-
-
-
-
+        }
+    } else{
+        const embed = makeEmbed("Missing permission",`You don't have the required permission to run this command`,"FF0000",);
+        sendAndDelete(message,embed,server);
+        return false;
     }
+
+
+    
 }
 
 module.exports = slowmode;

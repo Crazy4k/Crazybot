@@ -1,8 +1,8 @@
-let {pointsCache, guildsCache, warnCache } = require("../caches/botCache");
+let {pointsCache, guildsCache } = require("../caches/botCache");
 
 const pointsSchema = require("../schemas/points-schema");
 const guildsSchema = require("../schemas/servers-schema");
-const warnSchema = require("../schemas/warn-schema");
+
 
 
 const mongo = require("../mongo");
@@ -17,7 +17,6 @@ module.exports = async (message,) => {
 
     let data1;
     let data2;
-    let data3;
 
     message.guild.members.fetch();
     message.guild.channels.fetch();
@@ -180,74 +179,6 @@ module.exports = async (message,) => {
         }
     }
 
-
-    await mongo().then(async (mongoose) =>{
-        try{ 
-            data3 = warnCache[message.guild.id] = await warnSchema.findOne({_id:message.guild.id});
-        } finally{
-            console.log("FETCHED FROM DATABASE");
-            mongoose.connection.close();
-        }
-    });
-    
-
-
-    if(data3 === null){
-        whatToSay.push("\n*Created a missing file of the server on the data base.");
-        let temp = {
-            _id:message.guild.id,
-            whiteListedRole:"",
-            members:{}
-        }
-        mongo().then(async (mongoose) =>{
-            try{
-                await warnSchema.findOneAndUpdate({_id:message.guild.id},{
-                    _id: message.guild.id,
-                    whiteListedRole:"",
-                    members:{}   
-                },{upsert:true});
-                warnCache[message.guild.id] = temp;
-            } finally{
-                
-                console.log("WROTE TO DATABASE");
-                mongoose.connection.close();
-            }
-        });	
-
-    } else if(warnCache[message.guild.id].members){
-        
-        let newObj ={};
-        let size1 = 0;
-        let size2 = 0;
-
-        for (const key in warnCache[message.guild.id].members) {
-            size1;
-            if(message.guild.members.cache.get(key)){
-                size2++;
-                newObj[key] = warnCache[message.guild.id].members[key];
-            }
-        }
-    
-        
-
-        if(size1 !== size2) {
-            whatToSay.push("\n*Deleted left over data from members that are no longer in the server.");
-            await mongo().then(async (mongoose) =>{
-                try{
-                    
-                    await warnSchema.findOneAndUpdate({_id:message.guild.id},{
-                        members:newObj  
-                    },{upsert:true});
-                    warnCache[message.guild.id].members = newObj;
-                    
-                } finally{
-                    
-                    console.log("WROTE TO DATABASE");
-                    mongoose.connection.close();
-                }
-            });
-        }
-    }
 
     console.log(`Syncing ended for ${message.guild.name}.`);
     

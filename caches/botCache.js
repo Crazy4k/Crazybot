@@ -10,16 +10,16 @@ let caches = {
     fetchesCache : {totalFetches: 0},
     guildsCache : {},
     muteCache : {},
-    officerPointsCache : {},
     pointsCache : {},
     trackedRaiders: [],
     customTrackedRaiders: {},
     raiderCache : {},
     customRaiderCache : {},
     raiderTrackerChannelCache : {raiders: null, custom : null},
-    tempCmds : undefined,
+    tempCmds : {},
     timerCache : [timer.getTimeValues(), timer.getTotalTimeValues()],
-    warnCache : {}
+    executes : {slash: {}, legacy: {}},
+
 }
 
 module.exports = caches

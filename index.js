@@ -5,8 +5,7 @@ const mongo = require("./mongo");
 const noblox = require("noblox.js");
 require("dotenv").config();
 
-//const { REST } = require('@discordjs/rest');
-//const { Routes } = require('discord-api-types/v9');
+
 let intentArray =[
 	Intents.FLAGS.GUILDS,
 	Intents.FLAGS.GUILD_MEMBERS,
@@ -21,15 +20,11 @@ const client = new Discord.Client({ intents: intentArray ,partials:["CHANNEL"]})
 const token = process.env.DISCORD_BOT_TOKEN;
 const cookie = process.env.NBLXJS_COOKIE;
 
-const makeEmbed = require("./functions/embed");
-const colors = require("./config/colors.json")
 const executeCommand = require("./functions/executeCommand");
 const executeSlashCommand = require("./functions/executeSlashCommand");
 const pointsSchema = require("./schemas/points-schema");
 const serversSchema = require("./schemas/servers-schema");
-const warnSchema = require("./schemas/warn-schema");
 const raiderTrackerSchema = require("./schemas/raiderTracker-schema");
-const officerPointsSchema = require("./schemas/officerPoints-schema");
 let {guildsCache, commandCoolDownCache} = require("./caches/botCache");
 let botCache = require("./caches/botCache");
 const sync = require("./functions/sync");
@@ -49,7 +44,6 @@ turnOnRoblox();
 client.commands = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 
-
 const bigcommandfile = fs.readdirSync("./Commands/");
 
 for(let category of bigcommandfile){
@@ -66,7 +60,6 @@ for(let category of bigcommandfile){
 
 
 for(let category of bigcommandfile){
-	
 	const smallCommandFile = fs.readdirSync(`./Commands/${category}/`).filter(file =>file.endsWith('.js'));
 
 	for(const file of smallCommandFile) {
@@ -397,6 +390,22 @@ client.on("interactionCreate",async (interaction)=>{
 		}
 		if(!server)return;
 
+		if(server.deleteMessagesInLogs) {
+			
+			switch (interaction.channel.id) {
+				case server.logs.hiByeLog: 
+				case server.logs.deleteLog: 
+				case server.logs.serverLog: 
+				case server.logs.warningLog: 
+				case server.logs.eventsLog:
+				case server.logs.pointsLog:
+					
+					interaction.reply({content: "You can't execute commands in logs ❌", ephemeral : true})
+					return;
+			}	
+		}
+
+
 		let {commandName, options} = interaction;
 		let command = client.slashCommands.get(commandName)
 		executeSlashCommand(command, interaction, options["_hoistedOptions"], server, client, commandCoolDownCache);
@@ -546,8 +555,9 @@ setInterval(()=>{
 	let status = [
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
 		{str:`${raiderCount} raiders`,type:{type: "WATCHING"}},
-		{str:"to ;updates",type:{type: "LISTENING"}},
-		{str:"to ;help",type:{type: "LISTENING"}},
+		{str:"to /updates",type:{type: "LISTENING"}},
+		{str:"to /help",type:{type: "LISTENING"}},
+		{str:"slash commands now!",type:{type: "PLAYING"}},
 		{str:"over your points",type:{type: "WATHCING"}},
 		{str:"developed by crazy4k#0091",type:{type: "PLAYING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},

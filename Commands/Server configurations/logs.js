@@ -22,12 +22,46 @@ logs.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [
+        {
+            name : "log-type",
+            description : "Which of the following logging channel do you want to modify",
+            choices: [
+                {name: "Member logs", value: "memberLog"},
+                {name: "Message logs", value: "messageLog"},
+                {name: "Server logs", value: "serverLog"},
+                {name: "Moderation commands logs", value: "modLog"},
+                {name: "Points commands logs", value: "pointslog"},
+                {name: "Events commands logs", value: "eventlog"},
+            ],
+            required : false,
+            type: 3,
+		},
+		
+
+	],
 });
 
 
-logs.execute = async function (message, args, server) {
-    const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
+logs.execute = async function (message, args, server, isSlash) {
+
+
+    
+    let author;
+    let type = args[0];
+    if(isSlash){
+        author = message.user;
+        if(args[0])type = args[0].value;
+        
+    }
+    else author = message.author;
+
+
+
+
+
+    const messageFilter = m => !m.author.bot && m.author.id === author.id;
 
     try {
 
@@ -66,17 +100,19 @@ logs.execute = async function (message, args, server) {
                 embed.addField("Events logs 📢", `Empty\n\`${server.prefix}${this.name} eventlog\``, true)
             }
 
-            message.channel.send({embeds:[embed]});
+            message.reply({embeds:[embed]});
             return false;
 
         }else{
             
             let daServer = server;
-            switch (args[0].toLowerCase()) {
+            switch (type.toLowerCase()) {
                 case "memberlogs":
                 case "memberlog":
+                case "member":
+                case "members":
                     let embedo1 = makeEmbed("Logs manager", `${type0Message}**Enter your members logging channel. 👤**`, server);
-                    message.channel.send({embeds:[embedo1]})
+                    message.reply({embeds:[embedo1]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   
@@ -123,8 +159,10 @@ logs.execute = async function (message, args, server) {
                     break;
                     case "messagelogs":
                     case "messagelog":
+                    case "message":
+                    case "messages":
                         let embedo2 = makeEmbed("Logs manager", `${type0Message}**Enter your messages logging channel. 📫**`, server);
-                        message.channel.send({embeds:[embedo2]})
+                        message.reply({embeds:[embedo2]})
                             .then(m => {
                                 message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                     .then(async a => {   
@@ -168,8 +206,10 @@ logs.execute = async function (message, args, server) {
                         break;
                         case "serverlogs":
                         case "serverlog":
+                        case "server":
+                    
                             let embedo3 = makeEmbed("Logs manager", `${type0Message}**Enter your Server logging channel. 🏠**`, server);
-                            message.channel.send({embeds:[embedo3]})
+                            message.reply({embeds:[embedo3]})
                                 .then(m => {
                                     message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                         .then(async a => {   
@@ -214,8 +254,10 @@ logs.execute = async function (message, args, server) {
                             break;
                             case "modlogs":
                             case "modlog":
+                            case "mod":
+                            case "moderation":
                                 let embedo4 = makeEmbed("Logs manager", `${type0Message}**Enter your moderation logging channel. 🔨**`, server);
-                                message.channel.send({embeds:[embedo4]})
+                                message.reply({embeds:[embedo4]})
                                     .then(m => {
                                         message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                             .then(async a => {   
@@ -244,7 +286,7 @@ logs.execute = async function (message, args, server) {
                                                         await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                             logs: daServer.logs,
                                                         },{upsert:false});
-                                                        message.channel.send(`**Warns logging channel has been successfully updated ✅.**`)
+                                                        message.channel.send(`**Moderation logging channel has been successfully updated ✅.**`)
                                                         guildsCache[message.guild.id] = daServer;
                                                     } finally{
                                                         console.log("WROTE TO DATABASE");
@@ -259,8 +301,10 @@ logs.execute = async function (message, args, server) {
                                 break;
                                 case "pointslogs":
                                 case "pointslog":
+                                case "points":
+                                case "point":
                     let embedo5 = makeEmbed("Logs manager", `${type0Message}**Enter your points logging channel. 📈**`, server);
-                    message.channel.send({embeds:[embedo5]})
+                    message.reply({embeds:[embedo5]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   
@@ -303,8 +347,10 @@ logs.execute = async function (message, args, server) {
                     break;
                     case "eventlogs":
                     case "eventlog":
+                    case "events":
+                    case "event":
                     let embedo6 = makeEmbed("Logs manager", `${type0Message}**Enter your events logging channel. 📢**`, server);
-                    message.channel.send({embeds:[embedo6]})
+                    message.reply({embeds:[embedo6]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   

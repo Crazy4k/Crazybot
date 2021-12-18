@@ -1,6 +1,5 @@
 const mongo = require("../mongo");
 const serversSchema = require("../schemas/servers-schema");
-const warnSchema = require("../schemas/warn-schema");
 const pointsSchema = require("../schemas/points-schema");
 const config = require("../config/config.json");
 let {guildsCache} = require("../caches/botCache");
@@ -67,21 +66,6 @@ module.exports = async (guild, client) => {
 				}catch(err){
 					console.log(err)
 				} finally{
-					
-					console.log("WROTE TO DATABASE");
-					mongoose.connection.close();
-				}
-			});	
-			await mongo().then(async (mongoose) =>{
-				try{
-					await warnSchema.findOneAndUpdate({_id:guild.id},{
-						_id:guild.id,
-						whiteListedRole:"",
-						members:{}   
-					},{upsert:true});
-				} catch(err){
-					console.log(err)
-				}finally{
 					
 					console.log("WROTE TO DATABASE");
 					mongoose.connection.close();

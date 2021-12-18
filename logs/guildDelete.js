@@ -1,6 +1,6 @@
 const mongo = require("../mongo");
 const serversSchema = require("../schemas/servers-schema");
-const warnSchema = require("../schemas/warn-schema");
+
 const pointsSchema = require("../schemas/points-schema");
 const config = require("../config/config.json");
 let {guildsCache} = require("../caches/botCache");
@@ -40,17 +40,6 @@ module.exports = async (guild) => {
 			}
 		});	
 		
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				let data = await warnSchema.findOne({_id:guild.id});
-				if(data !== null) await warnSchema.findOneAndRemove({_id:guild.id});
-			} catch(err){
-                console.log(err)
-            }finally{
-				console.log("WROTE TO DATABASE");
-				mongoose.connection.close();
-			}
-		});		
 				
 		let log = client.channels.cache.get(config.bot_info.clientLogs);
 		if(log){

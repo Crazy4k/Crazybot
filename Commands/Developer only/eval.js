@@ -19,7 +19,7 @@ let evalCommand = new Command("eval");
 evalCommand.set({
 	aliases         : [],
 	description     : "makes the bot do stuff with eval();",
-	usage           : "eval ``` code ``",
+	usage           : "eval ``` code ```",
 	cooldown        : null,
 	unique          : false,
 	category        : null,

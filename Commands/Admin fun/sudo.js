@@ -2,6 +2,7 @@ const makeEmbed = require('../../functions/embed');
 const sendAndDelete = require("../../functions/sendAndDelete");
 const checkChannels = require('../../functions/checkChannels');
 const Command = require("../../Classes/Command");
+const colors = require("../../config/colors.json")
 
 let sudo = new Command("sudo");
 sudo.set({
@@ -89,11 +90,18 @@ sudo.execute = function execute(message, args, server) {
 				return false;
 			}
 			const location = message.guild.channels.cache.get(channel);
-			 
+			 let allowedChannels = ["GUILD_TEXT", "GUILD_NEWS", "GUILD_PUBLIC_THREAD"  ]
 			if(isSlash){
-				message.reply({content : "done", ephemeral : true});
-				location.send(sudoStuff);
-				return true;
+				if(allowedChannels.includes(location.type)){
+					message.reply({content : "done", ephemeral : true});
+					location.send(sudoStuff);
+					return true;
+				}else {
+					const embed = makeEmbed("Couldn't send message!", "This channel type is not valid, try a text channel", colors.failRed);
+					sendAndDelete(message,embed, server);
+					return false;
+				}
+				
 			} else {
 				message.delete();
 				location.send(sudoStuff);

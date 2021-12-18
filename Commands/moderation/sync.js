@@ -6,8 +6,8 @@ let syncCommand = new Command("sync");
 
 syncCommand.set({
     
-	aliases         : ["sm","slowm","chatcooldow"],
-	description     : "Syncs all data between the bot's cache and the data base, removes left members from the server's data base and creates some files for the server if missing.",
+	aliases         : null,
+	description     : "Syncs data between the bot's cache and the data base and removes any outdated data.",
 	usage           : "sync",
 	cooldown        : 3 * 60,
 	unique          : true,
@@ -15,14 +15,14 @@ syncCommand.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true
 });
 
 
-syncCommand.execute = async function(message, args, server) { 
+syncCommand.execute = async function(message, args, server, isSlash) { 
 			
 	let embed = makeEmbed("Syncing...","",server);
-	message.channel.send({embeds:[embed]}).then(async msg =>{
+	message.reply({embeds:[embed]}).then(async msg =>{
 		
 		let whatToSay = await sync(message);
 
@@ -31,7 +31,8 @@ syncCommand.execute = async function(message, args, server) {
 		embed.setColor("29C200");
 		embed.setTitle("synchronization complete ✅");
 		embed.setDescription(`Summary of changes: ${whatToSay}`);
-		msg.edit({embeds:[embed]});
+		if(isSlash) message.editReply({embeds:[embed]});
+		else msg.edit({embeds:[embed]});
 		return true;
 		
 	});

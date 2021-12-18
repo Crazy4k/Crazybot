@@ -22,11 +22,31 @@ pointsSet.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [{
+		name : "user",
+		description : "The user to edit the points of",
+		required : true,
+		type: 6,
+		},
+        {
+            name : "number",
+            description : "Edit value: this number will be the user's new points amount",
+            required : true,
+            type: 4,
+        },
+        {
+            name : "reason",
+            description : "The reason behind the change",
+            required : false,
+            type: 3,
+        },
+
+	],
 })
 
 
-pointsSet.execute = async function(message, args, server){ 
+pointsSet.execute = async function(message, args, server, isSlash){ 
 
     if(!server.pointsEnabled) await enable(message, server);
 
@@ -45,9 +65,24 @@ pointsSet.execute = async function(message, args, server){
             }
         })
     }
+    let author;
+    let target;
+    let pointstoChange;
+    let reason;
+    if(isSlash){
+        author = message.user
+        target = args[0].value;
+        pointstoChange = args[1].value
+        if(args[2])reason = args[2].value;
+    } else{
+        author = message.author;
+        target = checkUseres(message, args, 0);
+        pointstoChange = args[1];
+        reason = args.splice(2).join(" ");  
+    }
+    if(!reason) reason = "`No reason given.`";
 
-    if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
-        let target = checkUseres(message, args, 0);
+    if(message.guild.members.cache.get(author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(author.id).roles.cache.has(servery.whiteListedRole)){
         
         switch (target) {
             case "not valid":
@@ -66,11 +101,10 @@ pointsSet.execute = async function(message, args, server){
             default:
 
                 
-                let reason = args.splice(2).join(" ");   
-                if(!reason) reason = "`No reason given.`"
+                
                 let log = message.guild.channels.cache.get(server.logs.pointsLog);    
-                let pointstoChange = args[1];
-                if(!pointstoChange){
+                
+                if(!pointstoChange === undefined){
                     const embed69 = makeEmbed('Missing arguments',this.usage, server);
                     sendAndDelete(message,embed69, server);
                     return false;
@@ -82,7 +116,7 @@ pointsSet.execute = async function(message, args, server){
                 }
                 let before = servery.members[target]; 
                 servery.members[target] = pointstoChange;
-                if( servery.members[target] < 0 || !servery.members[target])  servery.members[persona] = 0;
+                if( servery.members[target] < 0 || !servery.members[target])  servery.members[target] = 0;
 
                 if(servery.members[target]=== undefined)servery.members[target] = 0;
                 await mongo().then(async (mongoose) =>{
@@ -101,12 +135,12 @@ pointsSet.execute = async function(message, args, server){
                 })
                 await promote(message,target,server);
                 const emb = makeEmbed("User's points have been set!", `<@${target}>'s points have been changed from \`${before}\` to \`${servery.members[target]}\` points.`, server,false)
-                message.channel.send({embeds:[emb]}).catch(e=> console.log(e));     
+                message.reply({embeds:[emb]}).catch(e=> console.log(e));     
                 if(log){
                     let embed = makeEmbed("Points changed.","","3987FF",true);
-                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                    embed.setAuthor(author.tag, author.displayAvatarURL());
                     embed.addFields(
-                    {name: "Chagned by:", value: `<@${message.author.id}>`, inline:true},  
+                    {name: "Chagned by:", value: `<@${author.id}>`, inline:true},  
                     {name: "Changed from:", value: `<@${target}>`, inline:true},
                     {name: "Amount before:", value: `${before} `, inline:true},
                     {name: "Amount after:", value: `${servery.members[target]}`, inline:true},

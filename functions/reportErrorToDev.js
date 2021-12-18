@@ -14,7 +14,7 @@ module.exports = (error, message, client, command) => {
                 authoID = message.user.id;
                 prefix = "/"
             }
-            else authorID = message.author.id
+            else authoID = message.author.id
             const embed = makeEmbed("Error report!",`The user <@${authorID}> (${authorID}) has caused an error in the server (${channel}) using the command \`${prefix}${command.name}\` with the message \n\`\`\`${message.content}\`\`\`\n\n\nError details: \n\n${error}`);
             authorUser.send({embeds:[embed]}).catch(e=>console.log(e));
 

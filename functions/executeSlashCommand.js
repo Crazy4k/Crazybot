@@ -2,9 +2,8 @@ const makeEmbed = require("./embed");
 const sendAndDelete = require("./sendAndDelete");
 const moment = require('moment');
 const reportBug = require("./reportErrorToDev");
-const {Permissions} = require("discord.js");
 const colors = require("../config/colors.json");
-const config = require("../config/config.json");
+const botCache = require("../caches/botCache");
 
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 
@@ -34,6 +33,8 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
                 let booly;
 				if(command.worksInDMs){
                     booly = command.execute(message, args, server, true);
+                    botCache.executes.slash[command.name]++
+				if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                 } else{
                     const embed = makeEmbed("Command failed!",  `This command isn't executable in DMs!`, colors.defaultWhite);
                     sendAndDelete(message, embed, server, false, true);
@@ -85,9 +86,10 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
                     sendAndDelete(message, embed, server);
                     return false;
                 }
-                console.log(args)
-                const booly =  command.execute(message, args, server);
                 
+                const booly =  command.execute(message, args, server, true);
+                botCache.executes.slash[command.name]++
+				if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                 if(booly) {
                     if(command.unique)recentlyRan[uniqueCooldownString] = moment();
                     recentlyRan[cooldownString] = moment();
@@ -135,8 +137,9 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
                         sendAndDelete(message, embed, server);
                         return false;
                     }
-                    const booly = await command.execute(message, args, server);
-                    
+                    const booly = await command.execute(message, args, server, true);
+                    botCache.executes.slash[command.name]++
+                    if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                     if(booly) {
                         if(command.unique)recentlyRan[uniqueCooldownString ]= moment();
                         recentlyRan[cooldownString] = moment();

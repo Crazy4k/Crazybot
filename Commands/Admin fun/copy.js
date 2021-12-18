@@ -2,7 +2,7 @@ const makeEmbed = require('../../functions/embed');
 const checkUseres = require("../../functions/checkUser");
 const sendAndDelete = require('../../functions/sendAndDelete');
 const im = ["i'm","im","i am", "i m", "Im", "I'm", "I am"];
-const insults = ["ugly","fat","dumb", "noob"];
+const insults = ["ugly","sus","dumb", "noob"];
 const Command = require("../../Classes/Command");
 
 
@@ -16,12 +16,27 @@ copy.set({
     unique          : true,
     worksInDMs      : false,
     isDevOnly       : false,
-    isSlashCommand  : false,
+    isSlashCommand  : true,
     isTestOnly      : false,
-    usage           : "copy <user>"
+    usage           : "copy <user>",
+    options			: [{
+		name : "user",
+		description : "The user to annoy",
+		required : true,
+		autocomplete: false,
+		type: 6,
+		}
+
+	],
 })
 copy.execute = function (message, args, server ) {
-    const number = checkUseres(message, args, 0);
+    let authorID;
+    let number;
+    if(message.type === "APPLICATION_COMMAND"){
+        if(args[0])number = args[0].value;
+        else number = undefined;
+        authorID = message.user.id; 
+    } else number = checkUseres(message, args, 0);
     switch (number) {
         case "not valid":
         case "everyone":	
@@ -44,7 +59,7 @@ copy.execute = function (message, args, server ) {
             break;
                             
         default:
-            message.channel.send("ok");
+            message.reply(`<@${number}> wassup`);
             
             const filter = m => !m.author.bot && m.author.id === number;
             const collector = message.channel.createMessageCollector({filter,time:150000});
@@ -70,7 +85,7 @@ copy.execute = function (message, args, server ) {
                     return true;
                 } else m.channel.send(m.content);
             })
-            collector.on("end", m =>message.channel.send("lol"));
+            collector.on("end", m =>message.channel.send("ok im bored bye"));
             return true;
         break;
     }

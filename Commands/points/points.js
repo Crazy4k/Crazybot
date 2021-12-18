@@ -21,14 +21,32 @@ points.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [{
+		name : "user",
+		description : "The user to check the points of",
+		required : false,
+		type: 6,
+		}
+
+	],
 })
 
-points.execute = async function(message, args, server) { 
+points.execute = async function(message, args, server, isSlash) { 
 
     if(!server.pointsEnabled) await enable( message, server);
 
-    let target = checkUseres(message, args, 0);
+    let author;
+    let target;
+    if(isSlash){
+        author = message.user
+        if(args[0])target = args[0].value;
+        else target = author.id
+    } else{
+        author = message.author;
+        target = checkUseres(message, args, 0);
+    }
+
     
     switch (target) {
             case "not valid":
@@ -40,7 +58,7 @@ points.execute = async function(message, args, server) {
                 return false;
                 break;
             case "no args": 
-                target = message.author.id;
+                target = author.id;
             default:
 
                 let servery = cache[message.guild.id];
@@ -93,7 +111,7 @@ points.execute = async function(message, args, server) {
                 }
                 await promote(message,target,server);
                 const emb = makeEmbed("points!", `<@${target}> has ${servery.members[target]} points.`, server,false)
-                message.channel.send({embeds:[emb]}).catch(e=> console.log(e));                                    
+                message.reply({embeds:[emb]}).catch(e=> console.log(e));                                    
                 return true;
 
             }

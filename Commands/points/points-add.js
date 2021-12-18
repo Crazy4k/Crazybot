@@ -23,12 +23,32 @@ pointsAdd.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [{
+		name : "user",
+		description : "The user to add points to",
+		required : true,
+		type: 6,
+		},
+        {
+            name : "number",
+            description : "The amount of points to add",
+            required : true,
+            type: 4,
+        },
+        {
+            name : "reason",
+            description : "The reason behind adding the points",
+            required : false,
+            type: 3,
+        },
+
+	],
 })
 
 
 
-pointsAdd.execute =async function(message, args, server) { 
+pointsAdd.execute =async function(message, args, server, isSlash) { 
 try {
         
 let servery = cache[message.guild.id];
@@ -47,15 +67,32 @@ if(!servery){
     })
 }
 
-if(message.guild.members.cache.get(message.author.id).permissions.has( Permissions.FLAGS["ADMINISTRATOR"] ) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
+let author;
+let persona;
+let pointsToGive;
+let reason;
+if(isSlash){
+    author = message.user
+    persona = args[0].value;
+    pointsToGive = args[1].value
+    if(args[2])reason = args[2].value;
+} else{
+    author = message.author;
+    persona = checkUseres(message, args, 0);
+    pointsToGive = args[1];
+    reason = args.splice(2).join(" ");  
+}
+if(!reason) reason = "`No reason given.`";
+
+if(message.guild.members.cache.get(author.id).permissions.has( Permissions.FLAGS["ADMINISTRATOR"] ) || message.guild.members.cache.get(author.id).roles.cache.has(servery.whiteListedRole)){
 
     //0 = tag
     //1 = number
     //2+ = reason      
-    const persona = checkUseres(message,args,0);      
-    const pointsToGive= args[1]
-    let reason = args.splice(2).join(" ");   
-    if(!reason) reason = "`No reason given.`";
+         
+    
+   
+    
     let log = message.guild.channels.cache.get(server.logs.pointsLog);     
 
     if(!server.pointsEnabled) await enable(message, server);
@@ -102,15 +139,15 @@ if(message.guild.members.cache.get(message.author.id).permissions.has( Permissio
                 },{upsert:true});
                 await promote(message,persona,server);
                 const variable = makeEmbed("points added ✅",`Added ${pointsToGive} points to <@${persona}>`, server);
-                message.channel.send({embeds:[variable]});
+                message.reply({embeds:[variable]});
 
                 if(log){
                     let embed = makeEmbed("Points added.","","10AE03",true);
-                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                    embed.setAuthor(author.tag, author.displayAvatarURL());
                     embed.addFields(
-                        {name: "Added by:", value: `<@${message.author.id}>`, inline:true},  
+                        {name: "Added by:", value: `<@${author.id}>`, inline:true},  
                         {name: "Added to:", value: `<@${persona}>`, inline:true},
-                        {name: "Amount added:", value: pointsToGive, inline:true},
+                        {name: "Amount added:", value: `${pointsToGive}`, inline:true},
                         {name: "Reason:", value: reason, inline:true},      
                     );
                     log.send({embeds: [embed]}).catch(e=> console.log(e));

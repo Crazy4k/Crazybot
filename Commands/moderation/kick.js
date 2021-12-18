@@ -19,13 +19,48 @@ kick.set({
 	requiredPerms	: "KICK_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [
+        {
+            name : "user",
+            description : "The person to kick",
+            required : true,
+            type: 6,
+		},
+		{
+            name : "reason",
+            description : "The reason behind the kick",
+            required : true,
+            type: 3,
+		}
+        
+
+	],
 });
 
-kick.execute = function(message, args, server) {
+kick.execute = function(message, args, server, isSlash) {
 
 	const modLog = message.guild.channels.cache.get(server.logs.warningLog);
-	let id = checkUseres(message,args,0);
+
+
+	let id;
+	let reason;
+	let author;
+
+	if(isSlash){
+		author = message.user;
+		id = args[0].value;
+		reason = args[1].value;
+	} else{
+		author = message.author;
+		id = checkUseres(message,args,0);
+		reason = args.slice(1).join(' ');
+	}
+
+	if(!reason)reason = `No reason given by ${author.tag}`;
+
+
+	
 	switch (id) {
 		case "not valid":
 		case "everyone":	
@@ -49,32 +84,34 @@ kick.execute = function(message, args, server) {
 				return false;
 			}
 
-			let reason = args.slice(1).join(' ');
-			if(!reason)reason = "No reason given.";
+			
+			
 
-				if(!target.kickable){
+			if(!target.kickable){
+
 				const embed = makeEmbed('Missing Permissions',"The bot couldn't kick that user.", server);
 				sendAndDelete(message,embed, server);
 				return false;
+
 			}else {
 				target.kick({ reason:reason })
 					.then( e => {
 						const embed = makeEmbed("User kicked.",`The user <@${target.id}> has been kicked for \n\`${reason}\`.`,"29C200",);
-						message.channel.send({embeds:[embed]});
+						message.reply({embeds:[embed]});
 
-						const logEmbed = makeEmbed("Kick",`The user <@${message.author.id}>[${message.author.id}] has kicked the user <@${target.id}>[${target.id}]`,colors.failRed,true);
+						const logEmbed = makeEmbed("Kick",`The user <@${author.id}>[${author.id}] has kicked the user <@${target.id}>[${target.id}]`,colors.failRed,true);
 						logEmbed.setAuthor(target.user.tag, target.user.displayAvatarURL());
 						logEmbed.addFields(
 							{ name: 'Kicked: ', value:`<@${target.id}>[${target.id}]`, inline:false },
-							{ name: 'Kicked by: ', value:`<@${message.author.id}>`, inline:false },
+							{ name: 'Kicked by: ', value:`<@${author.id}>`, inline:false },
 							{ name : "Reason: ", value: reason, inline:false}
 						);
 						if(modLog)modLog.send({embeds:[logEmbed]});
 						return true;
 					})
 					.catch(e =>{ console.log(e)}); 
-					return true;
-				}
+				return true;
+			}
 	}
 }
 

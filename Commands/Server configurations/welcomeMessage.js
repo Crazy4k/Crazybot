@@ -18,25 +18,49 @@ welcomeMessage.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [
+        {
+            name : "option",
+            description : "Changes one of the 2 message that get sent by the bot when someone joins/leaves",
+            choices: [
+                {name: "Change the join message", value: "join"},
+				{name: "Change the leave message", value: "leave"},
+                
+            ],
+            required : false,
+            type: 3,
+		},
+		
+
+	],
 });
 
 
 
-welcomeMessage.execute = async function(message, args, server) {
+welcomeMessage.execute = async function(message, args, server, isSlash) {
 	if(!server.hiString || !server.byeString) await sync(message);
 
-	const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
+	let author;
+    let type = args[0];
+    if(isSlash){
+        author = message.user;
+        if(args[0])type = args[0].value;
+        
+    }
+    else author = message.author;
+
+	const messageFilter = m => !m.author.bot && m.author.id === author.id;
 
 	if(!args[0]){
 		const embed = makeEmbed(`The join/leave message configuration.`,`The current join message is set to:\n **${server.hiString}**\n\nThe current leave message is set to:\n**${server.byeString}**\n\n\nType \`${server.prefix}${this.name} join\` to edit the join message.\nType \`${server.prefix}${this.name} leave\` to edit the leave message.`, server);
-		message.channel.send({embeds: [embed]});
+		message.reply({embeds: [embed]});
 		return false;
-	} else switch (args[0]) {
+	} else switch (type) {
 		case "join":
 			let thing;
 			let embedo = makeEmbed("Join message configuration", `**Enter what you want the bot to say when a member joins your server**\nIf you want to ping the person, you can include \`{<member>}\` and it will become a ping.\n\nType\`reset\` if you want to set the message back to default.\nType \`0\` to cancel the command.`, server);
-			message.channel.send({embeds: [embedo]})
+			message.reply({embeds: [embedo]})
 				.then(m => {
 					message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
 						.then(async a => {   
@@ -82,7 +106,7 @@ welcomeMessage.execute = async function(message, args, server) {
 
 			let thing2;
 			let embedo2 = makeEmbed("Join message configuration", `**Enter what you want the bot to say when a member leaves your server**\nIf you want to ping the person, you can include \`{<member>}\` and it will become a ping.\n\nType\`reset\` if you want to set the message back to default.\nType \`0\` to cancel the command.`, server);
-			message.channel.send({embeds: [embedo2]})
+			message.reply({embeds: [embedo2]})
 				.then(m => {
 					message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
 						.then(async a => {   

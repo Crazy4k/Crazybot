@@ -21,12 +21,36 @@ trackers.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false,
+	isSlashCommand  : true,
+    options			: [
+        {
+            name : "type",
+            description : "The tracker type to modify",
+            required : false,
+            autoComplete: true,
+            choices: [ {name:"TSU raider tracker",value:"raider"}, {name:"custom TSU raider tracker",value:"custom"}, {name:"custom TSU raider tracker settings",value:"groups"}, ],
+            type: 3,
+		}
+        
+
+	],
 });
 
     
-trackers.execute = async function(message, args, server) {
-    const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
+trackers.execute = async function(message, args, server, isSlash) {
+
+    let author;
+    let type = args[0]
+    let action = args[1];
+    if(isSlash){
+        author = message.user;
+        if(args[0])type = args[0].value;
+        if(args[1])action = args[1].value;
+        else action = "none"
+    }else author = message.author;
+
+
+    const messageFilter = m => !m.author.bot && m.author.id === author.id;
     let  raiderCache;
     let customRaidersCache;
     try {
@@ -81,16 +105,16 @@ trackers.execute = async function(message, args, server) {
             }
             
 
-            message.channel.send({embeds:[embed]});
+            message.reply({embeds:[embed]});
             return false;
 
         }else{
             
-            switch (args[0].toLowerCase()) {
+            switch (type.toLowerCase()) {
                 case "raiders":
                 case "raider":
                     let embedo1 = makeEmbed("Raider tracker", `${type0Message}** Enter or ping your raider tracker channel.**`, server);
-                    message.channel.send({embeds:[embedo1]})
+                    message.reply({embeds:[embedo1]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   
@@ -141,7 +165,7 @@ trackers.execute = async function(message, args, server) {
                 case "custom":
 
                     let embedo2 = makeEmbed("Custom Raider tracker", `${type0Message}** Enter or ping your custom raider tracker channel.**`, server);
-                    message.channel.send({embeds:[embedo2]})
+                    message.reply({embeds:[embedo2]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   
@@ -198,7 +222,7 @@ trackers.execute = async function(message, args, server) {
                         if(added) added = "✅";else added = "❌";
                         embedo3.addField(group.name,`Id: ${group.id}\nStatus: ${group.status}\nAdded: ${added}`,true);
                     }
-                    message.channel.send({embeds:[embedo3]})
+                    message.reply({embeds:[embedo3]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   

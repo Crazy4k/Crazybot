@@ -25,7 +25,6 @@ status.set({
 
 status.execute = async function(message, args, server) {
 
-	const timerCache = timerArray[0];
 	const totalTimerCache = timerArray[1];
 	
 	message.reply({embeds: [makeEmbed("Calculating....","","",false,"")]}).then(async (newMsg) =>{
@@ -46,7 +45,6 @@ status.execute = async function(message, args, server) {
 		let minute = totalTimerCache.hours
 		if(minute === 0)minute = 1;
 
-		
 
 		const embed = makeEmbed("Bot's status report!", "", server, true);
 		embed.addFields(

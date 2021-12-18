@@ -14,11 +14,11 @@ const idleMessage = "Command cancelled due to the user being idle";
 const type0Message2 = "(type `0` to cancel / type \"`no`\" for none)\n"; 
 const Command = require("../../Classes/Command");
 
-let promotion = new Command("promotion");
+let promotion = new Command("points-promotion");
 
 promotion.set({
     
-	aliases         : ["promotion-set","rewardsset","rewardset","promotionset","rewards-set","promotions"],
+	aliases         : ["promotion-set","rewardsset","rewardset","promotionset","rewards-set","promotions","promotion"],
 	description     : "Enables and shows you the points rewards system for the server.",
 	usage           : "rewards-set",
 	cooldown        : 5,
@@ -27,12 +27,78 @@ promotion.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [{
+            name : "number",
+            description : "The number of the available promotion options",
+            required : false,
+            choices: [
+                {name: "1", value: 1},
+                {name: "2", value: 2},
+                {name: "3", value: 3},
+                {name: "4", value: 4},
+                {name: "5", value: 5},
+                {name: "6", value: 6},
+                {name: "7", value: 7},
+                {name: "8", value: 8},
+                {name: "9", value: 9},
+                {name: "10", value: 10},
+                {name: "11", value: 11},
+                {name: "12", value: 12},
+                {name: "13", value: 13},
+                {name: "14", value: 14},
+                {name: "15", value: 15},
+                {name: "16", value: 16},
+                {name: "17", value: 17},
+                {name: "18", value: 18},
+                {name: "19", value: 19},
+                {name: "20", value: 20},
+                {name: "21", value: 21},
+                {name: "22", value: 22},
+                {name: "23", value: 23},
+                {name: "24", value: 24},
+                {name: "25", value: 25},
+            ],
+            type: 4,
+            },
+        {
+            name : "action",
+            description : "What do you want to do with this role",
+            required : false,
+            choices: [
+                {name: "change the amount of points required to achieve", value: "points"},
+                {name: "change the role given upon achieving", value: "role"},
+            ],
+            type: 3,
+        },
+
+	],
+
 })
 
-promotion.execute = async function(message, args, server) { 
+promotion.execute = async function(message, args, server, isSlash) { 
 
-    const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
+
+
+    let author;
+    let thing;
+    let thong;
+
+    if(isSlash){
+        author = message.user
+        if(args[0])thing = args[0].value;
+        if(args[1])thong = args[1].value
+        
+    } else{
+        author = message.author;
+        thing = args[0]
+        thong = args[1];
+         
+    }
+    
+
+
+    const messageFilter = m => !m.author.bot && m.author.id === author.id;
 
 
 
@@ -90,7 +156,7 @@ promotion.execute = async function(message, args, server) {
                 },{upsert:true});
                 if(log){
                     let embed = makeEmbed("Promotion system enabled","","10AE03",true);
-                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                    embed.setAuthor(author.tag, author.displayAvatarURL());
                     log.send({embeds: [embed]});
                 }
                 
@@ -103,7 +169,7 @@ promotion.execute = async function(message, args, server) {
 
 
 
-        const embed1 = makeEmbed("Points promotion system",`**Introduction:**\nWelcome to the new points promotion system. The way this work is that whenever a member reaches a certain amount of points, they will automatically be rewarded with a preset role determined by an admin.\n The maximum amount of roles that can be set is 25 and the bot must be able to give/remove those role in order for it to work perfectly.`, server);
+        const embed1 = makeEmbed("Points promotion system",`**Introduction:**\nThe way this work is that whenever a member reaches a certain amount of points, they will automatically be rewarded with a preset role determined by an admin.\n The maximum amount of roles that can be set is 25 and the bot must be able to give/remove those role in order for it to work perfectly.`, server);
         let num = 1;
         for(let I in servery.rewards){
             let shit = `<@&${servery.rewards[I][1]}>`
@@ -111,23 +177,21 @@ promotion.execute = async function(message, args, server) {
             embed1.addField(`**${num}) reward:**`,`Required points: ${servery.rewards[I][0]}\nRole reward: ${shit}\n Change value: \n\`${server.prefix}${this.name} ${I}\``,true)
             num++
         }
-        message.channel.send({embeds:[embed1]}).catch(e=> console.log(e));
+        message.reply({embeds:[embed1]}).catch(e=> console.log(e));
         return true;
     } else {
-        if(args[0]){
-            let thing = args[0];
-        
-        
+        if(thing){
+            
             if(servery.rewards[thing]){
 
-                if(args[1]){
-                    let thong = args[1];
+                if(thong){
+                    
                     switch (thong.toLowerCase()) {
                         case "points":
 
 
                             let embedo6 = makeEmbed("Points rewards", `${type0Message}**Enter the amount of required points you want for this reward\n Value MUST be a number.**`, server);
-                            message.channel.send({embeds:[embedo6]})
+                            message.reply({embeds:[embedo6]})
                                 .then(m => {
                                     message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                         .then(async a => {   
@@ -174,7 +238,7 @@ promotion.execute = async function(message, args, server) {
                         case "role":
                         case "roles":
                             let embedo3 = makeEmbed("Points rewards", `${type0Message2}**Enter the role that you want to be rewarded on that tier.**`, server);
-                            message.channel.send({embeds:[embedo3]})
+                            message.reply({embeds:[embedo3]})
                                 .then(m => {
                                     message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
                                         .then(async a => {   
@@ -232,7 +296,7 @@ promotion.execute = async function(message, args, server) {
                         {name:`**Given role:**`,value:`${shit}\nChange Value: \`${server.prefix}${this.name} ${thing} role\``,inline:false},
                         {name:`**Achievable?:**`,value:`${achievable}`,inline:false},
                     );
-                    message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
+                    message.reply({embeds:[embed]}).catch(e=> console.log(e));
                     return false;
                 }
             }else {
@@ -248,7 +312,7 @@ promotion.execute = async function(message, args, server) {
                 embed1.addField(`**${num}) reward:**`,`Required points: **${servery.rewards[I][0]}**\nRole reward: ${shit}\n Change value: \n\`${server.prefix}${this.name} ${I}\``,true)
                 num++
             }
-            message.channel.send({embeds:[embed1]}).catch(e=> console.log(e));
+            message.reply({embeds:[embed1]}).catch(e=> console.log(e));
             return false;
         }
 

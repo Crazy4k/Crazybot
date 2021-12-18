@@ -19,17 +19,34 @@ pointsRole.set({
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false,
-    
+	isSlashCommand  : true,
+    options			: [
+        {
+            name : "action",
+            description : "What action to do to the points role",
+            choices: [{name: "change", value: "change"},{name: "remove", value: "remove"},],
+            required : false,
+            type: 3,
+		},
+		
+
+	],
 })
 
 
 
-pointsRole.execute = async function(message, args, server) { 
+pointsRole.execute = async function(message, args, server, isSlash) { 
 
     
     let whiteListedRole;
-        
+    let author;
+    let action = args[0];
+    if(isSlash){
+        author = message.user;
+        if(args[0])action = args[0].value;
+        else action = "none"
+    }
+    else author = message.author;
 
     let servery = cache[message.guild.id];
 
@@ -47,13 +64,13 @@ pointsRole.execute = async function(message, args, server) {
         })
     }
     if(!server.pointsEnabled) await enable(message, server);
-    if(!servery.whiteListedRole || servery.whiteListedRole === ""){
+    if(action === "change" || !servery.whiteListedRole || servery.whiteListedRole === ""){
 
     
         const embed = makeEmbed("White listed role.",`Ping the role that you want to be able to modify points.\nThis role will be able to view,remove,add and change the points of all users.\nType \`no\` for no one except admins.`, server);
     
-        message.channel.send({embeds:[embed]});
-        const messageFilter = m => !m.author.bot && m.author.id === message.author.id;
+        message.reply({embeds:[embed]});
+        const messageFilter = m => !m.author.bot && m.author.id === author.id;
         message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
             .then(async (a) => {
                 let checkedRole = checkRoles(a);
@@ -84,36 +101,34 @@ pointsRole.execute = async function(message, args, server) {
                         }
                     })
                     cache[message.guild.id].whiteListedRole = whiteListedRole;
-
-                    const embed = makeEmbed(`✅ officer role has been updated.`,`Poeple with the role <@&${whiteListedRole}> can now modify other user's points.`, "#24D900");
+                    let text = `Poeple with the role <@&${whiteListedRole}> can now modify other user's points.`;
+                    if(whiteListedRole === "") text = `Only admins can now modify other user's points.`
+                    const embed = makeEmbed(`✅ points manager role has been updated.`,text, "#24D900");
                     message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
                     return true;
             });
-    } else{
+    } else if(action === "none" || !action){
+        const embed = makeEmbed(`You already have a points role set.`,`Current officer role: <@&${servery.whiteListedRole}>\nDo \`${server.prefix}points-role change\` to change it.`, server);
+        message.reply({embeds:[embed]}).catch(e=> console.log(e));
+    } else if( action === "remove") {
         
-        const embed = makeEmbed(`You already have an officer role set.`,`Current officer role: <@&${servery.whiteListedRole}>**\nType \`reset\` to reset it..**`, server);
-        message.channel.send({embeds:[embed]}).catch(e=> console.log(e));
-
-        const gayFilter = m => !m.author.bot && m.author.id === message.author.id;
-        message.channel.awaitMessages({filter: gayFilter, max: 1, time : 20000, errors: ['time']})
-        .then(async (a) => {
-            if(a.first().content === "reset"){
-                await mongo().then(async (mongoose) =>{
-                    try{ 
-                        await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
-                            whiteListedRole: ""
-                        },{upsert:true});
-                        cache[message.guild.id].whiteListedRole = "";
-                    } finally{
-                        message.channel.send("Role has been reset");
-                        console.log("WROTE TO DATABASE");
-                        mongoose.connection.close();
-                    }
-                });
-                return true;
+           
+        await mongo().then(async (mongoose) =>{
+            try{ 
+                await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
+                    whiteListedRole: ""
+                },{upsert:true});
+                cache[message.guild.id].whiteListedRole = "";
+            } finally{
+                message.reply("Points role has been reset");
+                console.log("WROTE TO DATABASE");
+                mongoose.connection.close();
+            }
+        });
+        return true;
                 
-            }else return false;
-        }).catch(e=>e);
+            
+        
         
     }           
 }

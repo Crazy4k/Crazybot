@@ -2,9 +2,9 @@ const makeEmbed = require("./embed");
 const sendAndDelete = require("./sendAndDelete");
 const moment = require('moment');
 const reportBug = require("./reportErrorToDev");
-const {Permissions} = require("discord.js");
+const botCache = require("../caches/botCache");
 const colors = require("../config/colors.json");
-const config = require("../config/config.json");
+
 
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
 
@@ -30,7 +30,9 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 				return false;
 			} else{
 				
-				const booly = await command.execute(message, args, server, true);
+				const booly = await command.execute(message, args, server, false);
+				botCache.executes.legacy[command.name]++
+				if(!botCache.executes.legacy[command.name])botCache.executes.legacy[command.name] = 1
 			
 			if(booly){
 				recentlyRan[cooldownStringInDMs] = moment();
@@ -77,7 +79,8 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 					return false;
 				}
 				const booly = await command.execute(message, args, server);
-				
+				botCache.executes.legacy[command.name]++
+				if(!botCache.executes.legacy[command.name])botCache.executes.legacy[command.name] = 1
 				if(booly) {
 					if(command.unique)recentlyRan[uniqueCooldownString] = moment();
 					recentlyRan[cooldownString] = moment();
@@ -126,6 +129,8 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 						return false;
 					}
 					const booly = await command.execute(message, args, server);
+					botCache.executes.legacy[command.name]++
+					if(!botCache.executes.legacy[command.name])botCache.executes.legacy[command.name] = 1
 					
 					if(booly) {
 						if(command.unique)recentlyRan[uniqueCooldownString ]= moment();

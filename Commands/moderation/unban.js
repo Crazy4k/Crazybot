@@ -17,13 +17,38 @@ unban.set({
 	requiredPerms	: "BAN_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+	options			: [
+        {
+            name : "id",
+            description : "The id of the discord user to unban from this server",
+            required : true,
+            type: 3,
+		},
+		{
+            name : "reason",
+            description : "The reason behind the ban",
+            required : true,
+            type: 3,
+		},
+        
+
+	],
 });
 
-unban.execute =  function(message, args, server){
-
-	const target = args[0];
-	let reason = args.slice(1).join(' ');
+unban.execute =  function(message, args, server, isSlash){
+	let author;
+	let target;
+	let reason
+	if(isSlash){
+		author = message.user;
+		target = args[0].value;
+		reason = args[1].value;
+	} else{
+		author = message.author;
+		target = args[0];
+		reason = args.slice(1).join(' ');
+	}
 	if(!reason) reason = "No reason given."
 
 	if(!target) {	
@@ -38,13 +63,13 @@ unban.execute =  function(message, args, server){
 		.then(yes=>{
 			message.guild.bans.remove(target,reason).then(yes=>{
 				const embed = makeEmbed("User unbanned",`The user <@${target}> or \`${target}\` has been unbanned for \n${reason}`,"29C200");
-				message.channel.send({embeds:[embed]});
+				message.reply  ({embeds:[embed]});
 
-				const logEmbed = makeEmbed("Unban",`The user <@${message.author.id}>[${message.author.id}] has unbanned a user with the id ${target}`,colors.changeBlue,true);
-					logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+				const logEmbed = makeEmbed("Unban",`The user <@${author.id}>[${author.id}] has unbanned a user with the id ${target}`,colors.changeBlue,true);
+					logEmbed.setAuthor(author.tag, author.displayAvatarURL());
 					logEmbed.addFields(
 						{ name: 'Unbanned: ', value:`<@${target}>`, inline:false },
-						{ name: 'Unbanned by: ', value:`<@${message.author.id}>`, inline:false },
+						{ name: 'Unbanned by: ', value:`<@${author.id}>`, inline:false },
 						{ name : "Reason: ", value: reason, inline:false}
 					);
 					if(modLog)modLog.send({embeds:[logEmbed]});

@@ -22,10 +22,30 @@ pointsRemove.set({
 	whiteList       : null,
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : false
+	isSlashCommand  : true,
+    options			: [{
+		name : "user",
+		description : "The user to remove points from",
+		required : true,
+		type: 6,
+		},
+        {
+            name : "number",
+            description : "The amount of points to remove",
+            required : true,
+            type: 4,
+        },
+        {
+            name : "reason",
+            description : "The reason behind removing points",
+            required : false,
+            type: 3,
+        },
+
+	],
 })
 
-    pointsRemove.execute = async function(message, args, server) { 
+    pointsRemove.execute = async function(message, args, server, isSlash) { 
     try {
             
         let servery = cache[message.guild.id];
@@ -44,15 +64,30 @@ pointsRemove.set({
             })
         }
 
-        if(message.guild.members.cache.get(message.author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(message.author.id).roles.cache.has(servery.whiteListedRole)){
+        let author;
+        let persona;
+        let pointsToGive;
+        let reason;
+        if(isSlash){
+            author = message.user
+            persona = args[0].value;
+            pointsToGive = args[1].value
+            if(args[2])reason = args[2].value;
+        } else{
+            author = message.author;
+            persona = checkUseres(message, args, 0);
+            pointsToGive = args[1];
+            reason = args.splice(2).join(" ");  
+        }
+        if(!reason) reason = "`No reason given.`";
+
+
+        if(message.guild.members.cache.get(author.id).permissions.has(Permissions.FLAGS["ADMINISTRATOR"]) || message.guild.members.cache.get(author.id).roles.cache.has(servery.whiteListedRole)){
 
             //0 = tag
             //1 = number
             //2+ = reason      
-            const persona = checkUseres(message,args,0);      
-            const pointsToGive= args[1]
-            let reason = args.splice(2).join(" ");   
-            if(!reason) reason = "`No reason given.`" 
+           
             let log = message.guild.channels.cache.get(server.logs.pointsLog);    
 
             if(!server.pointsEnabled) await enable(message, server);
@@ -100,14 +135,14 @@ pointsRemove.set({
                         await promote(message,persona,server);
 
                         const variable = makeEmbed("points Removed ✅",`Removed ${pointsToGive} points from <@${persona}>`, server);
-                        message.channel.send({embeds:[variable]}).catch(e=> console.log(e));
+                        message.reply({embeds:[variable]}).catch(e=> console.log(e));
                         if(log){
                             let embed = makeEmbed("Points Removed.","","FF4040",true);
-                            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                            embed.setAuthor(author.tag, author.displayAvatarURL());
                             embed.addFields(
-                                {name: "Removed by:", value: `<@${message.author.id}>`, inline:true},  
+                                {name: "Removed by:", value: `<@${author.id}>`, inline:true},  
                                 {name: "Removed from:", value: `<@${persona}>`, inline:true},
-                                {name: "Amount removed:", value: pointsToGive, inline:true},
+                                {name: "Amount removed:", value: `${pointsToGive}`, inline:true},
                                 {name: "Reason:", value: reason, inline:true},      
                             );
                             log.send({embeds:[embed]}).catch(e=> console.log(e));
