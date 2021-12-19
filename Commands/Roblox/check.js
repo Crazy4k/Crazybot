@@ -115,7 +115,7 @@ check.execute = async (message, args, server, isSlash) =>{
         
     } else {
         args0 = args[0]
-        author = message.user
+        author = message.author
         username = checkUser(message, args, 0);
     }
 
