@@ -92,34 +92,33 @@ check.set({
     
 });
 
-check.execute = async (message, args, server) =>{
+check.execute = async (message, args, server, isSlash) =>{
 
     let isAuthor = false;
-    let isSlash = false;
+    
     let res;
     let status;
     let id;
     let username;
+    let args0
+    let author;
+    if(isSlash){
     
-    if(message.type === "APPLICATION_COMMAND"){
-        isSlash = true;
+        author = message.user
         if(args[0]){
-            if(args[0].name === "roblox_username")username = args[0].value;
-            else if(args[0].name === "discord_username")username = args[0].value;
-
-        }
-        else {
+            args0 = args[0].value;
+            username = args[0].value;
+        } else {
             username = message.user.id;
             isAuthor = true;
         }
-    } else username = checkUser(message, args, 0);
-
-    let args0 = args[0]
-    if(isSlash){
-        if(args[0]){
-            args0 = args[0].value;
-        } else args0 = undefined;
+        
+    } else {
+        args0 = args[0]
+        author = message.user
+        username = checkUser(message, args, 0);
     }
+
 
         switch (username) {
            
@@ -144,8 +143,9 @@ check.execute = async (message, args, server) =>{
 
             default:
 
-                if(!isSlash)if(username === message.author.id)isAuthor = true;
-                else if(username === message.user.id)isAuthor = true;
+                
+                if(username === author.id)isAuthor = true;
+                
                 if(username === args0 && isSlash && args[0].name === "roblox_username"){
                     
                     id = await noblox.getIdFromUsername(username).catch(e=>id = 0);
