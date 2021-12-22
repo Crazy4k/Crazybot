@@ -25,7 +25,7 @@ async function createJoinEmbed(raiderCache, userId){
     let instantlink = thing[2];
     let tag = "N/A";
     const username = await roblox.getUsernameFromId(userId);
-    const groups = await roblox.getGroups(userId);
+    const groups = await roblox.getGroups(userId).catch(e=>console.log(e));
     let placeString = whatPlace(placeId);
     let wtfDoICallThisVar = findAosGroups(groups, tag);
     tag = wtfDoICallThisVar[1]

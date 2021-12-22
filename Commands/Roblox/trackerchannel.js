@@ -28,7 +28,7 @@ trackers.set({
             description : "The tracker type to modify",
             required : false,
             autoComplete: true,
-            choices: [ {name:"TSU raider tracker",value:"raider"}, {name:"custom TSU raider tracker",value:"custom"}, {name:"custom TSU raider tracker settings",value:"groups"}, ],
+            choices: [ {name:"TSU AoS/KoS raiders tracker",value:"raider"},  ],
             type: 3,
 		}
         
@@ -65,7 +65,7 @@ trackers.execute = async function(message, args, server, isSlash) {
             }
         });
 
-        await mongo().then(async (mongoose) =>{
+       /* await mongo().then(async (mongoose) =>{
             try{
                 let data = await raiderTrackerSchema.findOne({_id:"420"});
                 customRaidersCache = botCache.raiderTrackerChannelCache.custom = data;
@@ -89,7 +89,7 @@ trackers.execute = async function(message, args, server, isSlash) {
                 }
             });
 
-        }
+        }*/
         
         if(!args.length){
             const embed = makeEmbed("Roblox trackers 📡", `This is your current tracker channels:`, server,false,"To ping a role when a tracked person joins, simply create a role with the same name as \"pinged role\". Exmaple: @raider_pings");
@@ -98,11 +98,11 @@ trackers.execute = async function(message, args, server, isSlash) {
             }else{
                 embed.addField("**Raider tracker:**", `**Tracker channel:**    \`No channel\`\n**Change value:**    \`${server.prefix}${this.name} raiders\`\n**Pinged role:** \`@raider_pings\``, true)
             }
-            if(customRaidersCache.channels[message.guild.id].channelID){
+            /*if(customRaidersCache.channels[message.guild.id].channelID){
                 embed.addField("**Custom Raider tracker:**", `**Custom Tracker channel:**    <#${customRaidersCache.channels[message.guild.id].channelID}>\n**Change value:**   \`${server.prefix}${this.name} custom\`\n**Change groups**:\`${server.prefix}${this.name} groups\`\n**Pinged role:** \`@c_raider_pings\``, true);
             }else{
                 embed.addField("**Custom Raider tracker:**", `**Custom Tracker channel:**    \`No channel\`\n**Change value:**    \`${server.prefix}${this.name} custom\`\n**Change groups**:\`${server.prefix}${this.name} groups\`\n**Pinged role:** \`@c_raider_pings\``, true)
-            }
+            }*/
             
 
             message.reply({embeds:[embed]});
@@ -160,7 +160,7 @@ trackers.execute = async function(message, args, server, isSlash) {
                         return true;
                     break; 
 
-                case "customr":
+               /* case "customr":
                 case "custom_raiders":
                 case "custom":
 
@@ -267,7 +267,7 @@ trackers.execute = async function(message, args, server, isSlash) {
                                     message.channel.send(idleMessage);
                                 });
                         });
-                    break;
+                    break;*/
                 default:
                     message.channel.send("Invalid value.");
                     return false;

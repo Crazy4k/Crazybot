@@ -7,7 +7,7 @@ module.exports = async(group) =>{
   let rolesArray 
   let rolesIds = [];
   if(typeof group === "number") {
-    rolesArray = await noblox.getRoles(group);
+    rolesArray = await noblox.getRoles(group).catch(e=>console.log(e));
 
     for(let I of rolesArray)rolesIds.push(I.id);
 
@@ -26,10 +26,9 @@ module.exports = async(group) =>{
     
     for (let I = 0; I < group.length; I++) {
       const poop =[];
-      const i = rolesArray[I];
-      for(let j of i){
-
-        poop.push(j.id);
+      const group = rolesArray[I];
+      for(let role of group){
+        poop.push(role.id);
         rolesIds[I] = poop;
         
       }
@@ -37,7 +36,7 @@ module.exports = async(group) =>{
     }
 
     let playersArray; 
-    playersArray = await Promise.all(group.map(id => noblox.getPlayers(id, rolesIds[group.indexOf(id)]))).catch(e => {console.error(); console.log("getranks.js")});
+    playersArray = await Promise.all(group.map(id => noblox.getPlayers(id, rolesIds[group.indexOf(id)]))).catch(e => {console.log(e); console.log("getranks.js")});
 
     let players = [];
 

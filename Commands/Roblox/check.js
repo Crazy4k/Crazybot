@@ -180,7 +180,7 @@ check.execute = async (message, args, server, isSlash) =>{
                 if(!id)id = robloxId;
                 if(!robloxUsername) robloxUsername = args0;
                 //GET GROUPS
-                const groups = await noblox.getGroups(id);
+                const groups = await noblox.getGroups(id).catch(e=>console.log(e));
                 let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));
                 let divisions   = groups.filter((group)=>jointDivGroupIds.includes(group.Id));
                 let raiders     = groups.filter((group)=>jointRaiderGroups.includes(group.Id));

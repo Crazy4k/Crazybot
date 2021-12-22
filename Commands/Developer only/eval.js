@@ -14,6 +14,7 @@ const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
 const Command = require("../../Classes/Command");
 const serverSchema = require("../../schemas/servers-schema");
 const rover = require("rover-api");
+const axios = require("axios");
 
 let evalCommand = new Command("eval");
 evalCommand.set({

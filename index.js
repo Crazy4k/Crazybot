@@ -470,14 +470,14 @@ const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlin
 			try {
 				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels)	
 			} catch (error) {
-				console.log("error in line 468 bruh")
+				console.log("error in the raider tracker")
 				console.log(console.log(error));
 			}
 			
 		}, 150 * 1000);
 
 		//CUSTOM TRACKER
-		
+		/*
 		await mongo().then(async (mongoose) =>{
 			try{
 				let data = await raiderTrackerSchema.findOne({_id:"420"});
@@ -530,7 +530,7 @@ const trackCustomRaiders = require("./raiderTracker/raiderTrackerCustom/getOnlin
 		}, 170 * 1000);
 
 
-
+*/
 
 	} catch (error) {
 		console.log(error)

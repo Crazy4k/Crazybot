@@ -74,13 +74,11 @@ module.exports = async (guild, client) => {
 			let log = client.channels.cache.get(config.bot_info.clientLogs);
 		if(log){
 			const embed = makeEmbed("Joined a server","", colors.successGreen,true);
-			embed.addField("Name",`${guild.name} | ${guild.id}`);
-			let owner = await guild.fetchOwner();
-			embed.addField("info", `owner: ${owner.displayName} | ${owner.id}\n member count: ${guild.memberCount} `);
+			embed.addField("Id",`${guild.id}`);
+			embed.addField("member count:", `  ${guild.memberCount} `);
 			embed.addField("Created at: ", `<t:${parseInt(guild.createdTimestamp / 1000)}:F>\n<t:${parseInt(guild.createdTimestamp / 1000)}:R>`,  true,);
-			embed.setThumbnail(guild.iconURL({format:"png"}));
 
-			log.send({embeds:[embed]}).catch(e=>console.log("error with line 240"))
+			log.send({embeds:[embed]}).catch(e=>console.log(e))
 
 
 		}
