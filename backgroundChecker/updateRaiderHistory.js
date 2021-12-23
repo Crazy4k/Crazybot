@@ -74,18 +74,18 @@ module.exports = async () =>{
                     }
                   }else {
                     obj[user] = {
-                      username: "Chocolate",
-                      userId: 17453,
-                      "ranks": [
-                        "Master Sergeant"
+                      username: await noblox.getUsernameFromId(user),
+                      userId: user,
+                      ranks: [
+                        roleNames[roleID]
                       ],
-                      "groups": [
-                        "[Tнe Iппeя Ciяcle]"
+                      groups: [
+                        raiderGroups[groupID].name
                       ],
-                      "dates": [
-                        "2021-12-19"
+                      dates: [
+                        date
                       ]
-                    },
+                    };
                   }
                 }
               }
@@ -97,14 +97,14 @@ module.exports = async () =>{
 
 
             let stringObj = JSON.stringify(obj, null, 2);
-            /*fs.writeFile("./backgroundChecker/raiderGroupsHistory.json",stringObj ,(err, config)=>{
+            fs.writeFile("./backgroundChecker/raiderGroupsHistory.json",stringObj ,(err, config)=>{
                 if(err) {
                     console.log(err);
                 }
                 else {
                     console.log("done");
                 }
-            });*/
+            });
         }
     });
 }
