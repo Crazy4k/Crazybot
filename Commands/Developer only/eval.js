@@ -15,7 +15,7 @@ const Command = require("../../Classes/Command");
 const serverSchema = require("../../schemas/servers-schema");
 const rover = require("rover-api");
 const axios = require("axios");
-const cmd = require("../../backgroundChecker/updateRaiderHistory");
+
 
 let evalCommand = new Command("eval");
 evalCommand.set({

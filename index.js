@@ -417,7 +417,13 @@ client.on("interactionCreate",async (interaction)=>{
 
 
 
+/*const updateRaiderHistory = require("./backgroundChecker/updateRaiderHistory");
 
+setInterval(async () => {
+	updateRaiderHistory();
+	
+}, 6 * 60 * 60 * 1000);
+*/
 const getMembers = require("./raiderTracker/getMembers");
 const trackRaiders = require("./raiderTracker/getOnlineRaiders");
 const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
