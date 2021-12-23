@@ -57,17 +57,35 @@ module.exports = async () =>{
               for(let roleID in group){
                 let role = group[roleID];
                 for(let user of role){
-                  let userDate = obj[user];
+                  let userDate = obj[user]
                   if(userDate){
                     
                     if(userDate.groups.includes(raiderGroups[groupID].name)){
                       let index = userDate.groups.indexOf(raiderGroups[groupID].name);
+
+                      obj[user].groups[index] = raiderGroups[groupID].name;
+                      obj[user].dates[index] = date;
+                      obj[user].ranks[index] = roleNames[roleID];
                       console.log(index);
                     } else {
-                      
+                      obj[user].groups.push(raiderGroups[groupID].name)
+                      obj[user].dates.push(date);
+                      obj[user].ranks.push(roleNames[roleID]);
                     }
                   }else {
-                    console.log("no");
+                    obj[user] = {
+                      username: "Chocolate",
+                      userId: 17453,
+                      "ranks": [
+                        "Master Sergeant"
+                      ],
+                      "groups": [
+                        "[Tнe Iппeя Ciяcle]"
+                      ],
+                      "dates": [
+                        "2021-12-19"
+                      ]
+                    },
                   }
                 }
               }
