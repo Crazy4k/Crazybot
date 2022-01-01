@@ -10,7 +10,7 @@ module.exports = (title, description = "", server, timestamp = false ,footer = c
     .setTitle(title)
     .setDescription(description)
     .setColor(color)
-    .setFooter(footer);
+    .setFooter({text: footer});
     if (timestamp) embed.setTimestamp();
 
     return embed;

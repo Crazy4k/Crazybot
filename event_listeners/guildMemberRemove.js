@@ -38,7 +38,7 @@ module.exports = async (member, client) => {
 				
 		if (log) {
 			const embed = makeEmbed('member left',"",colors.failRed,true);
-			embed.setAuthor(member.displayName, member.user.displayAvatarURL());
+			embed.setAuthor({name: member.displayName, iconURL : member.user.displayAvatarURL()});
 			embed.addFields(
 					{ name :'account age', value : `<t:${parseInt(member.user.createdTimestamp / 1000)}:F>\n<t:${parseInt(member.user.createdTimestamp / 1000)}:R>`, inline : true },
 					{ name :'joined at', value : `<t:${parseInt(member.joinedTimestamp / 1000)}:F>\n<t:${parseInt(member.joinedTimestamp / 1000)}:R>`, inline : true },

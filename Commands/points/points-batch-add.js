@@ -165,7 +165,7 @@ pointsbatchAdd.execute =async function(message, args, server) {
                         if(Object.values(edited).length){ 
 
                             let logEmbed = makeEmbed("Points added.","","10AE03",true);
-                            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                            logEmbed.setAuthor({name: message.author.tag, iconURL : message.author.displayAvatarURL()});
 
                             for(let e in edited){
                                 logEmbed.addField(`Modified: `,`Added **${edited[e][0]}** points to <@${e}> for \`${edited[e][1]}\` `, false);

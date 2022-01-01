@@ -5,16 +5,16 @@ timer.start();
 
 
 let caches = {
+    isReady: false,
+    timeOutCache: {},
     commandCoolDownCache : {},
     eventsCache : {},
     fetchesCache : {totalFetches: 0},
     guildsCache : {},
-    muteCache : {},
     pointsCache : {},
     trackedRaiders: [],
-    customTrackedRaiders: {},
+    trackedMassRaids : {},
     raiderCache : {},
-    customRaiderCache : {},
     raiderTrackerChannelCache : {raiders: null, custom : null},
     tempCmds : {},
     timerCache : [timer.getTimeValues(), timer.getTotalTimeValues()],

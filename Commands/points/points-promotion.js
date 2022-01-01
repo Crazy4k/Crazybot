@@ -156,7 +156,7 @@ promotion.execute = async function(message, args, server, isSlash) {
                 },{upsert:true});
                 if(log){
                     let embed = makeEmbed("Promotion system enabled","","10AE03",true);
-                    embed.setAuthor(author.tag, author.displayAvatarURL());
+                    embed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
                     log.send({embeds: [embed]});
                 }
                 

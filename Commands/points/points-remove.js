@@ -138,7 +138,7 @@ pointsRemove.set({
                         message.reply({embeds:[variable]}).catch(e=> console.log(e));
                         if(log){
                             let embed = makeEmbed("Points Removed.","","FF4040",true);
-                            embed.setAuthor(author.tag, author.displayAvatarURL());
+                            embed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
                             embed.addFields(
                                 {name: "Removed by:", value: `<@${author.id}>`, inline:true},  
                                 {name: "Removed from:", value: `<@${persona}>`, inline:true},

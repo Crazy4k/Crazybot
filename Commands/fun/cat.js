@@ -1,5 +1,7 @@
 const axios = require('axios');
+const makeEmbed = require("../../functions/embed");
 const Command = require("../../Classes/Command");
+const {MessageActionRow, MessageButton} = require("discord.js");
 
 //API USED: https://thecatapi.com
 
@@ -9,7 +11,7 @@ cat.set({
 	aliases         : ["meow","pussy","furr","kitty"],
 	description     : "Sends a random cat pic.",
 	usage           : "cat",
-	cooldown        : 4,
+	cooldown        : 30,
 	unique          : false,
 	category        : "fun",
 	requiredPerms	: "EMBED_LINKS",
@@ -19,17 +21,56 @@ cat.set({
 })
 
 
-cat.execute = async function (message, args, server) {
-	try {
-		axios.get('https://api.thecatapi.com/v1/images/search?api_key= key goes here ')
+cat.execute = async (message, args, server, isSlash) => {
+	
 
-			.then((res)=>{message.reply(`${res.data[0].url}`)})
-			.catch((err)=>console.log(err));
-			return true;
-	} catch (error) {
-		console.error(error);
-		return false;
-	}
+	const nextCatButton = new MessageButton()
+	.setCustomId('cat')
+	.setLabel('Next cat 🐱')
+	.setStyle('PRIMARY')
+	const endInteractionButton = new MessageButton()
+	.setCustomId('end')
+	.setLabel('End interaction')
+	.setStyle('SECONDARY')
+	let row = new MessageActionRow().addComponents(nextCatButton, endInteractionButton);
+
+	let author;
+	if(isSlash)author = message.user;
+	else author = message.author;
+
+
+	const filter = button =>  button.user.id === author.id;
+
+	const embed = makeEmbed("The Cat API","",server,false,"")
+	embed.setURL("https://thecatapi.com");
+
+
+	let res = await axios.get('https://api.thecatapi.com/v1/images/search?api_key= key goes here ').catch(err=>console.log(err));
+	embed.setImage(res.data[0].url);
+
+	let newMsg = await message.reply({embeds:[embed], components: [row]});
+	if(isSlash) newMsg = await message.fetchReply();
+
+	const collector = newMsg.createMessageComponentCollector({ filter, time: 3 * 60 * 1000 });
+	collector.on('collect', async i => {
+		if(i.customId === "cat"){
+			let res = await axios.get('https://api.thecatapi.com/v1/images/search?api_key= key goes here ').catch(err=>console.log(err));
+			embed.setImage(res.data[0].url);
+			i.update({embeds:[embed]});
+		} else if(i.customId === "end"){
+			i.update({components:[]});
+		}
+		
+		
+	});
+	collector.on('end', collected => {
+		if(isSlash) message.editReply({components:[]});
+		else newMsg.edit({components:[]});
+	});
+
+
+
+	
 }
 
 module.exports = cat;

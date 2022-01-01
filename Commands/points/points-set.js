@@ -138,7 +138,7 @@ pointsSet.execute = async function(message, args, server, isSlash){
                 message.reply({embeds:[emb]}).catch(e=> console.log(e));     
                 if(log){
                     let embed = makeEmbed("Points changed.","","3987FF",true);
-                    embed.setAuthor(author.tag, author.displayAvatarURL());
+                    embed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
                     embed.addFields(
                     {name: "Chagned by:", value: `<@${author.id}>`, inline:true},  
                     {name: "Changed from:", value: `<@${target}>`, inline:true},

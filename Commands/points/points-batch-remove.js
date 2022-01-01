@@ -167,7 +167,7 @@ pointsbatchRemove.execute = async function(message, args, server) {
                         if(Object.values(edited).length){ 
 
                             let logEmbed = makeEmbed("Points removed.","","FF4040",true);
-                            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                            logEmbed.setAuthor({name: message.author.tag, iconURL : message.author.displayAvatarURL()});
 
                             for(let e in edited){
                                 logEmbed.addField(`Modified: `,`Removed **${edited[e][0]}** points from <@${e}> for \`${edited[e][1]}\` `, false);

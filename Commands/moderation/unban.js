@@ -66,10 +66,8 @@ unban.execute =  function(message, args, server, isSlash){
 				message.reply  ({embeds:[embed]});
 
 				const logEmbed = makeEmbed("Unban",`The user <@${author.id}>[${author.id}] has unbanned a user with the id ${target}`,colors.changeBlue,true);
-					logEmbed.setAuthor(author.tag, author.displayAvatarURL());
+					logEmbed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
 					logEmbed.addFields(
-						{ name: 'Unbanned: ', value:`<@${target}>`, inline:false },
-						{ name: 'Unbanned by: ', value:`<@${author.id}>`, inline:false },
 						{ name : "Reason: ", value: reason, inline:false}
 					);
 					if(modLog)modLog.send({embeds:[logEmbed]});

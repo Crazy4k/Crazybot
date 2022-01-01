@@ -6,32 +6,32 @@ let {muteCache} = require("../../caches/botCache");
 const colors = require("../../config/colors.json");
 const Command = require("../../Classes/Command");
 
-let mute = new Command("mute");
+let timeout = new Command("timeout");
 
-mute.set({
+timeout.set({
     
-	aliases         : ["shut","stfu"],
-	description     : "Mutes someone for a specific duration",
-	usage           : "mute <@user> <duration in s,m or h>",
-	cooldown        : 3,
+	aliases         : ["shut","stfu","mute"],
+	description     : "Times out a specific user for a given duration.",
+	usage           : "timeout <@user> <duration in s,m or h> [reason]",
+	cooldown        : 4,
 	unique          : false,
 	category        : "Moderation",
-	whiteList       : "MUTE_MEMBERS",
-    requiredPerms   : "MANAGE_ROLES",
+	whiteList       : "MODERATE_MEMBERS",
+    requiredPerms   : "MODERATE_MEMBERS",
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : true,
     options			: [
         {
             name : "user",
-            description : "The person to mute",
+            description : "The person to timeout",
             required : true,
             type: 6,
 		},
         {
-            name : "time",
+            name : "unit",
             description : "hours, minutes, seconds",
-            choices: [ {name:"seconds",value:"s"}, {name:"minutes",value:"m"}, {name:"hours",value:"h"},],
+            choices: [ {name:"seconds",value:"s"}, {name:"minutes",value:"m"}, {name:"hours",value:"h"},{name:"days",value:"d"},],
             required : true,
             type: 3,
 		},{
@@ -42,7 +42,7 @@ mute.set({
 		},
 		{
             name : "reason",
-            description : "The reason behind the mute",
+            description : "The reason behind the timeout",
             required : true,
             type: 3,
 		}
@@ -51,7 +51,7 @@ mute.set({
 	],
 });
 
-mute.execute = function(message, args, server, isSlash) {
+timeout.execute = function(message, args, server, isSlash) {
     let author;
     let reason;
     let toCheck;
@@ -72,153 +72,119 @@ mute.execute = function(message, args, server, isSlash) {
         
     }
 
-    if(!reason) reason = "`No reason given`";
+    if(!reason) reason = "`No reason given by " + author.id +"`";
 
 
-    try {
-        const muteRole = message.guild.roles.cache.get(server.muteRole);
-        
-        
     
-        if(!muteRole){
-            const embed1 = makeEmbed("Couldn't mute","It appears that you don't have a mute role configured\nDo `"+server.prefix+"server` to configure your server roles.", server);
-            sendAndDelete(message,embed1, server);
+        
+    const modLog = message.guild.channels.cache.get(server.logs.warningLog);
+    switch (toCheck) {
+        case "not valid":
+        case "everyone":	
+        case "not useable":
+            const embed = makeEmbed('invalid username',this.usage, server);
+            sendAndDelete(message,embed, server);
             return false;
-        }
-        const muteLog = message.guild.channels.cache.get(server.logs.warningLog);
-        switch (toCheck) {
-            case "not valid":
-            case "everyone":	
-            case "not useable":
-                const embed = makeEmbed('invalid username',this.usage, server);
-                sendAndDelete(message,embed, server);
-                return false;
-                break;
-            case "no args": 
-                const embed1 = makeEmbed('Missing arguments',this.usage, server);
+            break;
+        case "no args": 
+            const embed1 = makeEmbed('Missing arguments',this.usage, server);
+            sendAndDelete(message,embed1, server);
+            return false;		
+            break;
+        default:
+
+            const member = message.guild.members.cache.get(toCheck);
+            if(member.permissions.has(this.whiteList)){
+                const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
                 sendAndDelete(message,embed1, server);
-                return false;		
-                break;
-            default:
-    
-                const member = message.guild.members.cache.get(toCheck);
-                if(member.permissions.has(this.whiteList)){
-                    const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);
-                    sendAndDelete(message,embed1, server);
-                    return false;
-                }
-                let multi = 1000 * 60;
-                if(!muteTime){
-                    muteTime = 30 //default time is 30 minutes
-                    muteTimeString = "30 minutes";
-                }
-                else {   
-                    if(muteTime.endsWith("h")) multi *= 60;
-                    else if(muteTime.endsWith("m"));
-                    else if(muteTime.endsWith("s"))multi /=60;
-                    else{
-                        const embed = makeEmbed('Invalid time format provided',`${this.usage}\nAdd h,m or s after the time`, server);
+                return false;
+            }
+            let multiplier = 1000 ;
+            if(!muteTime){
+                muteTime = 30000 //default time is 30 minutes
+                muteTimeString = "30 minutes";
+            }
+
+            else {   
+                switch (muteTime.split("").pop().toLowerCase()) {
+                    case "d":
+                    case "day":
+                    case "days":
+                        multiplier *= 60 * 60 * 24;
+                        break;
+                    case "h":
+                    case "hour":
+                    case "hrs":
+                    case "hr":
+                        multiplier *= 60 * 60;
+                        break;
+                    case "m":
+                    case "minutes":
+                    case "minute":
+                    case "min":
+                    case "mins":
+                        multiplier *= 60;
+                        break;
+                        case "s":
+                        case "sec":
+                        case "seconds":
+                        case "secs":
+                            break;
+                    default:
+                        const embed = makeEmbed('Invalid time format provided',`${this.usage}\nAdd s, m, h or d after the time`, server);
                         sendAndDelete(message,embed, server);
                         return false;
-                    }  
-                    muteTime = parseInt(number);
-                    if(isNaN(parseInt(number))){
-                        const embed = makeEmbed('Invalid time was provided',this.usage+'\nA valid format looks like this: "60s", "5m", "10h"', server);
-                        sendAndDelete(message,embed, server);
-                        return false;
-                    }
+                        break;
                 }
                 
-                let hisRoles = [];
-                if(member.roles.cache.size){
-                    member.roles.cache.each(rolee=>{
-                    
-                        if(rolee.id !== message.guild.id && !rolee.managed && rolee.id !== muteRole.id)hisRoles.push(rolee.id);
-                        
-                    })
-                    hisRoles.reverse();
-                }    
                 
-                if(muteCache[`${author.id}-${message.guild.id}`]){
-                    const embed = makeEmbed('User already muted',`That user is already muted. Instead, try using ${server.prefix}unmute`, server);
+                muteTime = parseInt(number);
+
+                if(isNaN(parseInt(number))){
+                    const embed = makeEmbed('Invalid time was provided',this.usage+'\nA valid format looks like this: "60s", "5m", "10h"', server);
                     sendAndDelete(message,embed, server);
                     return false;
                 }
-                
-                
-                if(member.manageable){
-                    
-                    
-                    member.roles.remove(hisRoles, "mute").then(e=> {
-                        if(muteRole){
-                            member.roles.add(muteRole.id).then(role=>{
-
-                                const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been muted for ${muteTimeString} for \`${reason}\`` , colors.successGreen);
-                                message.reply({embeds:[embed1]});
-                                muteCache[`${author.id}-${message.guild.id}`] = hisRoles;
-                                setTimeout(()=>{
-                                    try{
-                                        if(muteCache[`${author.id}-${message.guild.id}`] !== null){
-                                        if(hisRoles.length){
-                                            if(member.roles.cache.get(muteRole.id)){
-                                                member.roles.add(hisRoles).then(e=>{
-                                                    member.roles.remove(muteRole.id).catch(e=>console.log(e));
-                                                }).catch(e=>console.log(e));
-                                            }
-                                            
-                                        } else if(member.roles.cache.get(muteRole.id))member.roles.remove(muteRole.id).catch(e=>console.log(e));
-    
-                                        message.channel.send(`<@${member.id}> has been unmuted for: expired mute`)
-                                        muteCache[`${author.id}-${message.guild.id}`] = null;
-                                    }}catch(e){
-                                        console.log(e)
-                                    }
-                                },muteTime * multi);
-                                const logEmbed = makeEmbed("Mute","","002EFE",true);
-                                logEmbed.setAuthor(message.guild.members.cache.get(toCheck).user.tag, message.guild.members.cache.get(toCheck).user.displayAvatarURL());
-                                logEmbed.addFields(
-                                    { name:'Duration', value:muteTimeString, inline:true },
-                                    { name:'Muted:', value:`<@${toCheck}>`, inline:true },
-                                    { name:'Muted by: ', value:`<@${author.id}>`, inline:true },
-                                    { name:'Roles:', value:`<@&${hisRoles.join("> <@&")}>`, inline:true },
-                                    { name : "Reason:", value:reason, inline:true}
-                                
-                                );
-                                if(muteLog)muteLog.send({embeds:[logEmbed]});
-
-                            }).catch(e=>{   
-                                const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the mute role isn't accessable!\nTry putting the mute role under the bot's role", server);
-                                sendAndDelete(message,embed1, server);
-                                return false;
-                            });
-                            
-                        }else{
-                            const embed1 = makeEmbed('Missing Permíssion',"Missing mute role!, use the `;server` command to setup a new mute role.", server);
-                            sendAndDelete(message,embed1, server);
-                            return false;	
-                        }
-                    }).catch(e=>{
-                        console.log(e);
-                        const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
-                        sendAndDelete(message,embed1, server);
-                        return false;
-                    });
-                    
-                    
-               
-            } else {
-                const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
-                sendAndDelete(message,embed1, server);
-                return false;	
+                if(muteTime * multiplier > 2419200000){
+                    const embed = makeEmbed('Maximum time reached',"Cannot timeout a user for more than 28 days", server);
+                    sendAndDelete(message,embed, server);
+                    return false;
+                }
+                if(muteTime * multiplier < 1000){
+                    const embed = makeEmbed('Invalid duration',"Timeout duration must be at least 1 second", server);
+                    sendAndDelete(message,embed, server);
+                    return false;
+                }
             }
-                    
-        }
-    } catch (error) {
-        console.log("MUTE COMMAND ERRO");
-        console.log(error);
-    }
 
+            if(member.moderatable){   
+            
+                member.timeout(muteTime * multiplier,reason)
+                .then(e=> {
+
+                    const embed1 = makeEmbed("Done!",`The user <@${toCheck}> has been timed out for ${muteTimeString} for \`${reason}\`` , colors.successGreen);
+                    message.reply({embeds:[embed1]});
+                    
+                    const logEmbed = makeEmbed("Mute",`The user <@${author.id}> (${author.id}) has timed out the user <@${toCheck}> (${toCheck}) for ${muteTimeString} with the reason: ${reason}`,"002EFE",true);
+                    
+                    logEmbed.setAuthor({name: message.guild.members.cache.get(toCheck).user.tag ,iconURL: message.guild.members.cache.get(toCheck).user.displayAvatarURL()});
+                    
+                    if(modLog)modLog.send({embeds:[logEmbed]});
+
+                }).catch(e=>{
+                    const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
+                    sendAndDelete(message,embed1, server);
+                    return false;
+                });
+                                
+        } else {
+            const embed1 = makeEmbed('Missing Permíssion',"Couldn't mute that user because the bot can't perform that action on them", server);
+            sendAndDelete(message,embed1, server);
+            return false;	
+        }
+                
+    }
     
     
 }
-module.exports = mute;
+module.exports = timeout;

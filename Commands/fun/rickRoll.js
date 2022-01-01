@@ -123,7 +123,7 @@ rr.execute = function(message, args, server) {
 			const embedToPublic = makeEmbed('Rick Roll sent :white_check_mark:', 'Imagine if they fall for that LOL', colors.successGreen);
 
 			const embed = makeEmbed(`${sender.tag} ${pickRandom(randomGreeting)}`, `[${pickRandom(randomStrings)}](${pickRandom(rickRollLinks)} "just click bruh")`, server);
-			embed.setAuthor(`${sender.tag}`, sender.displayAvatarURL());
+			embed.setAuthor({name: sender.tag ,iconURL: sender.displayAvatarURL()});
 
 
 

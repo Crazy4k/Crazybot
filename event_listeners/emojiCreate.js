@@ -3,7 +3,6 @@ const mongo = require("../mongo");
 let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
 const colors =require("../config/colors.json");
-const moment = require('moment');
 
 module.exports = async (emoji, client) =>{
 	if(!emoji.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;

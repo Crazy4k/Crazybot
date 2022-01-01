@@ -31,7 +31,8 @@ module.exports = async(oldMessage, newMessage, client) => {
 						
 					if(deleteLogs) {
 						const embed = makeEmbed('Possible ghost ping detected',"",colors.pitchBlack,true);
-						embed.setAuthor(oldMessage.author.username, oldMessage.author.displayAvatarURL());	
+					
+						embed.setAuthor({name:oldMessage.author.tag, iconURL:oldMessage.author.displayAvatarURL()});	
 
 						let beforeContent = oldMessage.content;
 						let afterContent = newMessage.content;
@@ -61,7 +62,7 @@ module.exports = async(oldMessage, newMessage, client) => {
 					if(beforeContent.length === 0) beforeContent = "Empty message content";
 					if(afterContent.length === 0) afterContent = "Empty message content";
 
-					embed.setAuthor(oldMessage.author.username, oldMessage.author.displayAvatarURL())
+					embed.setAuthor({name:oldMessage.author.tag, iconURL:oldMessage.author.displayAvatarURL()})
 						.addFields(
 							{ name:'edited on', value: `<#${oldMessage.channel.id}>`, inline:false },
 							{ name:'Before', value: beforeContent, inline: false },

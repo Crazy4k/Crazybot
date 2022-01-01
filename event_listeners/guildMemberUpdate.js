@@ -26,7 +26,7 @@ module.exports = async (oldMember, newMember, client)=> {
 		if (log) {
 			//creates the main log
 			const embed = makeEmbed("member updated","",colors.changeBlue);
-			embed.setAuthor(oldMember.displayName, oldMember.user.displayAvatarURL());
+			embed.setAuthor({name: oldMember.displayName, iconURL : oldMember.user.displayAvatarURL()});
 			embed.addFields(
 				{name: "ID: ", value: oldMember.user.id, inline: true},
 				{name: "Tag: ", value: `<@${oldMember.user.id}>`,inline:true}

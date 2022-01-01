@@ -17,7 +17,7 @@ server.set({
 	aliases         : [],
 	description     : "modifies the settings of the server",
 	usage           : "server [option]",
-	cooldown        : 7,
+	cooldown        : 5,
 	unique          : true,
 	category        : "config",
 	whiteList       : "ADMINISTRATOR",
@@ -31,7 +31,6 @@ server.set({
             choices: [
                 {name: "Change the join/leave message channel", value: "welcomeChannel"},
                 {name: "Change the join role", value: "welcomeRole"},
-                {name: "Change the muted role", value: "muteRole"},
                 {name: "Change the command prefix", value: "prefix"},
                 {name: "Change the default embed color", value: "color"},
                 {name: "Change whether message should be deleted in logs or not", value: "deleteInLogs"},
@@ -67,7 +66,7 @@ server.execute = function(message, args, server, isSlash) {
     let row = new MessageActionRow().addComponents(yes, no);
 
 const messageFilter = m => !m.author.bot && m.author.id === author.id;
-const reactionFilter =  noob => noob.user.id === author.id && !noob.user.bot;
+const buttonFilter =  noob => noob.user.id === author.id && !noob.user.bot;
 
 try {        
     let daServer = server;
@@ -83,11 +82,7 @@ try {
         } else {
             embed.addField('Welcome role :wave:',  `Empty\nChange value:\n\`${server.prefix}${this.name} welcomeRole\``,true);
         }
-        if(daServer.muteRole){
-            embed.addField('Mute role :mute:', `<@&${daServer.muteRole}>\nChange value:\n\`${server.prefix}${this.name} muteRole\``, true);
-        } else {
-            embed.addField('Mute role :mute:',  `Empty\nChange value:\n\`${server.prefix}${this.name} muteRole\``,true);
-        }
+        
 
                     
         embed.addFields(
@@ -214,7 +209,7 @@ try {
                                     .then(async m => {
 
                                         
-                                          m.awaitMessageComponent({filter: reactionFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
+                                          m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
                                             .then(async a =>{
                                                 
                                                 switch (a.customId) {
@@ -307,49 +302,6 @@ try {
                         return true;
                     break;
                     
-            case "muterole":
-                let embedo2 = makeEmbed("Server Settings", `${type0Message}**Enter  your Mute role.🔇**`, server);
-                message.reply({ embeds: [embedo2]})
-                    .then(m => {
-                        message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
-                            .then(async a => {      
-                                let toCheck = checkRoles(a);
-                                switch (toCheck) {
-                                    case "not valid":
-                                    case "no args": 
-                                    case "not useable":              
-                                        message.channel.send("Invalid argument, command failed.");
-                                        return false;
-                                        break;
-                                    case "cancel":
-                                        message.channel.send(cancerCultureMessage);
-                                        return false;
-                                        break;
-                                    case "no":
-                                        daServer.muteRole = "";
-                                        break;
-                                    default:
-                                        daServer.muteRole = toCheck;
-                                        break;
-                                }
-                                await mongo().then(async (mongoose) =>{
-                                    try{ 
-                                        await serversSchema.findOneAndUpdate({_id:message.guild.id},{
-                                            muteRole: daServer.muteRole,
-                                        },{upsert:false});
-                                        message.channel.send(`**Mute role has been successfully updated ✅.**`)
-                                        guildsCache[message.guild.id] = daServer;
-                                    } finally{
-                                        console.log("WROTE TO DATABASE");
-                                        mongoose.connection.close();
-                                    }
-                                });
-                            }).catch(e => {
-                                message.channel.send(idleMessage);
-                            });
-                    });
-                    return true;
-                break;
             case "deleteinlogs":
                 let embedo6 = makeEmbed("Server Settings", `**Do you want messages to be deleted in logs?❌**`, server);
                 message.reply({embeds: [embedo6], components: [row]})
@@ -357,7 +309,7 @@ try {
                     let replyMessage;
                     if(isSlash)replyMessage = await  message.fetchReply();
                     else replyMessage = m;
-                    replyMessage.awaitMessageComponent({filter: reactionFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
+                    replyMessage.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
                         .then(async a =>{
                             
                             switch (a.customId) {
@@ -403,7 +355,7 @@ try {
                     if(isSlash)replyMessage = await  message.fetchReply();
                     else replyMessage = m;
                     
-                    replyMessage.awaitMessageComponent({filter: reactionFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
+                    replyMessage.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
                         .then(async a =>{
                             
                             switch (a.customId) {

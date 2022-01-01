@@ -30,7 +30,6 @@ updates.set({
 		description : "Which patch notes you want to review. [Example: 0.6.9]",
 		required : false,
 		type: 3,
-		autocomplete : true,
 		choices : chociesOfCommand,
 	}],
 	cooldown        : 10,
@@ -75,7 +74,7 @@ if(message.type === "APPLICATION_COMMAND"){
 	})
 }else { message.channel.send( {embeds: [embed]} ).then(m => {
 	setTimeout(()=>{
-		if(!m.deleted && bool)m.delete().catch(e => console.log(e));
+		if(bool)m.delete().catch(e => e);
 	},2 *60* 1000);
 });}
 

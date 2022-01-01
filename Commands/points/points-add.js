@@ -143,7 +143,7 @@ if(message.guild.members.cache.get(author.id).permissions.has( Permissions.FLAGS
 
                 if(log){
                     let embed = makeEmbed("Points added.","","10AE03",true);
-                    embed.setAuthor(author.tag, author.displayAvatarURL());
+                    embed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
                     embed.addFields(
                         {name: "Added by:", value: `<@${author.id}>`, inline:true},  
                         {name: "Added to:", value: `<@${persona}>`, inline:true},

@@ -12,7 +12,7 @@ welcomeMessage.set({
 	aliases         : ["leavemessage","welcomemessage","welcome","welcomem"],
 	description     : "changes what the bot would say when a members joins or leaves the server",
 	usage           : "welcome-message",
-	cooldown        : 10,
+	cooldown        : 5,
 	unique          : true,
 	category        : "config",
 	whiteList       : "ADMINISTRATOR",

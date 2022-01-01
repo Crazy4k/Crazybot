@@ -33,16 +33,13 @@ function whatPlace( id){
     return str;
 
 }
-function splitId(string){
-    return string.split(" ");
-}
 let raiders = new Command("raiders");
 
 raiders.set({
-	aliases         : ["trackraiders"],
+	aliases         : ["trackraiders","raider","raids"],
 	description     : "Shows you the current trackalbe raiders that are playing MS.",
 	usage           : "raiders",
-	cooldown        : 2,
+	cooldown        : 3,
 	unique          : false,
 	category        : "roblox",
 	worksInDMs      : false,
@@ -55,24 +52,32 @@ raiders.set({
 
     if(Object.values(botCache.raiderCache).length){
 
-        const embed = makeEmbed("Raider tracker.","", server);
+        const embed = makeEmbed("Raider tracker","", server);
         
         
-        let shittyStr = [];
-        for( let e in botCache.raiderCache){
-            let shit = splitId( botCache.raiderCache[e]);
-            //let rootPlaceId = shit[0];
-            let placeId = shit[1];
-            //let instantlink = shit[2];
+        let stringArray = [];
+        for( let userId in botCache.raiderCache){
+            let raiderCacheData = botCache.raiderCache[userId].split(" ");
+            //let rootPlaceId = raiderCacheData[0];
+            let placeId = raiderCacheData[1];
+            //let instantlink = raiderCacheData[2];
             let placeString = whatPlace(placeId);
-            if(shit){
-                let name = await noblox.getUsernameFromId(e)
-                shittyStr.push(`[${name}](https://www.roblox.com/users/${e}/profile) is playing [${placeString}](https://www.roblox.com/games/${placeId}).`);
+            if(raiderCacheData){
+                let name = await noblox.getUsernameFromId(userId)
+                stringArray.push(`[${name}](https://www.roblox.com/users/${userId}/profile) is playing [${placeString}](https://www.roblox.com/games/${placeId}).`);
             }
 
         }
-        if(shittyStr.length){
-            embed.setDescription(`**These are the trackable raiders that are playing MS right now.**\n\n${shittyStr.join("\n")}`);
+        stringArray.push("\n")
+        for(let instantLink in botCache.trackedMassRaids){
+            let amountOfRaiders = botCache.trackedMassRaids[instantLink];
+            let placeId = instantLink.split("&")[0].replace("placeId=","");
+            let place = whatPlace(placeId);
+            stringArray.push(`⚠ Raid ⚠: There are ${amountOfRaiders} raiders in [${place}](https://www.roblox.com/games/${placeId})`);
+        }
+        
+        if(stringArray.length){
+            embed.setDescription(`**These are the trackable raiders that are playing MS right now.**\n\n${stringArray.join("\n")}`);
             message.reply({embeds: [embed]});
             return true;
         }else {

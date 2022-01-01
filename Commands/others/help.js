@@ -24,7 +24,6 @@ help.set({
 		name : "category",
 		description : "The name of the command category.",
 		required : false,
-		autocomplete: true,
 		choices: [{name: "Fun", value: "fun"}, {name: "Events", value: "events"}, {name: "Roblox", value: "roblox"}, {name: "Moderation", value: "mod"}, {name: "Points", value: "points"}, {name: "Admin fun", value: "aa"}, {name: "Server configurations", value: "config"}, {name: "Other", value: "other"}],
 		type: 3,
 		},

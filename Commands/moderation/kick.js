@@ -99,13 +99,8 @@ kick.execute = function(message, args, server, isSlash) {
 						const embed = makeEmbed("User kicked.",`The user <@${target.id}> has been kicked for \n\`${reason}\`.`,"29C200",);
 						message.reply({embeds:[embed]});
 
-						const logEmbed = makeEmbed("Kick",`The user <@${author.id}>[${author.id}] has kicked the user <@${target.id}>[${target.id}]`,colors.failRed,true);
-						logEmbed.setAuthor(target.user.tag, target.user.displayAvatarURL());
-						logEmbed.addFields(
-							{ name: 'Kicked: ', value:`<@${target.id}>[${target.id}]`, inline:false },
-							{ name: 'Kicked by: ', value:`<@${author.id}>`, inline:false },
-							{ name : "Reason: ", value: reason, inline:false}
-						);
+						const logEmbed = makeEmbed("Kick",`The user <@${author.id}>[${author.id}] has kicked the user <@${target.id}>[${target.id}] for "${reason}"`,colors.failRed,true);
+						logEmbed.setAuthor({name: target.user.tag ,iconURL: target.user.displayAvatarURL()});
 						if(modLog)modLog.send({embeds:[logEmbed]});
 						return true;
 					})

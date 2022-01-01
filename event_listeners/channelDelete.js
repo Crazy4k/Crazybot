@@ -1,33 +1,33 @@
+
 const moment = require('moment');
+
 const mongo = require("../mongo");
 let {guildsCache} = require("../caches/botCache");
 const serversSchema = require("../schemas/servers-schema");
-const colors =require("../config/colors.json");
 const makeEmbed = require(".././functions/embed");
-
+const colors =require("../config/colors.json");
 
 module.exports = async(channel, client) => {
 	if(channel.type === 'DM') return;
 	if(!channel.guild) return;
 	if(!channel.guild.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR"))return;
-
-	let i = guildsCache[channel.guild.id];
-	if(!i){
-		await mongo().then(async (mongoose) =>{
-			try{ 
-				guildsCache[channel.guild.id] =i= await serversSchema.findOne({_id:channel.guild.id});
-			} finally{
-				console.log("FETCHED FROM DATABASE");
-				mongoose.connection.close();
-			}
-		});
-	}
-		
 	try {
-			
-		const serverLogs = channel.guild.channels.cache.get(i.logs.serverLog);
+		let server = guildsCache[channel.guild.id];
+		if(!server){
+			await mongo().then(async (mongoose) =>{
+				try{ 
+					guildsCache[channel.guild.id] = server = await serversSchema.findOne({_id:channel.guild.id});
+				} finally{
+					console.log("FETCHED FROM DATABASE");
+					mongoose.connection.close();
+				}
+			});
+		}
+
+		
+		const serverLogs = channel.guild.channels.cache.get(server.logs.serverLog);
 		if (serverLogs) {
-			const embed = makeEmbed('Channel created',"",colors.successGreen,true);
+			const embed = makeEmbed("Channel Deleted","",colors.failRed,true);
 				embed.addFields(
 					{ name:'name', value: channel.name, inline: false },
 					{ name:'Category', value: `${channel.parent}`, inline: false },
@@ -36,7 +36,9 @@ module.exports = async(channel, client) => {
 				);
 			serverLogs.send({embeds: [embed]}).catch(e=> console.log(e));
 		}
-		
-			
-		}catch (err) {console.log(err);}
+				
+	}catch (err) {console.log(err);}
+
+	
+	
 }

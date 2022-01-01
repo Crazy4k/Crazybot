@@ -62,7 +62,7 @@ ban.execute = function(message, args, server, isSlash)  {
 		id = checkUseres(message,args,0);
 		let copyOfArgs = [...args];
 		popped  = copyOfArgs.pop();
-		if(parseInt(popped))time = parseInt(popped); 
+		if(parseInt(popped) && args.length > 2)time = parseInt(popped); 
 		else{
 			time = 1;
 			copyOfArgs.push(popped);
@@ -112,13 +112,8 @@ ban.execute = function(message, args, server, isSlash)  {
 						const embed = makeEmbed("User banned.",`The user <@${target.id}> has been banned for \n\`${reason}\`\nAnd deleted messages sent by the uses in the last \`${time}\` days.`,"29C200",);
 						message.reply({embeds:[embed]});
 
-						const logEmbed = makeEmbed("Ban",`The user <@${author.id}>[${author.id}] has banned the user <@${target.id}>[${target.id}]`,colors.failRed,true);
-						logEmbed.setAuthor(target.user.tag, target.user.displayAvatarURL());
-						logEmbed.addFields(
-							{ name: 'Banned: ', value:`<@${target.id}>[${target.id}]`, inline:false },
-							{ name: 'Banned by: ', value:`<@${author.id}>`, inline:false },
-							{ name : "Reason: ", value: reason, inline:false}
-						);
+						const logEmbed = makeEmbed("Ban",`The user <@${author.id}>[${author.id}] has permanently banned the user <@${target.id}>[${target.id}] for "${reason}"`,colors.failRed,true);
+						logEmbed.setAuthor({name: target.user.tag ,iconURL: target.user.displayAvatarURL()});
 						if(modLog)modLog.send({embeds:[logEmbed]});
 						return true;
 					}).catch(e => {

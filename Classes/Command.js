@@ -19,17 +19,17 @@ let obj = {
 module.exports = class Command{
 	constructor(name){
 		this.name = name;
-        this.aliases = undefined;
-		this.description = undefined;
-		this.cooldown = undefined;
-		this.category = undefined;
-		this.whiteList = undefined;
-		this.unique = undefined;
-		this.worksInDMs = undefined;
-        this.isDevOnly = undefined;
-        this.isSlashCommand = undefined;
-        this.isTestOnly = undefined;
-        this.usage = undefined;
+        this.aliases;
+		this.description;
+		this.cooldown;
+		this.category;
+		this.whiteList;
+		this.unique;
+		this.worksInDMs;
+        this.isDevOnly;
+        this.isSlashCommand;
+        this.isTestOnly;
+        this.usage;
         this.requiredArgs = [];
         this.requiredPerms = Permissions.FLAGS.SEND_MESSAGES;
 	}//pass object as an argument with values that you want

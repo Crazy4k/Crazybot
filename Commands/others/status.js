@@ -27,7 +27,7 @@ status.execute = async function(message, args, server) {
 
 	const totalTimerCache = timerArray[1];
 	
-	message.reply({embeds: [makeEmbed("Calculating....","","",false,"")]}).then(async (newMsg) =>{
+	message.reply({embeds: [makeEmbed("Calculating....","","f7f7f7",false,"")]}).then(async (newMsg) =>{
 
 		let one = moment();
 		await mongo().then(async (mongoose) =>{
@@ -42,8 +42,8 @@ status.execute = async function(message, args, server) {
 		let two = moment();
 		let dataBasePing = two - one;
 
-		let minute = totalTimerCache.hours
-		if(minute === 0)minute = 1;
+		let hour = totalTimerCache.hours
+		if(hour === 0)hour = 1;
 
 
 		const embed = makeEmbed("Bot's status report!", "", server, true);
@@ -51,7 +51,7 @@ status.execute = async function(message, args, server) {
 			{name:"Online since", value:`<t:${parseInt(client.readyTimestamp / 1000)  }:R> | <t:${parseInt(client.readyTimestamp / 1000)}:F>`, inline: true},
 			{name:"Data base Ping ", value:`${dataBasePing} ms`, inline: true},
 			{name:"Discord API Ping ", value:`${client.ws.ping} ms`, inline: true},
-			{name:"Fetches per hour rate", value:`${fetchesCache.totalFetches / minute} Fetch per hour`, inline: true},
+			{name:"Fetches per hour rate", value:`${fetchesCache.totalFetches / hour} Fetch per hour`, inline: true},
 			
 		);
 		if(message.type === "APPLICATION_COMMAND")message.editReply({embeds:[embed]});

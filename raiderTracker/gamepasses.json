@@ -139,8 +139,12 @@
             "power": 2
         },"Gift launcher":{
             "id": 25815884,
+            "power": 0.5
+        },"Krampus":{
+            "id": 26219979,
             "power": 2
         }
+        
 
     },
     "MS2":{

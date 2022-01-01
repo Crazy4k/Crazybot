@@ -47,7 +47,7 @@ module.exports = async (message, client) => {
 							let messageContent = message.content;
 							if(messageContent.length > 1000) messageContent = "Message content too big to show.";
 
-								embed.setAuthor(message.author.username, message.author.displayAvatarURL());
+								embed.setAuthor({name:message.author.username, iconURL:message.author.displayAvatarURL()});
 								embed.addFields(
 									{ name:'deleted from', value:`<#${message.channel.id}>`, inline: false },
 									{ name:'Message content', value: messageContent, inline: false },
@@ -63,7 +63,7 @@ module.exports = async (message, client) => {
 					}else if(!isCommand) {
 						if(typeof deleteLogs !== 'undefined') {
 							const embed = makeEmbed('Message deleted',"",colors.failRed,true);
-							embed.setAuthor(message.author.username, message.author.displayAvatarURL());
+							embed.setAuthor({name:message.author.username, iconURL:message.author.displayAvatarURL()});
 							let messageContent = message.content;
 							if(messageContent.length > 1000) messageContent = "Message content too big to show.";
 							if(messageContent.length === 0) messageContent = "Empty message content";

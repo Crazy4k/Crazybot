@@ -69,13 +69,8 @@ slowmode.execute = async function(message, args, server, isSlash) {
 
                 message.reply(`Changed the slowmode to ${time} seconds successfully ✅.`)
 
-                const logEmbed = makeEmbed("Slowmode","",colors.changeBlue,true);
-                logEmbed.setAuthor(author.tag, author.displayAvatarURL());
-                logEmbed.addFields(
-                    { name: 'Changes: ', value: `Changed slowmode from ${before} to ${message.channel.rateLimitPerUser}`, inline:false },
-                    { name: 'Changed by: ', value: `<@${author.id}>-${author.id}`, inline:false },
-                    { name : "Changed in: ", value: `<#${message.channel.id}>-${message.channel.id}`, inline:false}
-                );
+                const logEmbed = makeEmbed("Slowmode",`<@${author.id}> (${author.id}) has just changed the slowmode of <#${message.channel.id}> (${message.channel.id}) from ${before} to ${message.channel.rateLimitPerUser}`,colors.changeBlue,true);
+                logEmbed.setAuthor({name: author.tag, iconURL : author.displayAvatarURL()});
                 if(modLog)modLog.send({embeds:[logEmbed]});
             })
 

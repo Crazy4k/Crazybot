@@ -3,7 +3,14 @@ const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const {eventsCache} = require("../../caches/botCache");
 var { Timer } = require("easytimer.js");
-const {Permissions} = require("discord.js");
+const {Permissions, MessageActionRow, MessageButton} = require("discord.js");
+
+
+const endEventButton = new MessageButton()
+    .setCustomId('end')
+    .setLabel('End event')
+    .setStyle('DANGER');
+let endEventButtonRow = new MessageActionRow().addComponents(endEventButton);
 
 const dltTime = 1000 * 60 * 60 * 2; // 2 hours
 const tenMinutes = 1000 * 60 * 10; // 10 minutes
@@ -110,19 +117,20 @@ host.execute = function(message, args, server) {
             const hostString = `• Event type: ${eventType}\n• Hosted by: <@${author.id}>\n• Supervised by: ${supervisor}\n• Starts at: 10 minutes\n\n•  Link to the game: ${link} \n•  Extra information: ${extraInfo}\n @everyone `;
             const logID = server.logs.eventsLog;
             const eventsLog = message.guild.channels.cache.get(logID);
-            message.channel.send(hostString)
+            message.channel.send({content: hostString, components: [endEventButtonRow]})
                 .then(m =>{
+                    
                     if(eventsCache[message.guild.id] === undefined) eventsCache[message.guild.id] = [];
                     eventsCache[message.guild.id].push(`${eventType} ${message.channel.id} Open. ${author.id} ${m.url}`);
                     let indexo = eventsCache[message.guild.id].indexOf(`${eventType} ${message.channel.id} Open. ${author.id} ${m.url}`);
                     let startedID;
                     if(isSlash){
-                        sendAndDelete(message,"Done ✅\n\n*React to 🗑 to cancel and delete the event at any time\n*The event will be automatically deleted in 2 hours\n*The event can be found using the ;events or /events command",server)
+                        sendAndDelete(message,"Done ✅\n\n*Click the \"End event\" button to end and delete the event at any time\n*The event will be automatically deleted in 2 hours\n*The event can be found using the ;events or /events command",server)
                     }else message.delete();
 
                     if(eventsLog){
                         let embed = makeEmbed("Event posted.","","00FF04",true);
-                        embed.setAuthor(author.tag, author.displayAvatarURL());
+                        embed.setAuthor({name: author.tag ,iconURL: author.displayAvatarURL()});
                         embed.addFields(
                             {name:`Posted by:`, value: `<@${author.id}>`, inline:true},
                             {name:`Posted on:`, value: `<#${m.channel.id}>`, inline:true},
@@ -134,7 +142,7 @@ host.execute = function(message, args, server) {
                     }
 
                     setTimeout(()=>{
-                        if(!m.deleted){
+                        if(!message.channel.messages.cache.get(m.id)){
 
                             timer.start();
                             eventsCache[message.guild.id][indexo] = `${eventType} ${message.channel.id} Started. ${author.id} ${m.url}`
@@ -145,7 +153,7 @@ host.execute = function(message, args, server) {
 
                                 let embed = makeEmbed("Event started.","","FF9700",true);
 
-                                embed.setAuthor(author.tag, author.displayAvatarURL());
+                                embed.setAuthor({name: author.tag ,iconURL: author.displayAvatarURL()});
                                 embed.addFields(
                                     {name:`Posted by:`, value: `<@${author.id}>`, inline:true},
                                     {name:`Posted on:`, value: `<#${m.channel.id}>`, inline:true},
@@ -163,7 +171,8 @@ host.execute = function(message, args, server) {
                             if(eventsLog){
                                 
                                 let embed = makeEmbed("Event Ended.","","FF0000",true);
-                                embed.setAuthor(message.guild.members.cache.get(author.id).nickname, author.displayAvatarURL());
+                                
+                                embed.setAuthor({name: message.guild.members.cache.get(author.id).nickname ,iconURL: author.displayAvatarURL()});
                                 embed.addFields(
                                     {name:`Posted by:`, value: `<@${author.id}>`, inline:true},
                                     {name:`Posted on:`, value: `<#${m.channel.id}>` , inline:true},
@@ -175,7 +184,7 @@ host.execute = function(message, args, server) {
                             }
     
                             let startedMessage =message.channel.messages.cache.get(startedID);
-                            if(startedMessage && !startedMessage.deleted){
+                            if(startedMessage ){
                                 startedMessage.delete();
                             }
     
@@ -186,25 +195,24 @@ host.execute = function(message, args, server) {
                     },dltTime + 1000)
                     
 
-                    m.react("🗑");
 
-                    const filter =(reaction, user) => user.id === author.id && reaction.emoji.name === "🗑";
+                    const buttonFilter =  noob => noob.user.id === author.id && !noob.user.bot;
 
-                    m.awaitReactions({filter,  time: dltTime , max : 1})
+                    m.awaitMessageComponent({filter: buttonFilter,  time: dltTime , max : 1})
                         .then(collected => {
                             
                             
-                            if(!m.deleted)m.delete().catch(e=>console.log(e));
+                            m.delete().catch(e=>e);
 
                             let startedMessage = message.channel.messages.cache.get(startedID);
-                            if(startedMessage && !startedMessage.deleted){
+                            if(startedMessage){
                                 startedMessage.delete();
                             }
 
                             if(eventsLog){
                                 let embed = makeEmbed("Event Ended.","","FF0000",true);
-
-                                embed.setAuthor(author.tag, author.displayAvatarURL());
+                                
+                                embed.setAuthor({name: author.tag ,iconURL: author.displayAvatarURL()});
                                 embed.addFields(
                                     {name:`Posted by:`, value: `<@${author.id}>`, inline:true},
                                     {name:`Posted on:`, value: `<#${message.channel.id}>`, inline:true},
