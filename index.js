@@ -225,43 +225,44 @@ client.on("interactionCreate",async (interaction)=>{
 
 const remind = require("./functions/time-outs/remind");
 
-(async ()=>{
 
-	await mongo().then(async (mongoose) =>{
-		try{
-			const data = await timerSchema.findOne({_id:"remindme"});
-			data ? botCache.timeOutCache["remindme"] = data : botCache.timeOutCache["remindme"] = {};
-		}
-		finally{
-			console.log("FETCHED FROM DATABASE");
-			mongoose.connection.close();
-		}
-	})
-	
-	timer.addEventListener("minutesUpdated",()=>{
-		for(let timeStamp in botCache.timeOutCache["remindme"].data){
-			if(parseInt(timeStamp) <= Date.now()){
-				
-				remind(client,botCache.timeOutCache["remindme"].data[timeStamp]);
-				delete botCache.timeOutCache["remindme"].data[timeStamp];
-	
-				mongo().then(async (mongoose) =>{
-					try{
-						await timerSchema.findOneAndUpdate({_id:"remindme"},{
-							data:botCache.timeOutCache["remindme"].data
-						},{upsert:true});
-					} finally{
+
+	mongo().then(async (mongoose) =>{
+	try{
+		const data = await timerSchema.findOne({_id:"remindme"});
+		data ? botCache.timeOutCache["remindme"] = data : botCache.timeOutCache["remindme"] = {};
+	}
+	finally{
+		console.log("FETCHED FROM DATABASE");
+		mongoose.connection.close();
+	}
+})
+
+timer.addEventListener("minutesUpdated",()=>{
+	console.log("minute")
+	for(let timeStamp in botCache.timeOutCache["remindme"].data){
+		if(parseInt(timeStamp) <= Date.now()){
 			
-						console.log("WROTE TO DATABASE");
-						mongoose.connection.close();
-					}
-				});
-			}
-			
+			remind(client,botCache.timeOutCache["remindme"].data[timeStamp]);
+			delete botCache.timeOutCache["remindme"].data[timeStamp];
+
+			mongo().then(async (mongoose) =>{
+				try{
+					await timerSchema.findOneAndUpdate({_id:"remindme"},{
+						data:botCache.timeOutCache["remindme"].data
+					},{upsert:true});
+				} finally{
+		
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
+				}
+			});
 		}
 		
-	});
-})()
+	}
+	
+});
+
 
 
 // TSU raider tracker

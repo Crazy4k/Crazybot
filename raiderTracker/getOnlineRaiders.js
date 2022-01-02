@@ -299,7 +299,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                     let cacheDataArray = raiderCache[i].split(" ");
                     
                     let instantlink = cacheDataArray[2];
-                    if(differentServers[instantlink] === undefined)differentServers[instantlink] = 0;
+                    if(differentServers[instantlink] === undefined  || differentServers[instantlink] === null)differentServers[instantlink] = 0;
                     differentServers[instantlink]++;
                 }
                 
@@ -348,7 +348,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
-                        trackedMassRaids[instantLink] = null;
+                        delete trackedMassRaids[instantLink]
 
                         for(let id of arrayOfChannels){
                         let log = discordClient.channels.cache.get(id);
@@ -373,7 +373,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
-                        trackedMassRaids[instantLink] = null;
+                        delete trackedMassRaids[instantLink];
 
                         for(let id of arrayOfChannels){
                             
@@ -398,7 +398,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
-                        trackedMassRaids[instantLink] = null;
+                        delete trackedMassRaids[instantLink]
 
                         for(let id of arrayOfChannels){
                         let log = discordClient.channels.cache.get(id);

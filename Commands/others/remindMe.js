@@ -2,7 +2,6 @@ const Command = require("../../Classes/Command");
 const mongo = require("../../mongo");
 const timerSchema = require("../../schemas/timer-schema");
 let botCache = require("../../caches/botCache");
-const remind = require("../../functions/time-outs/remind");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const makeEmbed = require("../../functions/embed");
 
@@ -148,14 +147,13 @@ remindMe.execute = async function (message, args, server, isSlash)  {
         text,
 
     };
-    console.log(temp)
 
     mongo().then(async (mongoose) =>{
         try{
             await timerSchema.findOneAndUpdate({_id:"remindme"},{
                 data: temp.data
             },{upsert:true});
-            botCache.timeOutCache["remindme"].data = temp
+            botCache.timeOutCache["remindme"].data = temp.data
             message.reply(`I will remind you about \`${text}\` on <t:${parseInt(remindAt / 1000)}:D> at <t:${parseInt(remindAt / 1000)}:T> or <t:${parseInt(remindAt / 1000)}:R>`);
 
             
