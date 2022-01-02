@@ -21,5 +21,5 @@ If you want to turn on this bot, follow there steps:
 
 ## Helpful tips for those trying to read my code 😳
 * The /functions folder includes a lot of important and often-repeated functions across the bot
-* All of the event handling happens in the /logs folder and index.js file
+* All of the event handling happens in the /event_listeners folder
 * yes
