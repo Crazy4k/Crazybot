@@ -239,7 +239,6 @@ const remind = require("./functions/time-outs/remind");
 })
 
 timer.addEventListener("minutesUpdated",()=>{
-	console.log("minute")
 	for(let timeStamp in botCache.timeOutCache["remindme"].data){
 		if(parseInt(timeStamp) <= Date.now()){
 			

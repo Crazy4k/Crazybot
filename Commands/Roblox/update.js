@@ -34,15 +34,18 @@ update.execute = async (message, args, server, isSlash) =>{
     let isVerified = true;
     let authorId;
     let target;
+    let userId
     if(isSlash){
         authorId = message.user.id;
         target = args[0]?.value
+        target ? userId = target : userId = authorId;
 
     }else {
         authorId = message.author.id;
         target = args[0];
+        userId = checkUser(message, args);
     }
-    let userId = checkUser(message, args);
+   
     switch (userId) {
         case "not valid":
         case "everyone":	
@@ -71,13 +74,13 @@ update.execute = async (message, args, server, isSlash) =>{
                     let role = message.guild.roles.cache.get(server.verifiedRole);
                     if(role){
                         if(!user.roles.cache.get(server.verifiedRole)){
-                        
-                            user.roles.add(server.verifiedRole,"auto verified role")
-                            .then(yes=> roleStatus = true)
+                            
+                            await user.roles.add(server.verifiedRole,"auto verified role")
                             .catch(err=> {
                                 roleStatus = false;
                                 extraInfo.push("Couldn't add the role.");
                             });
+                            if(user.roles.cache.get(server.verifiedRole)) roleStatus = true;
                         } else {
                             roleStatus = true;
                         }
@@ -89,7 +92,7 @@ update.execute = async (message, args, server, isSlash) =>{
                 if(server.forceRobloxNames){
                     let user = message.guild.members.cache.get(userId);
 
-                    user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
+                    await user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
                     .catch(err=> {
                         nicknameStatus = false;
                         extraInfo.push("Couldn't update the nickname.");
