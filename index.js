@@ -228,6 +228,8 @@ mongo().then(async (mongoose) =>{
 	try{
 		const data = await timerSchema.findOne({_id:"remindme"});
 		data ? botCache.timeOutCache["remindme"] = data : botCache.timeOutCache["remindme"] = {};
+	} catch{
+		console.log("e")
 	}
 	finally{
 		console.log("FETCHED FROM DATABASE");

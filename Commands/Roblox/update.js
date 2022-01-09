@@ -2,6 +2,7 @@ const Command = require("../../Classes/Command");
 const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const updateRobloxUser = require("../../functions/updateRobloxUser");
+const sendAndDelete = require("../../functions/sendAndDelete");
 
 
 let update = new Command("update");
@@ -28,7 +29,7 @@ update.set({
     
 });
 
-update.execute = async (message, args, server, isSlash) =>{
+update.execute = async function(message, args, server, isSlash) {
 
     let authorId;
     let target;
