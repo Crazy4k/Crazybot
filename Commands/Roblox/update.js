@@ -1,8 +1,7 @@
 const Command = require("../../Classes/Command");
-const rover = require("rover-api");
 const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
-
+const updateRobloxUser = require("../../functions/updateRobloxUser");
 
 
 let update = new Command("update");
@@ -31,7 +30,6 @@ update.set({
 
 update.execute = async (message, args, server, isSlash) =>{
 
-    let isVerified = true;
     let authorId;
     let target;
     let userId
@@ -59,89 +57,7 @@ update.execute = async (message, args, server, isSlash) =>{
             userId = authorId;
         default:
 
-            const robloxBody = await rover(userId).catch(err => isVerified = false);
-
-
-            let embed;
-            if(isVerified){
-        
-                let roleStatus = false;
-                let nicknameStatus = false;
-                let extraInfo = [];
-                if(server.verifiedRole){
-                    
-                    let user = message.guild.members.cache.get(userId);
-                    let role = message.guild.roles.cache.get(server.verifiedRole);
-                    if(role){
-                        if(!user.roles.cache.get(server.verifiedRole)){
-                            
-                            await user.roles.add(server.verifiedRole,"auto verified role")
-                            .catch(err=> {
-                                roleStatus = false;
-                                extraInfo.push("Couldn't add the role.");
-                            });
-                            if(user.roles.cache.get(server.verifiedRole)) roleStatus = true;
-                        } else {
-                            roleStatus = true;
-                        }
-                    } else {
-                        extraInfo.push("Verified role not found in this server");
-                    }
-                    
-                } else extraInfo.push("Verified role isn't enabled in this server.");
-                if(server.forceRobloxNames){
-                    let user = message.guild.members.cache.get(userId);
-
-                    await user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
-                    .catch(err=> {
-                        nicknameStatus = false;
-                        extraInfo.push("Couldn't update the nickname.");
-                    });
-                    if(user.nickname === robloxBody.robloxUsername){
-                        nicknameStatus = true;
-                    } else nicknameStatus = false;
-                } else extraInfo.push("Roblox nicknames aren't enabled in this server.");
-                
-        
-                embed = makeEmbed(`Roblox status`,``,server,false,"Powered by Rover.link");
-                embed.addField("Nickname",`[${nicknameStatus ? "✅" : "❌"}]`,true);
-                embed.addField("Roles",`[${roleStatus ? "✅" : "❌"}]`,true);
-                if(extraInfo.length)embed.addField("**Extra info**",`${extraInfo.join(",\n")}`,false);
-                
-            } else{
-                let roleStatus = false;
-                let nicknameStatus = false;
-                let extraInfo = [];
-
-                if(server.verifiedRole){
-                    
-                    let user = message.guild.members.cache.get(userId);
-                    let role = message.guild.roles.cache.get(server.verifiedRole);
-                    if(role){
-                        if(user.roles.cache.get(server.verifiedRole)){
-                        
-                            user.roles.remove(server.verifiedRole,"auto verified role")
-                            .then(yes=> roleStatus = true)
-                            .catch(err=> {
-                                roleStatus = false;
-                                extraInfo.push("Couldn't remove the role.");
-                            });
-                            if(!user.roles.cache.get(server.verifiedRole))roleStatus = true;
-                        } else {
-                            roleStatus = true;
-                        }
-                    } else {
-                        extraInfo.push("Verified role not found in this server");
-                    }
-                    
-                } else extraInfo.push("Verified role isn't enabled in this server.");
-
-
-                embed = makeEmbed(`Roblox status`,``,server,false,"Powered by Rover.link");
-                embed.addField("Nickname",`[${nicknameStatus ? "✅" : "❌"}]`,true);
-                embed.addField("Roles",`[${roleStatus ? "✅" : "❌"}]`,true);
-                if(extraInfo.length)embed.addField("**Extra info**",`${extraInfo.join(",\n")}`,false);
-            }
+            let embed = await updateRobloxUser(message, userId, server, true);       
         
             message.reply({embeds: [embed]}).catch(err=>err);
             return true;

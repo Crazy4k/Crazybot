@@ -21,7 +21,7 @@ sus.set({
 
 sus.execute = (message, args, server) => {
 	
-	const crewMates = ["AMOGUS.mp4","Black.png","Blue.png","Lime.png","Pink.png","Red.png","sos.mp4","White.png"];
+	
 	const imposters = [
 		"https://www.youtube.com/watch?v=KByREO4gB0M",
 		"https://www.youtube.com/watch?v=iy-yWsECrUQ",
@@ -42,15 +42,10 @@ sus.execute = (message, args, server) => {
 		"https://www.youtube.com/watch?v=7LcPbuD12lQ" 
 	]
 	
-	let winner = pickRandom(3);
-
-	if(winner === 2){
-		message.reply({content: `amogus`, files :[`./sus pictures/${pickRandom(crewMates)}`]});
-		return true;
-	}else {
-		message.reply(`amogus\n${pickRandom(imposters)}`);
-		return true;
-	}
+	
+	message.reply(`amogus\n${pickRandom(imposters)}`);
+	return true;
+	
 	
 }
 	

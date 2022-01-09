@@ -15,7 +15,7 @@ let caches = {
     trackedRaiders: [],
     trackedMassRaids : {},
     raiderCache : {},
-    raiderTrackerChannelCache : {raiders: null, custom : null},
+    raiderTrackerChannelCache : {raiders: null, raids : null},
     tempCmds : {},
     timerCache : [timer.getTimeValues(), timer.getTotalTimeValues()],
     executes : {slash: {}, legacy: {}},

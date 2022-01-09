@@ -88,7 +88,6 @@ try {
         embed.addFields(
             {name:'Delete messages in logs? :x:', value:`${server.deleteMessagesInLogs}\nChange value:\n\`${server.prefix}${this.name} deleteInLogs\``, inline:true},
             {name:'Delete failed commands?:clock1:', value:`${server.deleteFailedCommands}\nChange value:\n\`${server.prefix}${this.name} deleteFails\``, inline:true},
-            {name:'Language :abc:', value:`${server.language}`, inline:true},
             {name:'Prefix :information_source:', value:`${server.prefix}\nChange value:\n\`${server.prefix}${this.name} prefix\``, inline:true},
             {name:'Default embed color 🎨', value:`${server.defaultEmbedColor}\nChange value:\n\`${server.prefix}${this.name} color\``, inline:true}
         );

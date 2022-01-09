@@ -1,3 +1,5 @@
+//creates and retuns a simple embed with specific settings
+
 const Discord = require('discord.js');
 let creator = "developed by Crazy4k#0091";
 const moment = require("moment");

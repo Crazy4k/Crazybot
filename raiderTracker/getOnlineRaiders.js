@@ -85,16 +85,21 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
     return embed;
 }
 
-module.exports = async function stalk( noblox, userIds, discordClient , channelId = null){// this function will look for the online players and send message notifying that they're online
+module.exports = async function stalk( noblox, userIds, discordClient , trackerChannelIds, raidsChannelIds = trackerChannelIds){// this function will look for the online players and send message notifying that they're online
     //noblox = noblox
     //userIds = an array of roblox player ids to check the Presences of
     //discordClient = the disord client object
     // an array of discord channel ids to send message in
         
     let arrayOfChannels = [];
-    for (let id in channelId) {//this will itererate through channelId whether it was an object or array
-        let channel =  discordClient.channels.cache.get(channelId[id]);//if the channel exists,
+    let arrayOfOtherChannels = [];
+    for (let id in trackerChannelIds) {//this will itererate through trackerChannelIds whether it was an object or array
+        let channel =  discordClient.channels.cache.get(trackerChannelIds[id]);//if the channel exists,
         if(channel)arrayOfChannels.push(channel.id);//push it to the arrayOfChannels array which is the the one including the valid ones
+    }
+    for (let id in raidsChannelIds) {
+        let channel =  discordClient.channels.cache.get(raidsChannelIds[id]);
+        if(channel)arrayOfOtherChannels.push(channel.id);
     }
 
     if(arrayOfChannels.length){//if there is at least 1 valid channel id
@@ -112,23 +117,23 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
         
 
         
-/*there are roughly 4 if statements like this one where they check how many properties are in the (raiderCache) object.
- This is to determine whether or not this is the first time running the tracker or if there is no one online  
- 
- if(no users are in the cache before){
-    filter(ms1,ms2)bla bla bla
-    make embeds that new users joined
-    send the embed
- } else if(there are already users in the cache before){
-     make a new object with the newly fetched users
-     filter ms1 and ms2
+        /*there are roughly 4 if statements like this one where they check how many properties are in the (raiderCache) object.
+        This is to determine whether or not this is the first time running the tracker or if there is no one online  
+        
+        if(no users are in the cache before){
+            filter(ms1,ms2)bla bla bla
+            make embeds that new users joined
+            send the embed
+        } else if(there are already users in the cache before){
+            make a new object with the newly fetched users
+            filter ms1 and ms2
 
-     if(the old cache has no users(empty) and the new one has new users){
-        find the difference(loop through the 2 objects and if a property doesnt exist in the old object, then a user joined. If the property doesnt exist in the new object, then a user left)
-     }
- }
- 
- */
+            if(the old cache has no users(empty) and the new one has new users){
+                find the difference(loop through the 2 objects and if a property doesnt exist in the old object, then a user joined. If the property doesnt exist in the new object, then a user left)
+            }
+        }
+        
+        */
         if(!Object.values(raiderCache).length){
             let changes = new Discord.Collection();
             let joins = [];
@@ -170,7 +175,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
             
         } else{
 
-
+            
             let newCache = {};
             let changes = new Discord.Collection();
             let joins = [];
@@ -181,6 +186,10 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                     newCache[user.userId] = `${user.rootPlaceId} ${user.placeId} placeId=${user.placeId}&gameId=${user.gameId}`;
                 }
             }
+            console.log("raiderCache");
+            console.log(raiderCache);
+            console.log("newCache");
+            console.log(newCache);
             
             if(!Object.values(raiderCache).length  && Object.values(newCache).length ) {
                 for(let I in newCache){
@@ -198,14 +207,14 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
             } else if(Object.values(raiderCache).length && !Object.values(newCache).length ) {
                 for(let I in raiderCache){
                         if(raiderCache[I] && !newCache[I]){
-                        let isValid = 1;
-                        const username = await roblox.getUsernameFromId(I).catch(isValid = 0);
-                        if(!isValid)continue;
-                        const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
-                        embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
-                        
-                        changes.set(`${I}-${raiderCache[I]}`,embed);
-                        leaves.push(embed);
+                            let isValid = 1;
+                            const username = await roblox.getUsernameFromId(I).catch(err=>isValid = 0);
+                            if(!isValid)continue;
+                            const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
+                            embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
+                            
+                            changes.set(`${I}-${raiderCache[I]}`,embed);
+                            leaves.push(embed);
                         
                     }
                 }
@@ -293,7 +302,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
             cache.raiderCache = newCache;
 
             
-            if(Object.values(raiderCache).length > 5){//This is the "big raids detector" is check if there are a lot of people in the same server
+            if(Object.values(raiderCache).length > 2){//This is the "big raids detector" is check if there are a lot of people in the same server
                 let differentServers = {};
                 for(let i in raiderCache){
                     let cacheDataArray = raiderCache[i].split(" ");
@@ -306,15 +315,14 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                 for(let instantLink in differentServers){
                     
                     let property = differentServers[instantLink];
-                    
-                    if(property > 4){
+                    if(property >= 3){
                         let placeId = instantLink.split("&")[0].replace("placeId=","");
                         let place = whatPlace(placeId);
 
                         if(trackedMassRaids[instantLink])return;
                         trackedMassRaids[instantLink] = property;
-
-                        let severity = property >= 12 ? "**EXTREMELY HIGH**" : property >= 10 ? "**Very high**" : property >= 8 ? "High" : property >= 6 ? "Above average" : "Normal";
+                        console.log(1);
+                        let severity = property >= 12 ? "**EXTREMELY HIGH**" : property >= 10 ? "**Very high**" : property >= 8 ? "High" : property >= 5 ? "Dangerous" : "Normal";
 
 
                         const embed = makeEmbed("⚠ Big raid detected ⚠",`There is a big raid going on in ${place}! They need your help!!`,colors.orange);
@@ -327,7 +335,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
 
 
 
-                        for(let id of arrayOfChannels){
+                        for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log){
                                 let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
@@ -337,10 +345,11 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                             }
                             
                         }
-
-                    } else  if(property <= 1){
                         
 
+                    } else  if(property <= 1 && trackedMassRaids[instantLink] > 1){
+                        
+                        
                         let placeId = instantLink.split("&")[0].replace("placeId=","");
                         let place = whatPlace(placeId);
 
@@ -349,8 +358,9 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
                         delete trackedMassRaids[instantLink]
+                        cache.trackedMassRaids = trackedMassRaids;
 
-                        for(let id of arrayOfChannels){
+                        for(let id of arrayOfOtherChannels){
                         let log = discordClient.channels.cache.get(id);
                         if(log){
                             
@@ -365,7 +375,10 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                 
                 for(let instantLink in trackedMassRaids){
 
-                    if(trackedMassRaids[instantLink] && !differentServers[instantLink]){
+                    if(trackedMassRaids[instantLink] && !differentServers[instantLink]){console.log(3);
+
+                        
+
                         let placeId = instantLink.split("&")[0].replace("placeId=","");
                         let place = whatPlace(placeId);
 
@@ -373,34 +386,35 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
                         embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
-                        delete trackedMassRaids[instantLink];
 
-                        for(let id of arrayOfChannels){
+                        for(let id of arrayOfOtherChannels){
                             
-                        let log = discordClient.channels.cache.get(id);
-                        if(log)log.send({embeds:[embed]}).catch(e=> console.log(e));
-                            
-                        
-                       }
+                            let log = discordClient.channels.cache.get(id);
+                            if(log)log.send({embeds:[embed]}).catch(e=> console.log(e));   
+                        }
+
+                       delete trackedMassRaids[instantLink];
                     }
 
                 }
-            
+                cache.trackedMassRaids = trackedMassRaids;
 
             } else if(Object.values(trackedMassRaids).length){
                 for(let instantLink in trackedMassRaids){
-                    if(trackedMassRaids[instantLink] <= 1){
-                            
+                    if(trackedMassRaids[instantLink] <= 1){console.log(4);
+                        
+                        let link = instantLink;
                         let placeId = instantLink.split("&")[0].replace("placeId=","");
                         let place = whatPlace(placeId);
 
                         const embed = makeEmbed(`The Big ${place} raid has cooled down`,`All of the raiders left the ${place} server`,colors.failRed);
-                        embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
+                        embed.addField("Last amount of raider recorded",`${trackedMassRaids[link]}`,true);
                         embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
-                        delete trackedMassRaids[instantLink]
+                        delete trackedMassRaids[link];
+                        
 
-                        for(let id of arrayOfChannels){
+                        for(let id of arrayOfOtherChannels){
                         let log = discordClient.channels.cache.get(id);
                         if(log){
                             
@@ -411,6 +425,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , channelI
 
                     }
                 }
+                cache.trackedMassRaids = trackedMassRaids;
 
             }
 

@@ -27,7 +27,7 @@ trackers.set({
             name : "type",
             description : "The tracker type to modify",
             required : false,
-            choices: [ {name:"TSU AoS/KoS raiders tracker",value:"raider"},  ],
+            choices: [ {name:"AoS/KoS raiders tracker",value:"raider"}, {name:"AoS/KoS raids detector",value:"raider"}, ],
             type: 3,
 		}
         
@@ -51,11 +51,22 @@ trackers.execute = async function(message, args, server, isSlash) {
 
     const messageFilter = m => !m.author.bot && m.author.id === author.id;
     let  raiderCache;
+    let raidsCache;
     try {
         await mongo().then(async (mongoose) =>{
             try{
-                let data = await raiderTrackerSchema.findOne({_id:"69"});
+                let data = await raiderTrackerSchema.findOne({_id:"raiders"});
                 raiderCache = botCache.raiderTrackerChannelCache.raiders = data;
+    
+            } finally{
+                console.log("FETCHED TRACKER CHANNELS");
+                mongoose.connection.close();
+            }
+        });
+        await mongo().then(async (mongoose) =>{
+            try{
+                let data = await raiderTrackerSchema.findOne({_id:"raids"});
+                raidsCache = botCache.raiderTrackerChannelCache.raids = data;
     
             } finally{
                 console.log("FETCHED TRACKER CHANNELS");
@@ -72,9 +83,12 @@ trackers.execute = async function(message, args, server, isSlash) {
             }else{
                 embed.addField("**Raider tracker:**", `**Tracker channel:**    \`No channel\`\n**Change value:**    \`${server.prefix}${this.name} raiders\`\n**Pinged role:** \`@raider_pings\``, true)
             }
+            if(raidsCache.channels[message.guild.id]){
+                embed.addField("**Big raids detector:**", `**Tracker channel:**    <#${raidsCache.channels[message.guild.id]}>\n**Change value:**   \`${server.prefix}${this.name} raids\`\n**Pinged role:** \`@raider_pings\``, true);
+            }else{
+                embed.addField("**Big raids detector:**", `**Tracker channel:**    \`No channel\`\n**Change value:**    \`${server.prefix}${this.name} raids\`\n**Pinged role:** \`@raider_pings\``, true)
+            }
                       
-            
-
             message.reply({embeds:[embed]});
             return false;
 
@@ -83,8 +97,8 @@ trackers.execute = async function(message, args, server, isSlash) {
             switch (type.toLowerCase()) {
                 case "raiders":
                 case "raider":
-                    let embedo1 = makeEmbed("Raider tracker", `${type0Message}** Enter or ping your raider tracker channel.**`, server);
-                    message.reply({embeds:[embedo1]})
+                    let embedo2 = makeEmbed("Raider tracker", `${type0Message}** Enter or ping your raider tracker channel.**`, server);
+                    message.reply({embeds:[embedo2]})
                         .then(m => {
                             message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
                                 .then(async a => {   
@@ -111,7 +125,7 @@ trackers.execute = async function(message, args, server, isSlash) {
                                     }
                                     await mongo().then(async (mongoose) =>{
                                         try{ 
-                                            await raiderTrackerSchema.findOneAndUpdate({_id:"69"},{
+                                            await raiderTrackerSchema.findOneAndUpdate({_id:"raiders"},{
                                                 channels: raiderCache.channels,
                                             },{upsert:false});
                                             message.channel.send(`**Raider tracker channel has been successfully updated ✅.**`)
@@ -128,7 +142,56 @@ trackers.execute = async function(message, args, server, isSlash) {
                         });
 
                         return true;
-                    break; 
+                    break;
+                case"raids":
+                case"big raids":
+
+
+                let embedo1 = makeEmbed("Big raids detector", `${type0Message}** Enter or ping your raids notification channel.**`, server);
+                message.reply({embeds:[embedo1]})
+                    .then(m => {
+                        message.channel.awaitMessages({filter:messageFilter, max: 1, time : 1000 * 30, errors: ['time']})
+                            .then(async a => {   
+                                let toCheck =   checkChannels(a);
+                                switch (toCheck) {
+                                    case "not valid":
+                                    case "no args": 
+                                    case "not useable":              
+                                            message.channel.send("Invalid argument, command failed.");
+
+                                            return false;
+                                            break;
+                                        case "cancel":
+                                            message.channel.send(cancerCultureMessage);
+
+                                            return false;
+                                            break;
+                                        case "no":
+                                            raidsCache.channels[message.guild.id] = "";
+                                            break;
+                                        default:
+                                            raidsCache.channels[message.guild.id] = toCheck;
+                                            break;
+                                }
+                                await mongo().then(async (mongoose) =>{
+                                    try{ 
+                                        await raiderTrackerSchema.findOneAndUpdate({_id:"raids"},{
+                                            channels: raidsCache.channels,
+                                        },{upsert:false});
+                                        message.channel.send(`**Raids detection channel has been successfully updated ✅.**`)
+                                        botCache.raiderTrackerChannelCache.raids = raidsCache;
+                                    } finally{
+                                        console.log("WROTE TO DATABASE");
+                                        mongoose.connection.close();
+                                    }
+                                });
+                            }).catch(e => {
+                                console.log(e)
+                                message.channel.send(idleMessage);
+                            });
+                    });
+
+                    return true;
                 default:
                     message.channel.send("Invalid value.");
                     return false;

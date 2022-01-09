@@ -224,10 +224,7 @@ client.on("interactionCreate",async (interaction)=>{
 //handle timeouts
 
 const remind = require("./functions/time-outs/remind");
-
-
-
-	mongo().then(async (mongoose) =>{
+mongo().then(async (mongoose) =>{
 	try{
 		const data = await timerSchema.findOne({_id:"remindme"});
 		data ? botCache.timeOutCache["remindme"] = data : botCache.timeOutCache["remindme"] = {};
@@ -274,7 +271,7 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 	try {
 		await mongo().then(async (mongoose) =>{
 			try{
-				let data = await raiderTrackerSchema.findOne({_id:"69"});
+				let data = await raiderTrackerSchema.findOne({_id:"raiders"});
 				botCache.raiderTrackerChannelCache.raiders = data;
 	
 			} finally{
@@ -282,7 +279,18 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 				mongoose.connection.close();
 	
 			}
-		})
+		});
+		await mongo().then(async (mongoose) =>{
+			try{
+				let data = await raiderTrackerSchema.findOne({_id:"raids"});
+				botCache.raiderTrackerChannelCache.raids = data;
+	
+			} finally{
+				console.log("FETCHED RAIDS CHANNELS");
+				mongoose.connection.close();
+	
+			}
+		});
 
 		let groupsArray =  []
 		for(let group of raiderGroupsJSON){
@@ -315,13 +323,13 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 	
 		setInterval(async () => {
 			try {
-				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels)	
+				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels, botCache.raiderTrackerChannelCache.raids.channels)	
 			} catch (error) {
 				console.log("error in the raider tracker")
 				console.log(console.log(error));
 			}
 			
-		}, 180 * 1000);
+		}, 210 * 1000);
 
 
 	} catch (error) {
@@ -341,15 +349,12 @@ setInterval(()=>{
 	let members = 0; 
 	client.guilds.cache.each(guild => members += guild.memberCount);
 	let servers  = client.guilds.cache.size;
-	let raiderCount = botCache.trackedRaiders.length;
+
 	
 
 	let status = [
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
-		{str:`${raiderCount} raiders`,type:{type: "WATCHING"}},
-		{str:"to /updates",type:{type: "LISTENING"}},
 		{str:"to /help",type:{type: "LISTENING"}},
-		{str:"over your points",type:{type: "WATHCING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
 
 	];

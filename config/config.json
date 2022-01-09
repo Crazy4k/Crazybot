@@ -1,10 +1,10 @@
 {
   "bot_info": {
     "name": "crazybot",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "auhtor": "crazy4k",
     "authorID": "573205398526361620",
-    "testGuildId": "834734044729704508",
+    "testGuildId": "872127450270810122",
     "clientLogs" : "922841133049057330",
     "dmSettings":{
       "prefix": ";",

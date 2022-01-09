@@ -1,10 +1,16 @@
-module.exports = (message, msgToSend, server, ignoreDefaultSetting = false, isDM = false) => {
+module.exports = async(message, msgToSend, server, ignoreDefaultSetting = false, isDM = false) => {
  
     if(message.type === "APPLICATION_COMMAND"){
         if(typeof msgToSend === "object"){
-            message.reply({embeds:[msgToSend],ephemeral : true});
+
+            if(message.deferred){
+                message.editReply({embeds:[msgToSend],ephemeral : true});
+            } else message.reply({embeds:[msgToSend],ephemeral : true});
+
         } else if(typeof msgToSend === "string"){
-            message.reply({content: msgToSend ,ephemeral : true});
+            if( message.deferred){
+                message.editReply({content: msgToSend ,ephemeral : true});
+            } else message.reply({content: msgToSend ,ephemeral : true});
         }
         
 

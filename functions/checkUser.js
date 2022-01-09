@@ -1,3 +1,5 @@
+//this function takes a string like <@123456789101112> and converts it into a user id
+
 module.exports = (message, args, num = 0) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){

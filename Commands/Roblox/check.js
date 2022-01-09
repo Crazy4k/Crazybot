@@ -143,6 +143,7 @@ check.execute = async (message, args, server, isSlash) =>{
 
             default:
 
+                if(isSlash)message.deferReply();
                 
                 if(username === author.id)isAuthor = true;
                 
@@ -161,11 +162,14 @@ check.execute = async (message, args, server, isSlash) =>{
                 if(!status){
                     if(isAuthor){
                         const embed = makeEmbed("User not found", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\` or enter your roblox username like this: \`${server.prefix}check [Roblox username or ID]\``,server);
-                        message.reply({embeds:[embed]});
+
+                        if(isSlash)message?.editReply({embeds: [embed]});
+                        else  message.reply({embeds: [embed]});
                         return true;
                     }else{
                         const embed = makeEmbed("User not found", "Couldn't find the Roblox profile of this Discord account because the user isn't verified",server);
-                        message.reply({embeds:[embed]});
+                        if(isSlash)message?.editReply({embeds: [embed]});
+                        else  message.reply({embeds: [embed]});
                         return true;
                     }
                     
@@ -212,7 +216,8 @@ check.execute = async (message, args, server, isSlash) =>{
                 gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
                 if(isBanned){
                     const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
-                    message.reply({embeds:[embed]});
+                    if(isSlash)message?.editReply({embeds: [embed]});
+                    else  message.reply({embeds: [embed]});
                     return true
                 }
                 let i = 0;
@@ -225,7 +230,8 @@ check.execute = async (message, args, server, isSlash) =>{
                 gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
                 if(isBanned){
                     const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
-                    message.reply({embeds:[embed]});
+                    if(isSlash)message?.editReply({embeds: [embed]});
+                    else  message.reply({embeds: [embed]});
                     return true
                 }
                 i = 0;
@@ -277,16 +283,19 @@ check.execute = async (message, args, server, isSlash) =>{
                 embed.addField(`Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
                 embed.addField(`Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
                 embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
-                message.reply({embeds:[embed]});
+                if(isSlash)message?.editReply({embeds: [embed]});
+                else  message.reply({embeds: [embed]});
                 return true;
 
         } else if(isAuthor){
             const embed = makeEmbed("User not found", "**You're not verfied**\n please connect your Roblox account using `;verify`",server);
-            message.reply({embeds:[embed]});
+            if(isSlash)message?.editReply({embeds: [embed]});
+            else  message.reply({embeds: [embed]});
             return true;
         } else{
             const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr an error could've occured.",server);
-            message.reply({embeds:[embed]});
+            if(isSlash)message?.editReply({embeds: [embed]});
+            else  message.reply({embeds: [embed]});
             return true;
         }
 

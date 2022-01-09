@@ -13,8 +13,8 @@ const cancerCultureMessage = "Command cancelled successfully";
 let roblox = new Command("roblox");
 roblox.set({
 	aliases         : [],
-	description     : "modifies the settings of the server",
-	usage           : "server [option]",
+	description     : "modifies the roblox related settings of the server",
+	usage           : "roblox [option]",
 	cooldown        : 5,
 	unique          : true,
 	category        : "config",
@@ -29,6 +29,7 @@ roblox.set({
             choices: [
                 {name: "Force Roblox usernames as nicknames", value: "forceRobloxNames"},
                 {name: "Roblox Verified role", value: "verifiedRole"},
+                //{name: "Update new people upon joining server", value: "autoupdate"}
                 
             ],
             required : false,
@@ -69,12 +70,13 @@ try {
         const embed = makeEmbed("Roblox settings", `Your Roblox-to-Discord configuration look like this:`, server);
 
         if(server.verifiedRole){
-            embed.addField('Verified role', `<@&${server.verifiedRole}>\nChange value:\n\`${server.prefix}${this.name} role\``, true);
+            embed.addField('Verified role', `Role: <@&${server.verifiedRole}>\n\nChange value:\n\`${server.prefix}${this.name} role\``, true);
         }else {
-            embed.addField('Verified role', `Empty\nChange value:\n\`${server.prefix}${this.name} role\``, true);
+            embed.addField('Verified role', `Empty\n\nChange value:\n\`${server.prefix}${this.name} role\``, true);
         }
         
-        embed.addField('Roblox usernames as Discord nicknames?', `${server.forceRobloxNames? "✅": "❌"}\nChange value:\n\`${server.prefix}${this.name} nicknames\``, true);
+        embed.addField('Roblox usernames as Discord nicknames?', `Value: ${server.forceRobloxNames? "✅": "❌"}\n\nChange value:\n\`${server.prefix}${this.name} nicknames\``, true);
+       // embed.addField('Automatically update new members', `Value: ${server.autoupdate? "✅": "❌"}\n\nChange value:\n\`${server.prefix}${this.name} autoupdate\``, true);
         
         message.reply({embeds:[embed]});
         return false;
@@ -87,7 +89,7 @@ try {
             case "role":
             case "verify":
             case "verifiedrole":
-                let embedo1 = makeEmbed("Roblox Settings", `${type0Message}**Enter  your verified role.**`, server);
+                let embedo1 = makeEmbed("Roblox server Settings", `${type0Message}**Enter  your verified role.**`, server);
                 message.reply({embeds: [embedo1]})
                     .then(m => {
                         message.channel.awaitMessages({filter:messageFilter,max: 1, time : 1000 * 30, errors: ['time']})
@@ -133,7 +135,7 @@ try {
             case "forcerobloxnames":
             case "nicknames":
             case "names":
-                let embedo7 = makeEmbed("Server Settings", `**Do you want Roblox usernames to be nicknames in this discord?**\nThis will change the nickname of everyone in this server.`, server);
+                let embedo7 = makeEmbed("Roblox server Settings", `**Do you want Roblox usernames to be nicknames in this discord?**\nThis will change the nickname of everyone in this server.`, server);
                 message.reply({embeds:[embedo7], components: [row]})
                 .then(async m => {
                     let replyMessage;
@@ -177,7 +179,54 @@ try {
                         });
                     });
                     return true;
-                break;                                    
+                break;   
+          /*  case "autoupdate":
+            case "update":
+                let embed = makeEmbed("Roblox server Settings", `**Do you want the bot to do the ${server.prefix}update command to newly joined members automatically?**`, server);
+                message.reply({embeds:[embed], components: [row]})
+                .then(async m => {
+                    let replyMessage;
+                    if(isSlash)replyMessage = await  message.fetchReply();
+                    else replyMessage = m;
+                    
+                    replyMessage.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 30, errors : ["time"] })
+                        .then(async a =>{
+                            
+                            switch (a.customId) {
+                                case "true":
+                                    daServer.autoupdate = true;
+                                    a.update({components:[]});
+                                    break;
+                                case "false":
+                                    daServer.autoupdate = false;
+                                    a.update({components:[]});
+                                    break;
+                                default:
+                                    message.channel.send(cancerCultureMessage);
+                                    a.update({components:[]});
+                                    return false;
+                                    break;
+                            }
+                            await mongo().then(async (mongoose) =>{
+                                try{ 
+                                    await serversSchema.findOneAndUpdate({_id:message.guild.id},{
+                                        autoupdate: daServer.autoupdate,
+                                    },{upsert:false});
+                                    message.channel.send(`**Boolean status has been successfully updated ✅.**`)
+                                    guildsCache[message.guild.id] = daServer;
+                                } finally{
+                                    console.log("WROTE TO DATABASE");
+                                    mongoose.connection.close();
+                                }
+                            });
+                        }).catch(e => {
+                            if(isSlash) message.editReply({components:[]});
+                            else newMsg.edit({components:[]});
+                            message.channel.send(idleMessage);
+                        });
+                    });
+                    return true;
+                break;  */ 
             default:
                 message.channel.send("Invalid value.");
                 break;

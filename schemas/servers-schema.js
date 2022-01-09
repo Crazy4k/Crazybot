@@ -17,6 +17,8 @@ const guildSchema = mongoose.Schema({
     hostRole:{type:String,required:false},
     verifiedRole:requiredString,
     forceRobloxNames:{type:Boolean,required:true},
+    autoupdate: {type:Boolean, required:true},
+    robloxBinds:{type:Object,required:true},
     language:requiredString,
     prefix:requiredString,
     defaultEmbedColor:requiredString,
