@@ -2,30 +2,32 @@ let {pointsCache, guildsCache } = require("../caches/botCache");
 
 const pointsSchema = require("../schemas/points-schema");
 const guildsSchema = require("../schemas/servers-schema");
-
-
-
 const mongo = require("../mongo");
 
+/**
+ * Creates missing data, deletes useless/expired data, fetches stuff from discord and updates all caches with the bot.
+ * @param {object} object An object that has the guild property in it 
+ * @returns {object} an array of strings of what has been change
+ */
+module.exports = async (object) => {
+    
+    let {guild} = object;
 
-module.exports = async (message,) => {
-    
-    
-    console.log(`Syncing for ${message.guild.name} executed.`);
+    console.log(`Syncing for ${guild.name} executed.`);
     
     let whatToSay = [];
 
     let data1;
     let data2;
 
-    message.guild.members.fetch();
-    message.guild.channels.fetch();
-    message.guild.roles.fetch();
+    guild.members.fetch();
+    guild.channels.fetch();
+    guild.roles.fetch();
 
     
     await mongo().then(async (mongoose) =>{
         try{ 
-            data1 = guildsCache[message.guild.id] = await guildsSchema.findOne({_id:message.guild.id});
+            data1 = guildsCache[guild.id] = await guildsSchema.findOne({_id:guild.id});
         } finally{
             console.log("FETCHED FROM DATABASE");
             mongoose.connection.close();
@@ -36,7 +38,7 @@ module.exports = async (message,) => {
     if(data1 === null){
         whatToSay.push("\n*Created a missing file of the server on the data base.");
         const serverObject = {
-            guildId: message.guild.id,
+            guildId: guild.id,
 			hiByeChannel:"",
 			hiRole: "",
             hiString:`:green_circle: {<member>} Welcome to the server, have a great time :+1:`,
@@ -59,7 +61,7 @@ module.exports = async (message,) => {
 
         await mongo().then(async (mongoose) =>{
             try{ 
-                await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
+                await guildsSchema.findOneAndUpdate({_id:guild.id},{
                     _id: serverObject.guildId,
 					hiByeChannel: serverObject.hiByeChannel,
 					hiRole: serverObject.hiRole,
@@ -80,7 +82,7 @@ module.exports = async (message,) => {
 					logs: serverObject.logs,  
                       
                 },{upsert:true});
-                guildsCache[message.guild.id] = serverObject;
+                guildsCache[guild.id] = serverObject;
             } finally{
                 console.log("WROTE TO DATABASE");
                 mongoose.connection.close();
@@ -97,18 +99,18 @@ module.exports = async (message,) => {
         await mongo().then(async (mongoose) =>{
             try{ 
                 if(!data1.hiString){
-                    await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
+                    await guildsSchema.findOneAndUpdate({_id:guild.id},{
                         hiString: obj.hiString
                     },{upsert:true});
                 }
                 if(!data1.byeString){
-                    await guildsSchema.findOneAndUpdate({_id:message.guild.id},{
+                    await guildsSchema.findOneAndUpdate({_id:guild.id},{
                         byeString: obj.byeString
                     },{upsert:true});
                 }
                 
-                guildsCache[message.guild.id].hiString = obj.hiString;
-                guildsCache[message.guild.id].byeString = obj.byeString;
+                guildsCache[guild.id].hiString = obj.hiString;
+                guildsCache[guild.id].byeString = obj.byeString;
             } finally{
                 console.log("WROTE TO DATABASE");
                 mongoose.connection.close();
@@ -119,7 +121,7 @@ module.exports = async (message,) => {
 
     await mongo().then(async (mongoose) =>{
         try{ 
-            data2 = pointsCache[message.guild.id] = await pointsSchema.findOne({_id:message.guild.id});
+            data2 = pointsCache[guild.id] = await pointsSchema.findOne({_id:guild.id});
         } finally{
             console.log("FETCHED FROM DATABASE");
             mongoose.connection.close();
@@ -131,20 +133,20 @@ module.exports = async (message,) => {
         whatToSay.push("*\nCreated a missing file of the server on the data base.");
         mongo().then(async (mongoose) =>{
             let temp = {	
-                _id: message.guild.id,
+                _id: guild.id,
                 whiteListedRole:"",
                 members:{},
                 rewards:{}
 
             }
             try{
-                await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
-                    _id:message.guild.id,
+                await pointsSchema.findOneAndUpdate({_id:guild.id},{
+                    _id:guild.id,
                     whiteListedRole:"",
                     members:{},
                     rewards : {} 
                 },{upsert:true});
-                pointsCache[message.guild.id] = temp;
+                pointsCache[guild.id] = temp;
             } finally{
                 
                 console.log("WROTE TO DATABASE");
@@ -152,17 +154,17 @@ module.exports = async (message,) => {
             }
         });	
         
-    }else if(pointsCache[message.guild.id].members){
+    }else if(pointsCache[guild.id].members){
         
         let newObj ={};
         let size1 = 0;
         let size2 = 0;
 
-        for (const key in pointsCache[message.guild.id].members) {
+        for (const key in pointsCache[guild.id].members) {
             size1++;
-            if(message.guild.members.cache.get(key)) {
+            if(guild.members.cache.get(key)) {
                 size2++;
-                newObj[key] = pointsCache[message.guild.id].members[key];
+                newObj[key] = pointsCache[guild.id].members[key];
             }
         }
 
@@ -171,10 +173,10 @@ module.exports = async (message,) => {
             await mongo().then(async (mongoose) =>{
                 try{
                     
-                    await pointsSchema.findOneAndUpdate({_id:message.guild.id},{
+                    await pointsSchema.findOneAndUpdate({_id:guild.id},{
                         members:newObj  
                     },{upsert:true});
-                    pointsCache[message.guild.id].members = newObj;
+                    pointsCache[guild.id].members = newObj;
                     
                 } finally{
                     
@@ -186,7 +188,7 @@ module.exports = async (message,) => {
     }
 
 
-    console.log(`Syncing ended for ${message.guild.name}.`);
+    console.log(`Syncing ended for ${guild.name}.`);
     
     return whatToSay;
 

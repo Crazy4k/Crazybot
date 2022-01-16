@@ -6,10 +6,9 @@ const config = require("../config/config.json");
 let {guildsCache} = require("../caches/botCache");
 const makeEmbed = require("../functions/embed");
 const colors = require("../config/colors.json");
-let client = require("../index.js");
 
-module.exports = async (guild) => {
-   
+module.exports = async (guild, client) => {
+	
 
     guildsCache[guild.id] = null;
 	try {

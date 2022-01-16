@@ -5,7 +5,14 @@ const noblox = require("noblox.js");
 
 
 
-
+/**
+ * Updates a discord user and syncs them with their Roblox profile: gives roles and updates nickname to match their Roblox account
+ * @param {object} member A discord guild member 
+ * @param {string} userId The discord ID of the guild member
+ * @param {object} server The mongoDB-stored server data
+ * @param {boolean} isCommandExecution whether or not this has been executed via a command
+ * @returns {object} Message Embed with the data regarding the update
+ */
 
 module.exports = async (member, userId, server, isCommandExecution) =>{
 
@@ -80,6 +87,14 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
                     }
                     
                 }
+                discordRolesToRemove = [...new Set(discordRolesToRemove)];
+                discordRolesToadd = [...new Set(discordRolesToadd)];
+                
+
+                discordRolesToRemove.forEach(roleId =>{
+                    if(discordRolesToadd.includes(roleId))discordRolesToRemove.splice(discordRolesToRemove.indexOf(roleId),1);
+                });
+
 
                 user.roles.remove(discordRolesToRemove,"auto role")
                 .then(yes =>{
@@ -106,14 +121,16 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
         if(extraInfo.length)embed.addField("**Extra info**",`${extraInfo.join("\n")}`,false);
         
     } else if(isCommandExecution){
+
         let roleStatus = false;
         let nicknameStatus = false;
         let extraInfo = [];
 
+        let user = member.guild.members.cache.get(userId);
+        let role = member.guild.roles.cache.get(server.verifiedRole) ?? "";
+
         if(server.verifiedRole){
             
-            let user = member.guild.members.cache.get(userId);
-            let role = member.guild.roles.cache.get(server.verifiedRole);
             if(role){
                 if(user.roles.cache.get(server.verifiedRole)){
                 
@@ -142,6 +159,8 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
             }
             
         }
+
+        discordRolesToRemove = [...new Set(discordRolesToRemove)];
         user.roles.remove(discordRolesToRemove,"auto role")
         .catch(err=> {
             roleStatus = false;
@@ -157,8 +176,4 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
    
     return embed;
 
-        
-    
-
 };
-

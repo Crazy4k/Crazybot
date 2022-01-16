@@ -16,6 +16,7 @@ update.set({
     worksInDMs      : false,
     isDevOnly       : false,
     isSlashCommand  : true,
+    requiredPerms   : "MANAGE_ROLES",
     options			: [
         {
             name : "user",

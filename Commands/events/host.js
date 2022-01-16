@@ -1,4 +1,3 @@
-const checkUseres = require("../../functions/checkUser");
 const makeEmbed = require("../../functions/embed");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const {eventsCache} = require("../../caches/botCache");
@@ -65,7 +64,7 @@ host.set({
 
 
 host.execute = function(message, args, server) { 
-    console.log(args)
+
     let isSlash = false;
 
     let author;

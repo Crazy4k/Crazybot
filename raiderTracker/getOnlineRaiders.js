@@ -158,14 +158,24 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
 
             }
             if(joins.length){
+                let iter = joins.length / 10;
+                let embeds = [];
+                for (let i = 0; i < iter; i++) {
+                    let copyOfArray = joins;
+                    let poopArray = copyOfArray.slice(i * 10, i * 10 + 10);
+                    embeds.push(poopArray);         
+                }
+
                 for(let id of arrayOfChannels){
                     let log = discordClient.channels.cache.get(id);//check again if the channel is deleted or something then send the embed in it
+
                     if(log){//if the log channel is defined (exists)
                         let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");//look for a role called "@raider_pings"
                         let ping = "@raider_pings";//if the role doesn't exist, it only says @raider_pings in the message to give a hint to the user that the role can be created
                         if(role)ping = `<@&${role.id}>`//if the role does exist, ping it instead
-                        for(let e of joins){
-                            log.send({content:ping,embeds:[e]}).catch(e=> console.log(e));//send the embed(s)
+
+                        for(let embedsArray of embeds){
+                            log.send({content:ping,embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
                         }
                     }
                     
@@ -186,10 +196,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     newCache[user.userId] = `${user.rootPlaceId} ${user.placeId} placeId=${user.placeId}&gameId=${user.gameId}`;
                 }
             }
-            console.log("raiderCache");
-            console.log(raiderCache);
-            console.log("newCache");
-            console.log(newCache);
+            
             
             if(!Object.values(raiderCache).length  && Object.values(newCache).length ) {
                 for(let I in newCache){
@@ -273,14 +280,25 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
             cache.raiderCache = newCache;//assign it to the bot's cache so that it can be read again later in the next iteration or in other commands
 
             if(joins.length){
+                
+                let iter = joins.length / 10;
+                let embeds = [];
+                for (let i = 0; i < iter; i++) {
+                    let copyOfArray = joins;
+                    let poopArray = copyOfArray.slice(i * 10, i * 10 + 10);
+                    embeds.push(poopArray);         
+                }
+                
                 for(let id of arrayOfChannels){
                     let log = discordClient.channels.cache.get(id);
                     if(log){
+                        
                         let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
                         let ping = "@raider_pings";
                         if(role)ping = `<@&${role.id}>`
-                        for(let e of joins){
-                            log.send({content:ping,embeds:[e]}).catch(e=> console.log(e));
+
+                        for(let embedsArray of embeds){
+                            log.send({content:ping,embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
                         }
                     }
                     
@@ -288,11 +306,21 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
 
             }
             if(leaves.length){
+
+                let iter = leaves.length / 10;
+                let embeds = [];
+                for (let i = 0; i < iter; i++) {
+                    let copyOfArray = leaves;
+                    let poopArray = copyOfArray.slice(i * 10, i * 10 + 10);
+                    embeds.push(poopArray);         
+                }
+
                 for(let id of arrayOfChannels){
                     let log = discordClient.channels.cache.get(id);
                     if(log){
-                        for(let e of leaves){
-                            log.send({embeds:[e]}).catch(e=> console.log(e));
+                        
+                        for(let embedsArray of embeds){
+                            log.send({embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
                         }
                     }
                     
@@ -301,8 +329,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
             raiderCache = newCache;//do it again cuz why not
             cache.raiderCache = newCache;
 
-            
-            if(Object.values(raiderCache).length > 2){//This is the "big raids detector" is check if there are a lot of people in the same server
+            let priorities = [12, 10 , 8, 5];
+            if(Object.values(raiderCache).length > 0){//This is the "big raids detector" is check if there are a lot of people in the same server
                 let differentServers = {};
                 for(let i in raiderCache){
                     let cacheDataArray = raiderCache[i].split(" ");
@@ -321,7 +349,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
 
                         if(trackedMassRaids[instantLink])return;
                         trackedMassRaids[instantLink] = property;
-                        console.log(1);
+                        
                         let severity = property >= 12 ? "**EXTREMELY HIGH**" : property >= 10 ? "**Very high**" : property >= 8 ? "High" : property >= 5 ? "Dangerous" : "Normal";
 
 
@@ -329,12 +357,12 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         embed.addField("Amount of raiders:",`${property}`,true);
                         embed.addField("severity",severity,true);
                         embed.addField("Place",`[${place}](https://www.roblox.com/games/${placeId})`)
-                        embed.addField("Started at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
+                        embed.addField("Detected at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
                         embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantLink})\n(Extention required:[chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc),[Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
                         embed.setImage(pickRandom(pictureLinks[place]));
 
 
-
+                    
                         for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log){
@@ -354,8 +382,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         let place = whatPlace(placeId);
 
                         const embed = makeEmbed(`The Big ${place} raid has cooled down`,`All of the raiders left the ${place} server`,colors.failRed);
-                        embed.addField("Last amount of raider recorded",`${trackedMassRaids[instantLink]}`,true);
-                        embed.addField("Ended  at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
+                        embed.addField("Last amount of raider recorded",`${property}`,true);
+                        embed.addField("Ended at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
 
                         delete trackedMassRaids[instantLink]
                         cache.trackedMassRaids = trackedMassRaids;
@@ -370,12 +398,40 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                        }
                         
 
+                    } if(priorities.includes(property) && property > trackedMassRaids[instantLink]){
+                        let placeId = instantLink.split("&")[0].replace("placeId=","");
+                        let place = whatPlace(placeId);
+
+                        trackedMassRaids[instantLink] = property;
+                        
+                        let severity = property >= 12 ? "**EXTREMELY HIGH**" : property >= 10 ? "**Very high**" : property >= 8 ? "High" : property >= 5 ? "Dangerous" : "Normal";
+
+
+                        const embed = makeEmbed("⚠ Severity increased ⚠",`There are more people joining the ${place} raid!`,colors.changeBlue);
+                        embed.addField("Amount of raiders:",`${property}`,true);
+                        embed.addField("severity",severity, true);
+                        embed.addField("Place",`[${place}](https://www.roblox.com/games/${placeId})`)
+                        embed.addField("**Instant travel:**",`[join instantly](https://www.roblox.com/home?${instantLink})\n(Extention required:[chrome](https://chrome.google.com/webstore/detail/roblox-url-launcher/lcefjaknjehbafdeacjbjnfpfldjdlcc),[Firefox](https://addons.mozilla.org/en-US/android/addon/roblox-url-launcher/))`,true);
+                        embed.setImage(pickRandom(pictureLinks[place]));
+
+
+
+                        for(let id of arrayOfOtherChannels){
+                            let log = discordClient.channels.cache.get(id);
+                            if(log){
+                                let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
+                                let ping = "@raider_pings";
+                                if(role)ping = `<@&${role.id}>`
+                                log.send({content:ping,embeds:[embed]}).catch(e=> console.log(e));
+                            }
+                            
+                        }
                     }
                 }
                 
                 for(let instantLink in trackedMassRaids){
 
-                    if(trackedMassRaids[instantLink] && !differentServers[instantLink]){console.log(3);
+                    if(trackedMassRaids[instantLink] && !differentServers[instantLink]){
 
                         
 
@@ -401,7 +457,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
 
             } else if(Object.values(trackedMassRaids).length){
                 for(let instantLink in trackedMassRaids){
-                    if(trackedMassRaids[instantLink] <= 1){console.log(4);
+                    if(trackedMassRaids[instantLink] <= 1){
                         
                         let link = instantLink;
                         let placeId = instantLink.split("&")[0].replace("placeId=","");

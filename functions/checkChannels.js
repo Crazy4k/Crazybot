@@ -1,5 +1,11 @@
-//this function takes a string like <#123456789101112> and converts it into a channel id
 
+/**
+ * 	takes a string like <#12345678916501112> and converts it into a channel id
+ * @param {object} message The message object
+ * @param {object} args an array of strings that is split by space bar
+ * @param {number} num index number of the args array to check for
+ * @returns {string} Channel id or "not valid"
+ */
 module.exports = (message, args, num = 0) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){
@@ -22,25 +28,10 @@ module.exports = (message, args, num = 0) => {
 switch (checkChannels(message, args, 1)) {
 			case "not valid":
 			case "not useable":
-				try {
-					const embed = makeEmbed('invalid Channel',this.usage);
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
+				
 				break;
 			case "no args": 
-			try {
-
-				const embed = makeEmbed('Missing arguments',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-				return;
-
-			} catch (error) {
-				console.error(error);
-			}
+			
 				break;
 			default:
 				break;

@@ -17,7 +17,7 @@ roblox.set({
 	usage           : "roblox [option]",
 	cooldown        : 5,
 	unique          : true,
-	category        : "config",
+	category        : "roblox",
 	whiteList       : "ADMINISTRATOR",
 	worksInDMs      : false,
 	isDevOnly       : false,

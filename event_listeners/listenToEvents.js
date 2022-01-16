@@ -83,7 +83,7 @@ module.exports = (client, mongo) => {
         }
     });
     
-    client.on('guildDelete', async (guild, client) => {
+    client.on('guildDelete', async (guild) => {
         if(!botCache.isReady)return
         try {
             guildDelete(guild, client);

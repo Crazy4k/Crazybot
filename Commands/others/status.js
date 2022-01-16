@@ -7,10 +7,10 @@ const moment = require("moment");
 const client = require("../../index");
 const Command = require("../../Classes/Command");
 
-let status = new Command("status");
+let status = new Command("stats");
 
 status.set({
-	aliases         : ["stats","lag","latency"],
+	aliases         : ["status","lag","latency"],
 	description     : "Shows basic status info related to the bot's connection and run time.",
 	usage           : "status",
 	cooldown        : 10,
@@ -20,6 +20,10 @@ status.set({
 	worksInDMs      : false,
 	isDevOnly       : false,
 	isSlashCommand  : true
+});
+const formatter = new Intl.NumberFormat('en-US', {
+	minimumFractionDigits: 2,      
+	maximumFractionDigits: 2,
 });
 
 
@@ -51,7 +55,7 @@ status.execute = async function(message, args, server) {
 			{name:"Online since", value:`<t:${parseInt(client.readyTimestamp / 1000)  }:R> | <t:${parseInt(client.readyTimestamp / 1000)}:F>`, inline: true},
 			{name:"Data base Ping ", value:`${dataBasePing} ms`, inline: true},
 			{name:"Discord API Ping ", value:`${client.ws.ping} ms`, inline: true},
-			{name:"Fetches per hour rate", value:`${fetchesCache.totalFetches / hour} Fetch per hour`, inline: true},
+			{name:"Fetches per hour rate", value:`${ formatter.format(fetchesCache.totalFetches / hour)} Fetch per hour`, inline: true},
 			
 		);
 		if(message.type === "APPLICATION_COMMAND")message.editReply({embeds:[embed]});

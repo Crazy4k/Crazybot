@@ -6,7 +6,7 @@ const makeEmbed = require("../../functions/embed");
 
 let check = new Command("verify");
 check.set({
-    aliases         : [],
+    aliases         : ["unverify"],
     description     : "Connects Roblox user with discord user using Rover",
     usage           : "verify",
     cooldown        : 5,

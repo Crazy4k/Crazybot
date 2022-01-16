@@ -12,8 +12,8 @@ let obj = {
     isSlashCommand :  false,
     isTestOnly : false,
     usage : undefined,
-    requiredArgs : [],
-    requiredPerms : Permissions.FLAGS.SEND_MESSAGES
+    options : [],
+    requiredPerms : "SEND_MESSAGES"
 }//Default options^^
 
 module.exports = class Command{
@@ -30,8 +30,8 @@ module.exports = class Command{
         this.isSlashCommand;
         this.isTestOnly;
         this.usage;
-        this.requiredArgs = [];
-        this.requiredPerms = Permissions.FLAGS.SEND_MESSAGES;
+        this.options = [];
+        this.requiredPerms = "SEND_MESSAGES"
 	}//pass object as an argument with values that you want
 
     set = function(object ){

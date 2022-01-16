@@ -6,13 +6,23 @@ const colors = require("../config/colors.json");
 const botCache = require("../caches/botCache");
 
 //makeEmbed is just a function that i made which makes embeds just to make writing embeds easier 
-
-module.exports = async (command, message, args, server, client, recentlyRan, isDM = false ) => {
-	//this checks if the property "whitlist" in a command exists and if does check if the author of the message is able to execute the command.
+/**
+ * Slashcommand-based Command handlder: adds/check cooldown, checks for permission, checks if the bot has enough permission, catches some execution errors and executes the command
+ * @param {object} command The Command object that is defined in each command folder. Includes name, description, whiteList, etc 
+ * @param {object} interaction The interaction object that executed this command
+ * @param {object} args The interaction options
+ * @param {object} server The mongoDB-stored server data 
+ * @param {object} client Discord bot client object
+ * @param {object} recentlyRan An object to store the cooldowns in
+ * @param {boolean} isDM Whether or not this message is in a DM
+ * @returns {void}
+ */
+module.exports = async (command, interaction, args, server, client, recentlyRan, isDM = false ) => {
+	//this checks if the property "whitlist" in a command exists and if does check if the author of the interaction is able to execute the command.
 	
 
-	const cooldownStringInDMs = `${message.user.id}-${command.name}`;
-	const selfCooldownStringInDMs = `${message.user.id}`;
+	const cooldownStringInDMs = `${interaction.user.id}-${command.name}`;
+	const selfCooldownStringInDMs = `${interaction.user.id}`;
 	let = cooldownTime = 2;
 	const globalCooldownTime = 2000;
 	if(command.cooldown) cooldownTime = command.cooldown;
@@ -21,23 +31,23 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 		try{
 			if(recentlyRan[selfCooldownStringInDMs]){
 				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[selfCooldownStringInDMs] - globalCooldownTime)/1000} seconds `, colors.defaultWhite);
-				sendAndDelete(message, embed, server, false, true);
+				sendAndDelete(interaction, embed, server, false, true);
 				return false;
 			}
 			else if(command.cooldown && recentlyRan[cooldownStringInDMs]){
 				let seconds = cooldownTime * 1000
 				const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownStringInDMs] - seconds)/1000} seconds `, colors.defaultWhite);
-				sendAndDelete(message, embed, server, false, true);
+				sendAndDelete(interaction, embed, server, false, true);
 				return false;
 			} else{
                 let booly;
 				if(command.worksInDMs){
-                    booly = command.execute(message, args, server, true);
+                    booly = command.execute(interaction, args, server, true);
                     botCache.executes.slash[command.name]++
 				if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                 } else{
                     const embed = makeEmbed("Command failed!",  `This command isn't executable in DMs!`, colors.defaultWhite);
-                    sendAndDelete(message, embed, server, false, true);
+                    sendAndDelete(interaction, embed, server, false, true);
                     return false;
                 }
 				
@@ -57,37 +67,37 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 		}catch(error) {
 			console.error(error);
 			const embed = makeEmbed("ERROR 101", 'There was an issue executing the command \nThe developer has been notified about the problem.', 'FF0000');
-			reportBug(error,message,client,command);
-			message.channel.send( {embeds: [embed]} );
+			reportBug(error, interaction,client,command);
+			interaction.channel.send( {embeds: [embed]} );
 		}
 	}    
     else {
-        const cooldownString = `${message.guild.id}-${message.user.id}-${command.name}`;
-        const globalCooldownString = `${message.user.id}`;
-        const uniqueCooldownString = `${message.guild.id}-${command.name}`;
-        const botUser = message.guild.members.cache.get(client.user.id);
+        const cooldownString = `${interaction.guild.id}-${interaction.user.id}-${command.name}`;
+        const globalCooldownString = `${interaction.user.id}`;
+        const uniqueCooldownString = `${interaction.guild.id}-${command.name}`;
+        const botUser = interaction.guild.members.cache.get(client.user.id);
         if(!command.whiteList && botUser.permissions.has(command.requiredPerms)) {
             try{
                 if(recentlyRan[uniqueCooldownString]){
                     let seconds = cooldownTime * 1000
                     const embed = makeEmbed("Slow down there!",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[uniqueCooldownString] - seconds)/1000} seconds `, server);
-                    sendAndDelete(message, embed, server);
+                    sendAndDelete(interaction, embed, server);
                     return false;
                 }
                 else if(command.cooldown && recentlyRan[cooldownString]){
                     let seconds = cooldownTime * 1000
                     const embed = makeEmbed("Slow down there!",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds `, server);
-                    sendAndDelete(message, embed, server);
+                    sendAndDelete(interaction, embed, server);
                     return false;
                 }
                 if( recentlyRan[globalCooldownString]){
                     
                     const embed = makeEmbed("Slow down there!",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[globalCooldownString] - globalCooldownTime)/1000} seconds `, server);
-                    sendAndDelete(message, embed, server);
+                    sendAndDelete(interaction, embed, server);
                     return false;
                 }
                 
-                const booly =  command.execute(message, args, server, true);
+                const booly =  command.execute(interaction, args, server, true);
                 botCache.executes.slash[command.name]++
 				if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                 if(booly) {
@@ -108,13 +118,13 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
             catch(error) {
                 console.error(error);
                 const embed = makeEmbed("ERROR 101", 'There was an issue executing the command \nThe developer has been notified about the problem', 'FF0000');
-                reportBug(error,message,client,command);
-                message.reply( {embeds: [embed], ephemeral : true} );
+                reportBug(error,interaction,client,command);
+                interaction.reply( {embeds: [embed], ephemeral : true} );
             }
             return;
         }//ELSE {
-        const dude = message.guild.members.cache.get(message.user.id);
-        const bot = message.guild.members.cache.get(client.user.id);
+        const dude = interaction.guild.members.cache.get(interaction.user.id);
+        const bot = interaction.guild.members.cache.get(client.user.id);
         try{
             
             if(dude.permissions.has(command.whiteList)) {
@@ -122,22 +132,22 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
                     if(recentlyRan[uniqueCooldownString]){
                         let seconds = cooldownTime * 1000
                         const embed = makeEmbed("Slow down there!",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[uniqueCooldownString] - seconds)/1000} seconds `, server);
-                        sendAndDelete(message, embed, server);
+                        sendAndDelete(interaction, embed, server);
                         return false;
                     }
                     else if(command.cooldown && recentlyRan[cooldownString]){
                         let seconds = cooldownTime * 1000
                         const embed = makeEmbed("Slow down there !", `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[cooldownString] - seconds)/1000} seconds`, server);
-                        sendAndDelete(message, embed,server);
+                        sendAndDelete(interaction, embed,server);
                         return false;
                     }
                     if( recentlyRan[globalCooldownString]){
                         
                         const embed = makeEmbed("Slow down there !",  `Wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[globalCooldownString] - globalCooldownTime)/1000} seconds `, server);
-                        sendAndDelete(message, embed, server);
+                        sendAndDelete(interaction, embed, server);
                         return false;
                     }
-                    const booly = await command.execute(message, args, server, true);
+                    const booly = await command.execute(interaction, args, server, true);
                     botCache.executes.slash[command.name]++
                     if(!botCache.executes.slash[command.name])botCache.executes.slash[command.name] = 1
                     if(booly) {
@@ -156,13 +166,13 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 
                 } else{
                     const embed = makeEmbed("Missing permission",`The bot doesn't have the required permission to execute this command.\nMissing permission: ${command.requiredPerms}`,"FF0000",);
-                    sendAndDelete(message,embed,server);
+                    sendAndDelete(interaction,embed,server);
                     return false;
                 }
                 
             } else{
                 const embed = makeEmbed("Missing permission","You don't have the required permission to run this command","FF0000",);
-                sendAndDelete(message,embed,server);
+                sendAndDelete(interaction,embed,server);
                 return false;
             }
             
@@ -170,8 +180,8 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
         catch(error) {
             console.error(error);
             const embed = makeEmbed("ERROR 102", 'There was an issue executing the command \nThe developer has been notified about the problem.', 'FF0000');
-            reportBug(error,message,client,command);
-            message.channel.send( {embeds: [embed] } );
+            reportBug(error,interaction,client,command);
+            interaction.channel.send( {embeds: [embed] } );
         }
         return;
     }

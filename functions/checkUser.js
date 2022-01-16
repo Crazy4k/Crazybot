@@ -1,5 +1,12 @@
-//this function takes a string like <@123456789101112> and converts it into a user id
 
+
+/**
+ * 	takes a string like <@123456789101112312> and converts it into a user id
+ * @param {object} message The message object
+ * @param {object} args an array of strings that is split by space bar
+ * @param {number} num index number of the args array to check for
+ * @returns {string} user id or "not valid"
+ */
 module.exports = (message, args, num = 0) => {
     if(args[num]) {
         if(!isNaN(parseInt(args[num])) && args[num].length >= 17){

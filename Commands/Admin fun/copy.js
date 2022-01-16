@@ -83,7 +83,7 @@ copy.execute = function (message, args, server ) {
                 if(agrs.length === 2  && tureflase[0] && tureflase[1]){
                     collector.stop();
                     return true;
-                } else m.channel.send(m.content);
+                } else m.channel.send(m.content.split("@").join(""));
             })
             collector.on("end", m =>message.channel.send("ok im bored bye"));
             return true;

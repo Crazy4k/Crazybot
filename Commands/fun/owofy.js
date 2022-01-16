@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const Command = require("../../Classes/Command");
 const makeOwO = require("owofy");
 
@@ -11,7 +10,6 @@ owofy.set({
 	cooldown        : null,
 	unique          : false,
 	category        : "fun",
-	requiredPerms	: null,
 	worksInDMs      : true,
 	isDevOnly       : false,
 	isSlashCommand  : true,
@@ -29,7 +27,7 @@ owofy.execute = function (message, args, server, isSlash) {
     let sentence = isSlash ? args[0].value :args.join(' ');
     if (!sentence) return message.reply('I can\'t owo-fy an empty message! uwu');
     
-
+	sentence = sentence.split("@").join("")
     message.reply(makeOwO(sentence));
 }
 

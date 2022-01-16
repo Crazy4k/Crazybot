@@ -3,7 +3,10 @@ const makeEmbed = require("./embed");
 const consoleURL = "[console](https://cp.something.host/services/7205)";
 
 
-
+/**
+ * catches errors and sends them in the clientLogs channel
+ * @param {object} client Bot client object 
+ */
 module.exports = async (client) => {
 
     

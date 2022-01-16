@@ -1,3 +1,12 @@
+/**
+ * Sends a message and then deletes it after a few seconds. If the initial message is a slash command, it will be an ephemeral reply
+ * @param {object} message The message object
+ * @param {*} msgToSend Either a string as message content or a message embed
+ * @param {object} server The mongoDB-stored server data
+ * @param {boolean} ignoreDefaultSetting wether to ignore the server's setting of deleting the message or not
+ * @param {boolean} isDM Wether or not this message is in a DM
+ */
+
 module.exports = async(message, msgToSend, server, ignoreDefaultSetting = false, isDM = false) => {
  
     if(message.type === "APPLICATION_COMMAND"){

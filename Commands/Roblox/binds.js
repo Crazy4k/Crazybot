@@ -36,7 +36,7 @@ const idleMessage = "Command cancelled due to the user being idle";
 const cancerCultureMessage = "Command cancelled successfully";
 let binds = new Command("binds");
 binds.set({
-	aliases         : [],
+	aliases         : ["autorole","auto-role"],
 	description     : "Adds/removes group binds",
 	usage           : "binds <action: add, remove, edit or view> [group link or id]",
 	cooldown        : 10,
@@ -121,15 +121,20 @@ binds.execute = async function(message, args, server, isSlash) {
             case "v":
                 if(isSlash)message.deferReply();
 
-                let viewEmbed = makeEmbed("Group binds", `Here are your bound groups and roles:`, server);
+                let viewEmbed = makeEmbed("Group binds", `Here are your bound groups and roles:\nUse \`${server.prefix}${this.name} edit <group id or URL>\` to add/remove roles from each roblox group.`, server);
                 if(!daServer.robloxBinds || !Object.values(daServer.robloxBinds).length)viewEmbed.setDescription(`You do not have any groups bound, consider adding some using the \`${server.prefix}${this.name} add\` action`)
                 else {
                     for(let groupID in daServer.robloxBinds){
                         let bindsObject = daServer.robloxBinds[groupID];
                         let string = [];
                         let {name} = await noblox.getGroup(groupID).catch(err=>name = "");
+                        let roles = await noblox.getRoles(groupID).catch(e=>console.log(e));
+                        let objRoles = {};
+                        roles.forEach(role=>objRoles[role.id] = role.name);
+                        string.push(`Membership (${groupID}) % ${bindsObject[groupID].length? `<@&${bindsObject[groupID].join("> <@&")}>` : "`Empty`"}`);
                         for(let roleId in bindsObject){
-                            string.push(`${roleId} % <@&${bindsObject[roleId].join("> <@&")}>`);
+                            if(roleId === groupID)continue;
+                            string.push(`${objRoles[roleId]}(${roleId}) % ${bindsObject[roleId].length? `<@&${bindsObject[roleId].join("> <@&")}>` : "`Empty`"}`);
                         }
                         viewEmbed.addField(`${name} - ${groupID}`,string.join("\n"),true);
                     }
@@ -363,7 +368,7 @@ binds.execute = async function(message, args, server, isSlash) {
                                     case "no args":
                                         break;
                                     default:
-                                        console.log(role);
+                                        
                                         rolesObject[bootLegArgs[0]].push(role);
                                         m.react("✅");
                                 }
@@ -421,7 +426,6 @@ binds.execute = async function(message, args, server, isSlash) {
                                                 guildsCache[message.guildId] = data;
                                             } catch(error){
                                                 console.log(error);
-                                                console.log("ERROR IN LINE 257")
                                             }finally{
                                                 console.log("FETCHED FROM DATABASE");
                                                 mongoose.connection.close();

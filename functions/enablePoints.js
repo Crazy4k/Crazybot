@@ -3,7 +3,12 @@ const mongo = require("../mongo");
 const serversSchema = require("../schemas/servers-schema");
 let cache = require("../caches/botCache").pointsCache;
 const pointsSchema = require("../schemas/points-schema");
-
+/**
+ * creates the points storage object in the mongoDB cluster
+ * @param {object} message Message object 
+ * @param {object} server The server's mongoDB-stroed data
+ * @returns {void}
+ */
 module.exports = async (message, server) => { 
 
     let servery = cache[message.guild.id];

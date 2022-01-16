@@ -298,10 +298,11 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 		for(let group of raiderGroupsJSON){
 			groupsArray.push(group.id)
 		}
-		const groups = await getMembers(groupsArray);
+		let groups = await getMembers(groupsArray);
 	
-		let poop = [...new Set(groups)];
-		botCache.trackedRaiders = poop;
+		groups = [...new Set(groups)];
+		//groups = [941751145];
+		botCache.trackedRaiders = groups;
 	
 		setInterval(async () => {
 			try {
@@ -310,11 +311,11 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 				for(let group of raiderGroupsJSON){
 					groupsArray.push(group.id)
 				}
-				const groups = await getMembers(groupsArray);
+				let groups = await getMembers(groupsArray);
 
 				console.log("UPDATED THE RAIDER CACHE")
-				let poop = [...new Set(groups)];
-				botCache.trackedRaiders.raiders = poop
+				groups = [...new Set(groups)];
+				botCache.trackedRaiders.raiders = groups
 			} catch (error) {
 				console.error(); 
 				console.log("Error in line 457")
