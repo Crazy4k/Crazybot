@@ -368,9 +368,3 @@ setInterval(()=>{
 	else iter++;
 	client.user.setActivity(luckyWinner.str,luckyWinner.type);
 },1000 * 60 *15);
-	
-
-	
-
-
-

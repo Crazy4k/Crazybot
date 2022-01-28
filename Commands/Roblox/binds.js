@@ -31,7 +31,7 @@ const checkRoles = (message, arg) => {
         }
     } else return "no args";
 }
-const type0Message = "(type `0` to cancel / type \"`no`\" for none)\n"; 
+
 const idleMessage = "Command cancelled due to the user being idle";
 const cancerCultureMessage = "Command cancelled successfully";
 let binds = new Command("binds");
@@ -39,7 +39,7 @@ binds.set({
 	aliases         : ["autorole","auto-role"],
 	description     : "Adds/removes group binds",
 	usage           : "binds <action: add, remove, edit or view> [group link or id]",
-	cooldown        : 10,
+	cooldown        : 5,
 	unique          : true,
 	category        : "config",
 	whiteList       : "ADMINISTRATOR",
@@ -88,6 +88,9 @@ binds.execute = async function(message, args, server, isSlash) {
         group = args[1];
         author = message.author;
     }
+
+    const filter = button =>  button.user.id === author.id;
+
     const yes = new MessageButton()
     .setCustomId('true')
     .setLabel('Yes')
@@ -108,46 +111,154 @@ binds.execute = async function(message, args, server, isSlash) {
     .setStyle('DANGER');
     let editRow = new MessageActionRow().addComponents(enbInteractionButton, cancelInteraction);
 
+
+    const previousButton = new MessageButton()
+    .setCustomId('previous')
+    .setEmoji("⏪")
+    .setLabel('Previous')
+    .setStyle('SUCCESS');
+    const nextButton = new MessageButton()
+    .setCustomId('next')
+    .setEmoji("⏩")
+    .setLabel('Next')
+    .setStyle('SUCCESS');
+    const endInteractionButton = new MessageButton()
+    .setCustomId('end')
+    .setLabel('End interaction')
+    .setStyle('SECONDARY');
+    let switchRow = new MessageActionRow().addComponents(previousButton, nextButton, endInteractionButton);
+
     const messageFilter = m => !m.author.bot && m.author.id === author.id;
     const buttonFilter =  noob => noob.user.id === author.id && !noob.user.bot;
 
     try {        
-    
         let daServer = server;
         switch (action?.toLowerCase()) {
             case undefined:
             case "view":
             case "watch":
             case "v":
-                if(isSlash)message.deferReply();
+                if(isSlash)await message.deferReply();
 
-                let viewEmbed = makeEmbed("Group binds", `Here are your bound groups and roles:\nUse \`${server.prefix}${this.name} edit <group id or URL>\` to add/remove roles from each roblox group.`, server);
-                if(!daServer.robloxBinds || !Object.values(daServer.robloxBinds).length)viewEmbed.setDescription(`You do not have any groups bound, consider adding some using the \`${server.prefix}${this.name} add\` action`)
-                else {
-                    for(let groupID in daServer.robloxBinds){
-                        let bindsObject = daServer.robloxBinds[groupID];
-                        let string = [];
-                        let {name} = await noblox.getGroup(groupID).catch(err=>name = "");
-                        let roles = await noblox.getRoles(groupID).catch(e=>console.log(e));
-                        let objRoles = {};
-                        roles.forEach(role=>objRoles[role.id] = role.name);
-                        string.push(`Membership (${groupID}) % ${bindsObject[groupID].length? `<@&${bindsObject[groupID].join("> <@&")}>` : "`Empty`"}`);
-                        for(let roleId in bindsObject){
-                            if(roleId === groupID)continue;
-                            string.push(`${objRoles[roleId]}(${roleId}) % ${bindsObject[roleId].length? `<@&${bindsObject[roleId].join("> <@&")}>` : "`Empty`"}`);
+                let viewArray = [];
+
+                for(let groupID in daServer.robloxBinds){
+                    let bindsObject = daServer.robloxBinds[groupID];
+                    let string = [];
+                    let {name} = await noblox.getGroup(groupID).catch(err=>name = "");
+                    let roles = await noblox.getRoles(groupID).catch(e=>console.log(e));
+                    let logo = await  noblox.getLogo(groupID).catch(err=>logo = "https://cdn.discordapp.com/attachments/926507472611582002/936336852523298877/2000px-Dialog-error-round.svg.png")
+                    let objRoles = {};
+                    roles.forEach(role=>objRoles[role.id] = role.name);
+                    string.push(`Membership (${groupID}) % ${bindsObject[groupID].length? `<@&${bindsObject[groupID].join("> <@&")}>` : "`Empty`"}`);
+                    for(let roleId in bindsObject){
+                        if(roleId === groupID)continue;
+                        string.push(`${objRoles[roleId]}(${roleId}) % ${bindsObject[roleId].length? `<@&${bindsObject[roleId].join("> <@&")}>` : "`Empty`"}`);
+                    }
+                    viewArray.push({id: groupID, name, string, logo});
+                }
+                let targetGroup
+                
+                if(!group){
+                    targetGroup = viewArray[0];
+                    previousButton.setDisabled(true);
+                } else {
+                    let viewGrouId;
+                    let viewGroupLinkArray = group.split("/");
+                    for(let section of viewGroupLinkArray){
+                        if(!isNaN(parseInt(section))){
+                            viewGrouId = section;
+                            break; 
                         }
-                        viewEmbed.addField(`${name} - ${groupID}`,string.join("\n"),true);
+                    }
+                    targetGroup = viewArray.find(grou=>`${grou.id}` === `${viewGrouId}`);
+
+                    if(viewArray.indexOf(targetGroup) === 0){
+                        previousButton.setDisabled(true);
+                    } else if(viewArray.indexOf(targetGroup) === viewArray.length - 1){
+                        nextButton.setDisabled(true);
                     }
                 }
-                if(isSlash)message?.editReply({embeds: [viewEmbed]});
-                else  message.reply({embeds: [viewEmbed]});
-               
-                return true;
+                let buttons = [];
+                let helpMessage = `Here are your bound groups and roles:\nUse \`${server.prefix}${this.name} edit <group id or URL>\` to add/remove roles from each roblox group.\nUse \`${server.prefix}${this.name} remove <group id or URL>\` to remove this group entirely.\n\n`; 
+                let viewEmbed = makeEmbed("Group binds", `a`, server);
+                if(!daServer.robloxBinds || !Object.values(daServer.robloxBinds).length){
+                    viewEmbed.setDescription(`You do not have any groups bound, consider adding some using the \`${server.prefix}${this.name} add\` action`);
+
+                }
+                else {
+                    
+                    if(viewArray.length > 1) buttons = [switchRow];
+                    viewEmbed.setThumbnail(targetGroup.logo);
+                    viewEmbed.setDescription(`${helpMessage}**${targetGroup.name}** | ${targetGroup.id}\n\n\n ${targetGroup.string.join("\n\n")}`)
+                }
+
+                let newMsg;
+                if(isSlash)message?.editReply({embeds: [viewEmbed], components: buttons});
+                else newMsg =  await message.reply({embeds: [viewEmbed], components: buttons});
+                
+                if(!newMsg) newMsg = await message.fetchReply();
+                
+                const collector = newMsg.createMessageComponentCollector({ filter, time:   20 * 1000 });
+                let index = viewArray.indexOf(targetGroup);
+                
+                collector.on('collect', async i => {
+
+                    if(i.customId === "next"){
+                        
+                        collector.resetTimer();
+                        index++;
+                        targetGroup = viewArray[index];
+                        
+                        if(index === 0){
+                            previousButton.setDisabled(true);
+                        } else {
+                            previousButton.setDisabled(false);
+                        }
+                        if(index === viewArray.length - 1){
+                            nextButton.setDisabled(true);
+                        } else {
+                            nextButton.setDisabled(false);
+                        }
+
+                        viewEmbed.setDescription(`${helpMessage}**${targetGroup.name}** | ${targetGroup.id}\n\n\n ${targetGroup.string.join("\n\n")}`)
+                        viewEmbed.setThumbnail(targetGroup.logo);
+                        i.update({embeds:[viewEmbed],  components: [switchRow]});
+                    } else if(i.customId === "previous"){
+                        
+                        collector.resetTimer();
+                        index--;
+                        
+                        targetGroup = viewArray[index];
+                        
+                        if(index === 0){
+                            previousButton.setDisabled(true);
+                        } else {
+                            previousButton.setDisabled(false);
+                        }
+                        if(index === viewArray.length - 1){
+                            nextButton.setDisabled(true);
+                        } else {
+                            nextButton.setDisabled(false);
+                        }
+                        viewEmbed.setDescription(`${helpMessage}**${targetGroup.name}** | ${targetGroup.id}\n\n\n ${targetGroup.string.join("\n\n")}`)
+                        viewEmbed.setThumbnail(targetGroup.logo);
+                        i.update({embeds:[viewEmbed],  components: [switchRow]});
+                    } else if(i.customId === "end"){
+                        i.update({components:[]});
+                    }
+                    
+                }); 
+
+                collector.on('end', collected => {
+                    if(isSlash) message.editReply({components:[]});
+                    else newMsg.edit({components:[]});
+                });
+
                 break;
 
-
             case "add":
-                if(isSlash)message.deferReply();
+                if(isSlash)await message.deferReply();
 
                 if(!group){
                     const embed = makeEmbed('Missing arguments',this.usage, server);

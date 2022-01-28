@@ -8,8 +8,9 @@
         "hasCuffs"  : true,
         "id"        : 4802792,
         "highRanks" : [32120309, 32120310, 32120311],
-        "HICOMRanks": [32120316, 32120318, 55373485, 32120325, 32120326, 32120286],
+        "HICOMRanks": [32120316, 32120318, 55373485, 32120325, 32120286],
         "VIPRanks"  : [32120316, 32120318, 55373485, 32120325, 32120326, 32120286, 32120278],
+        "branchLeader": 32120326,
         "cuffsRanks": [32120309, 32120310, 32120311,    32120316, 32120318, 55373485, 32120325, 32120326, 32120286,     43030184, 32120278, 32120053  ],
         "managementAndStaff": [43030184, 32120278, 32120053]
     },
@@ -22,8 +23,9 @@
         "hasCuffs"  : true,
         "id"        : 4849580,
         "highRanks" : [32402704, 32402709, 32402711, 34198026],
-        "HICOMRanks": [34198027, 32402712, 32402717, 32495230],
+        "HICOMRanks": [34198027, 32402712, 32495230],
         "VIPRanks"  : [32402711, 34198026, 34198027, 32402712, 32402717, 32495230],
+        "branchLeader": 32402717,
         "managementAndStaff": [33158322, 40775043, 32402095],
         "cuffsRanks": [32402704, 32402709, 32402711, 34198026,      34198027, 32402712, 32402717, 32495230,      33158322, 40775043, 32402095]
     },
@@ -36,7 +38,8 @@
         "hasCuffs"  : true,
         "id"        : 4901723,
         "highRanks" : [33455352, 33455355, 33455356, 69643454],
-        "HICOMRanks": [33455358, 69643441, 33455359, 33455361, 33548094],
+        "HICOMRanks": [33455358, 69643441, 33455359, 33548094],
+        "branchLeader": 33455361,
         "managementAndStaff": [33455367, 33548096, 32727821],
         "cuffsRanks":[33455352, 33455355, 33455356, 69643454,       33455358, 69643441, 33455359, 33455361, 33548094,     33455367, 33548096, 32727821]
     },
@@ -84,10 +87,10 @@
         "isRaider"  : false,
         "hasCuffs"  : false,
         "id"        : 4849688,
-        "highRanks" : [32402766, 56070656],
-        "VIPRanks"  : [32402766, 56070656, 32402767, 32402772, 32402773 ],
-        "HICOMRanks": [32402767, 32402772, 32402773, 34766559 ],
-        "managementAndStaff": [32402720 ]
+        "highRanks" : [32402766, 56070656, 32402767, 32402772, 32402773, 34766559],
+        "VIPRanks"  : [32402766, 56070656, 32402767, 32402772, 32402773],
+        "HICOMRanks": [77700363, 77700369, 79082781, 79082783],
+        "managementAndStaff": [32402720]
     },
     "5902649":{
         "name"      : "109th Infantry",
@@ -98,8 +101,8 @@
         "hasCuffs"  : false,
         "id"        : 5902649,
         "highRanks" : [39260204, 39260216, 39260222],
-        "HICOMRanks": [39260233, 39260257, 38643688 ],
-        "managementAndStaff": [41659022, 38643687 ]
+        "HICOMRanks": [39260233, 39260257, 38643688, 78969646 ],
+        "managementAndStaff": [41659022, 38643687]
     },
     "5737557":{
         "name"      : "CRU",
@@ -110,8 +113,8 @@
         "hasCuffs"  : false,
         "id"        : 5737557,
         "highRanks" : [37720654, 37720596 ],
-        "HICOMRanks": [37720628, 37720686, 37720692, 37720701],
-        "managementAndStaff": [37720702, 37720547 ]
+        "HICOMRanks": [37720628, 37720686, 37720692, 37720701, 37720702],
+        "managementAndStaff": [78969675, 37720547]
     },
     "5687123":{
         "name"      : "TFOC",
@@ -122,8 +125,8 @@
         "hasCuffs"  : true,
         "id"        : 5687123,
         "highRanks" : [37436126 ],
-        "HICOMRanks": [37436144, 37436146, 37436148, 37433720],
-        "managementAndStaff": [37436157, 37433719],
+        "HICOMRanks": [37436144, 37436146, 37436148, 37433720, 37436157],
+        "managementAndStaff": [78969700,37433719],
         "cuffsRanks":[37436121, 37436126, 37436144, 37436146, 37436148, 37433720, 37436157, 37433719]
     },
     "4948472":{
@@ -135,8 +138,8 @@
         "hasCuffs"  : false,
         "id"        : 4948472,
         "highRanks" : [33905929, 33020999, 33021000],
-        "HICOMRanks": [33021001, 33021007, 33021017],
-        "managementAndStaff": [33020985, 33020984 ]
+        "HICOMRanks": [33021001, 33021007, 33021017, 33020985],
+        "managementAndStaff": [78969709, 33020984 ]
     },
     "4808054":{
         "name"      : "Spetsnaz",
@@ -147,8 +150,8 @@
         "hasCuffs"  : true,
         "id"        : 4808054,
         "highRanks" : [32181284, 32181285],
-        "HICOMRanks": [32181286, 32181287, 32495229],
-        "managementAndStaff": [32817117, 32152620 ]
+        "HICOMRanks": [32181286, 32181287, 32495229, 32817117],
+        "managementAndStaff": [78970627, 32152620 ]
     },
     "4805062": {
         "name"      : "Red Guard",
@@ -159,8 +162,20 @@
         "hasCuffs"  : true,
         "id"        : 4805062,
         "highRanks" : [32134268, 32776937 ],
-        "HICOMRanks": [32134272, 32134277, 32134280],
-        "managementAndStaff": [32134284, 32134298, 41206031, 32134208 ]
+        "HICOMRanks": [32134272, 32134277, 32134280, 41206031],
+        "managementAndStaff": [78969810, 32134284, 32134298, 32134208 ]
+    },
+    "13300850": {
+        "name"      : "AE&EC",
+        "link"      : "https://www.roblox.com/groups/13300850/Army-Education-and-Enrollment-Command#!",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "hasCuffs"  : true,
+        "id"        : 13300850,
+        "highRanks" : [76249215, 32776937 ],
+        "HICOMRanks": [76249221, 76249230, 76249281, 76249294, 76327974],
+        "managementAndStaff": [76247580]
     },
     "4805092":{
         "name"      : "KGB",
@@ -213,23 +228,23 @@
         "hasCuffs"  : false,
         "id"        : 7036991
     },
-    "6960002":{
-        "name"      : "V&K Moderation Team",
-        "link"      : "https://www.roblox.com/groups/7036991",
+    "13639962":{
+        "name"      : "Final Blueprint Moderation Team",
+        "link"      : "https://www.roblox.com/groups/13639962/Final-Blueprint-Moderation-Team",
         "isBranch"  : false,
         "isDivision": false,
         "isRaider"  : false,
         "hasCuffs"  : false,
-        "id"        : 7036991
+        "id"        : 13639962
     },
-    "6066453":{
-        "name"      : "V&K Industries",
-        "link"      : "https://www.roblox.com/groups/6066453",
+    "13320442":{
+        "name"      : "Final Blueprint",
+        "link"      : "https://www.roblox.com/groups/13320442/Final-Blueprint",
         "isBranch"  : false,
         "isDivision": false,
         "isRaider"  : false,
         "hasCuffs"  : false,
-        "id"        : 6066453
+        "id"        : 13320442
     },
     "5157127":{
         "name"      : "Monarch",
