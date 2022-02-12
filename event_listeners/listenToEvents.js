@@ -60,12 +60,32 @@ module.exports = (client, mongo) => {
         if(client.user.id === "799752849163550721"){
             console.log("raider background history file detected!")
             const updateRaiderHistory = require("../backgroundChecker/updateRaiderHistory");
+            const cache = require("../backgroundChecker/cache");
+            const getMembers = require("../raiderTracker/getMembers");
+            const raiderGroups = require("../backgroundChecker/allRaiderGroups.json");
+
+            let groupsArray = [];
+            for(let i in raiderGroups){
+                groupsArray.push(raiderGroups[i].id);
+            }
+
+            (async()=>{
+                let raiders = await getMembers(groupsArray)
+                raiders = [...new Set(raiders)];
+                cache.raiderMembers = raiders;
+            })()
+            
+
         
             setInterval(async () => {
                 updateRaiderHistory();
+
+                let raiders = await getMembers(groupsArray)
+                raiders = [...new Set(raiders)];
+                cache.raiderMembers = raiders;
                 
             }, 6 * 60 * 60 * 1000);
-    }
+        }
 
 
 

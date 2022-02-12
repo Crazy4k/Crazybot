@@ -161,7 +161,7 @@ help.execute =  function(message, args, server) {
 			{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}${this.name} AA\` `, inline:true},
 			{name:"**Server configurations**", value:`Commands that change the way the bot deals with the server.\n\`${server.prefix}${this.name} config\``, inline:true},
 			{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
-			{name:"TIP:",value: `You can also do (${server.prefix}help <command name>) and get more info about a specific command!\n Example: ;help points `}
+			{name:"**Support**:",value: `Check out our [Privacy policy](https://docs.google.com/document/d/e/2PACX-1vTgGaeF9W1EyeUxUPNiQvmZ9wbBMbZl3c7lieegyTzU8g8y0CPONysMAW1S4NMMALVt-ZuyCHd2gj2J/pub) for info regarding the bot's data collection. In case you have any privacy concerns, feel free to DM the developer or email them (mhabbudi@gmail.com)`}
 		);
 		embed.setURL("https://discord.gg/vSFp7SjHWp");
 		message.reply( {embeds:[embed]} ).catch(err=>console.log(err));

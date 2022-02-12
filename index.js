@@ -332,7 +332,7 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 				console.log(console.log(error));
 			}
 			
-		}, 210 * 1000);
+		}, 270 * 1000);
 
 
 	} catch (error) {

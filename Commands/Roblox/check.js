@@ -72,7 +72,7 @@ check.set({
     aliases         : [],
     description     : "Shows the user's TSU profile and status",
     usage           : "check <roblox username or ID>",
-    cooldown        : 7,
+    cooldown        : 10,
     unique          : true,
     category        : "roblox",
     worksInDMs      : false,
@@ -279,10 +279,21 @@ check.execute = async (message, args, server, isSlash) =>{
         if(notableTSU.length)embed.addField("The Soviet Union groups:",`${notableTSU.join("\n")}`,false);
         if(globalGroups.length)embed.addField("Noteable groups",globalGroups.join("\n"),false)
         if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
-        embed.addField(`Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
-        embed.addField(`Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
-        embed.addField(`Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
+        embed.addField(`💰Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
+        embed.addField(`💪Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
+        embed.addField(`🏷️Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
+        if(lebels.includes("has admin")){
+            embed.setColor("#7E00FC");
+        }else if(lebels.includes("Division member")){
+            embed.setColor("#4086f4");
+        }else if(lebels.includes("Branch member")){
+            embed.setColor("#31aa52");
+        } else if(lebels.includes("Raider")){
+            embed.setColor("#FC0000");
+        }else if(lebels.includes("Possible raider")){
+            embed.setColor("#fbbd01");
+        }
         if(isSlash)message?.editReply({embeds: [embed]});
         else  message.reply({embeds: [embed]});
         return true;
