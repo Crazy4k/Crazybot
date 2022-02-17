@@ -134,6 +134,7 @@ raiders.set({
                 embed.setFields(viewArray[index]);
                 i.update({embeds:[embed],  components: [row]});
             } else if(i.customId === "switch"){
+                collector.resetTimer();
                 index = 0;
                 if(mode === 1){
                     viewArray = viewArrayV2;

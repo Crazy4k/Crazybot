@@ -63,6 +63,7 @@ module.exports = (client, mongo) => {
             const cache = require("../backgroundChecker/cache");
             const getMembers = require("../raiderTracker/getMembers");
             const raiderGroups = require("../backgroundChecker/allRaiderGroups.json");
+            const getbadges = require("../backgroundChecker/getbadges");
 
             let groupsArray = [];
             for(let i in raiderGroups){
@@ -73,6 +74,7 @@ module.exports = (client, mongo) => {
                 let raiders = await getMembers(groupsArray)
                 raiders = [...new Set(raiders)];
                 cache.raiderMembers = raiders;
+                getbadges();
             })()
             
 
@@ -83,8 +85,9 @@ module.exports = (client, mongo) => {
                 let raiders = await getMembers(groupsArray)
                 raiders = [...new Set(raiders)];
                 cache.raiderMembers = raiders;
+                getbadges();
                 
-            }, 6 * 60 * 60 * 1000);
+            }, 24 * 60 * 60 * 1000);
         }
 
 

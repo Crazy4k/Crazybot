@@ -76,6 +76,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         return false;
     } else {
         require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor);
+        return true;
     }
 
 };
