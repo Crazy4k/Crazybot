@@ -70,6 +70,9 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 		
 		if(!command.whiteList && botUser.permissions.has(command.requiredPerms)) {
 			try{
+				if(server?.disabledCategories?.[command.category]){
+					return false;
+				}
 				if(recentlyRan[uniqueCooldownString]){
 					let seconds = cooldownTime * 1000
 					const embed = makeEmbed("Slow down there!",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[uniqueCooldownString] - seconds)/1000} seconds `, server);
@@ -117,7 +120,9 @@ module.exports = async (command, message, args, server, client, recentlyRan, isD
 		const dude = message.guild.members.cache.get(message.author.id);
 		const bot = message.guild.members.cache.get(client.user.id);
 		try{
-			
+			if(server?.disabledCategories?.[command.category]){
+				return false;
+			}
 			if(dude.permissions.has(command.whiteList)) {
 				if(bot.permissions.has(command.requiredPerms)){
 					if(recentlyRan[uniqueCooldownString]){

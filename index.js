@@ -182,7 +182,6 @@ client.on("interactionCreate",async (interaction)=>{
 				guildsCache[interaction.guildId] = data;
 			} catch(error){
 				console.log(error);
-				console.log("ERROR IN LINE 379")
 			}finally{
 				console.log("FETCHED FROM DATABASE");
 				mongoose.connection.close();

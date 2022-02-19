@@ -244,7 +244,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         joins.push(embed);
                     }
                     else if(raiderCache[I] && !newCache[I]){
-                        const username = await roblox.getUsernameFromId(I);
+                        let username;
+                        username = await roblox.getUsernameFromId(I).catch(e=>username = "/")
                         const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
                         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)
                         
@@ -263,7 +264,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         }
                         else if(raiderCache[I] && !newCache[I]){
                             
-                            const username = await roblox.getUsernameFromId(I);
+                            let username;
+                            username = await roblox.getUsernameFromId(I).catch(e=>username = "/")
                             const embed = makeEmbed("A raider  left MS!",`${username} just left the game.`,colors.failRed,true);
                             embed.addField("Left at:",`<t:${parseInt(Date.now() / 1000)}:T> or <t:${parseInt(Date.now() / 1000)}:R>`);
                             embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${I}&width=420&height=420&format=png`)

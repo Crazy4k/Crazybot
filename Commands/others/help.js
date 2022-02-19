@@ -108,7 +108,7 @@ help.execute =  function(message, args, server) {
 			}
 			if(isCategory){
 				let num = 1;
-				let embed = makeEmbed("Help!",`All of the commands in the \`${index}\` category.`,server);
+				let embed = makeEmbed("Help!",`All of the commands in the \`${index}\` category.`,server,false,"developed by Crazy4k#0091");
 				for (const command of categories[index]) {
 					let perms = command.whiteList;
 				if(!perms) perms = "**-**"
@@ -121,7 +121,7 @@ help.execute =  function(message, args, server) {
 				return true;
 			} else{
 				
-				let embed = makeEmbed("Help!",`All of the info about the \`${index}\` command.`,server);
+				let embed = makeEmbed("Help!",`All of the info about the \`${index}\` command.`,server, false,"developed by Crazy4k#0091");
 				let command = commandsObject[index];
 
 				let perms = command.whiteList;
@@ -151,7 +151,7 @@ help.execute =  function(message, args, server) {
 		
 		
 	}else{
-		let embed = makeEmbed("Click me if you want to join our discord.", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server);
+		let embed = makeEmbed("Click me if you want to join our discord.", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server, false,"developed by Crazy4k#0091");
 		embed.addFields(
 			{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
 			{name:"**events**", value:`Commands that are related to hosting events using the bot.\n\`${server.prefix}${this.name} events\` `, inline:true},

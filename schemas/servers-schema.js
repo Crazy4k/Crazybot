@@ -28,6 +28,7 @@ const guildSchema = mongoose.Schema({
     isSet:{type:Boolean,required:true},
     pointsEnabled:{type:Boolean,required:true},
     oPointsEnabled:{type:Boolean,required:false},
+    disabledCategories:{type:Object,required: true},
     logs:{type:Object,required:true},
 
 

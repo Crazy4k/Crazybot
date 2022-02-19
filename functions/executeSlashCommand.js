@@ -15,7 +15,7 @@ const botCache = require("../caches/botCache");
  * @param {object} client Discord bot client object
  * @param {object} recentlyRan An object to store the cooldowns in
  * @param {boolean} isDM Whether or not this message is in a DM
- * @returns {void}
+ * @returns {void} 
  */
 module.exports = async (command, interaction, args, server, client, recentlyRan, isDM = false ) => {
 	//this checks if the property "whitlist" in a command exists and if does check if the author of the interaction is able to execute the command.
@@ -78,6 +78,11 @@ module.exports = async (command, interaction, args, server, client, recentlyRan,
         const botUser = interaction.guild.members.cache.get(client.user.id);
         if(!command.whiteList && botUser.permissions.has(command.requiredPerms)) {
             try{
+                if(server?.disabledCategories?.[command.category]){
+                    const embed = makeEmbed("",  `This command is disabled in this server.`, server);
+                    sendAndDelete(interaction, embed, server);
+                    return false;
+                }
                 if(recentlyRan[uniqueCooldownString]){
                     let seconds = cooldownTime * 1000
                     const embed = makeEmbed("Slow down there!",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[uniqueCooldownString] - seconds)/1000} seconds `, server);
@@ -126,9 +131,14 @@ module.exports = async (command, interaction, args, server, client, recentlyRan,
         const dude = interaction.guild.members.cache.get(interaction.user.id);
         const bot = interaction.guild.members.cache.get(client.user.id);
         try{
-            
+            if(server?.disabledCategories?.[command.category]){
+                const embed = makeEmbed("",  `This command is disabled in this server.`, server);
+                sendAndDelete(interaction, embed, server);
+                return false;
+            }
             if(dude.permissions.has(command.whiteList)) {
                 if(bot.permissions.has(command.requiredPerms)){
+                    
                     if(recentlyRan[uniqueCooldownString]){
                         let seconds = cooldownTime * 1000
                         const embed = makeEmbed("Slow down there!",  `This command is on a server-wide cooldown, wait for the cooldown to end.\nTime left: ${Math.abs(moment() - recentlyRan[uniqueCooldownString] - seconds)/1000} seconds `, server);

@@ -55,6 +55,7 @@ module.exports = async (object) => {
 			deleteFailedCommands : false,
 			isSet:false,
 			pointsEnabled: false,
+            disabledCategories: {},
 			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:"",eventsLog:"",pointsLog:""},
             
         };
@@ -79,6 +80,7 @@ module.exports = async (object) => {
 					deleteFailedCommands: serverObject.deleteFailedCommands,
 					isSet: serverObject.isSet,
 					pointsEnabled: serverObject.pointsEnabled,
+                    disabledCategories: serverObject.disabledCategories,
 					logs: serverObject.logs,  
                       
                 },{upsert:true});

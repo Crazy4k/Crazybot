@@ -27,6 +27,7 @@ module.exports = async (guild, client) => {
 			deleteFailedCommands : false,
 			isSet:false,
 			pointsEnabled: false,
+			disabledCategories: {},
 			logs :{hiByeLog:"",deleteLog:"",serverLog:"",warningLog:"",isSet:false,adminLog:"",eventsLog:"",pointsLog:""},
 			
 		};
@@ -51,6 +52,7 @@ module.exports = async (guild, client) => {
 					deleteFailedCommands: serverObject.deleteFailedCommands,
 					isSet: serverObject.isSet,
 					pointsEnabled: serverObject.pointsEnabled,
+					disabledCategories: serverObject.disabledCategories,
 					logs: serverObject.logs,   
 				},{upsert:true});
 				guildsCache[guild.id] = serverObject;

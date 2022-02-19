@@ -14,16 +14,16 @@ bgcheck.set({
     category        : "roblox",
     worksInDMs      : false,
     isDevOnly       : false,
-    isSlashCommand  : false,
+    isSlashCommand  : true,
     options			: [{
 		name : "roblox_username",
-		description : "The Roblox username to check for.",
+		description : "The Roblox username to background check.",
 		required : false,
 		autocomplete: false,
 		type: 3,
 		},{
         name : "discord_username",
-        description : "Check for the Roblox account of a Discord user.",
+        description : "Background check for the Roblox account of a Discord user.",
         required : false,
         autocomplete: false,
         type: 6,
@@ -61,8 +61,8 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         username = checkUser(message, args, 0);
     }
 
-
-    if(client.user.id !== "799752849163550721"){
+    if(isSlash)await message.deferReply().catch(e=>console.log(e));
+   if(client.user.id !== "799752849163550721"){
         const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
         message.reply({embeds: [embed]});
         return false;
