@@ -14,9 +14,9 @@ module.exports = (title, description = "", color, timestamp = false ,footer = ""
     if(typeof color === "string")embedColor = color;
     const embed = new Discord.MessageEmbed()
     .setTitle(title)
-    .setDescription(description)
     .setColor(embedColor)
     .setFooter({text: footer});
+    if(description)embed.setDescription(description);
     if (timestamp) embed.setTimestamp();
 
     return embed;

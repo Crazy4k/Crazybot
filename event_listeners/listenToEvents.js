@@ -57,8 +57,8 @@ module.exports = (client, mongo) => {
     
         errorHandler(client);
 
-        if(client.user.id === "799752849163550721"){
-            console.log("raider background history file detected!")
+        if(client.user.id === "869954815982190632" || client.user.id === "799752849163550721"){
+            console.log("Background checker folder detected!")
             const updateRaiderHistory = require("../backgroundChecker/updateRaiderHistory");
             const cache = require("../backgroundChecker/cache");
             const getMembers = require("../raiderTracker/getMembers");
@@ -75,6 +75,7 @@ module.exports = (client, mongo) => {
                 raiders = [...new Set(raiders)];
                 cache.raiderMembers = raiders;
                 getbadges();
+                console.log("Background checker ready!")
             })()
             
 

@@ -61,8 +61,8 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         username = checkUser(message, args, 0);
     }
 
-    if(isSlash)await message.deferReply().catch(e=>console.log(e));
-   if(client.user.id !== "799752849163550721"){
+    
+    if(client.user.id !== "799752849163550721"){
         const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
         message.reply({embeds: [embed]});
         return false;
@@ -75,6 +75,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         message.reply({embeds: [embed]});
         return false;
     } else {
+        if(isSlash)await message.deferReply().catch(e=>console.log(e));
         require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor);
         return true;
     }
