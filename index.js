@@ -355,9 +355,13 @@ setInterval(()=>{
 	
 
 	let status = [
+		{str:`🇺🇦`,type:{type:"WATHCING"}},
+		{str:`🇺🇦`,type:{type:"WATHCING"}},
+		{str:`🇺🇦`,type:{type:"WATHCING"}},
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
 		{str:"to /help",type:{type: "LISTENING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
+		
 
 	];
 

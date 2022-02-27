@@ -75,8 +75,10 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         message.reply({embeds: [embed]});
         return false;
     } else {
+        let sentMessage;
         if(isSlash)await message.deferReply().catch(e=>console.log(e));
-        require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor);
+        else sentMessage = await message.reply("CrazyBot is thinking...");
+        require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage);
         return true;
     }
 
