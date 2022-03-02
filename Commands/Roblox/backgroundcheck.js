@@ -9,7 +9,7 @@ bgcheck.set({
     aliases         : ["backgroundcheck","bcheck", "bgc"],
     description     : "Shows the user's TSU profile and status",
     usage           : "bgcheck <roblox username or ID>",
-    cooldown        : 20,
+    cooldown        : 22,
     unique          : true,
     category        : "roblox",
     worksInDMs      : false,
@@ -66,12 +66,8 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
         message.reply({embeds: [embed]});
         return false;
-    } else if (!message.guild.members.cache.get(author.id).roles.cache.get("930521098527846440")){
-        const embed = makeEmbed('Early access only',"This command is currently only available for a select people.", server);
-        message.reply({embeds: [embed]});
-        return false;
-    } else if (message.channel.id !== "930527349907267604") {
-        const embed = makeEmbed('Wrong channel.',`Please use this command only in the <#930527349907267604> channel `, server);
+    } else if (message.channel.id !== "930527349907267604" || message.channel.id !== "921742641534754836") {
+        const embed = makeEmbed('Wrong channel.',`Please use this command only in the <#921742641534754836> channel `, server);
         message.reply({embeds: [embed]});
         return false;
     } else {
