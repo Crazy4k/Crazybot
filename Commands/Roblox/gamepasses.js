@@ -1,16 +1,11 @@
 const makeEmbed = require("../../functions/embed");
-const gamepasses = require("../../raiderTracker/gamepasses.json");
 const Command = require("../../Classes/Command");
 const {MessageActionRow, MessageButton} = require("discord.js");
-const e = require("express");
+const fs = require("fs")
 
-let v1Gamepasses = [];
-let v2Gamepasses = [];
-for(let gamepassName in gamepasses["MS1"]){
-    v1Gamepasses.push({name:gamepassName, id:gamepasses["MS1"][gamepassName].id, power:gamepasses["MS1"][gamepassName].power});
-}
-for(let gamepassName in gamepasses["MS2"]){
-    v2Gamepasses.push({name:gamepassName, id:gamepasses["MS2"][gamepassName].id, power:gamepasses["MS2"][gamepassName].power});
+function read(string){
+    let obj =  fs.readFileSync(string, "utf-8");
+    return JSON.parse(obj); 
 }
 
 const icons = {
@@ -58,6 +53,16 @@ raiders.set({
         if(isSlash)author = message.user;
         else author = message.author;
     
+        const gamepasses = read("./raiderTracker/gamepasses.json");
+
+        let v1Gamepasses = [];
+        let v2Gamepasses = [];
+        for(let gamepassName in gamepasses["MS1"]){
+            v1Gamepasses.push({name:gamepassName, id:gamepasses["MS1"][gamepassName].id, power:gamepasses["MS1"][gamepassName].power});
+        }
+        for(let gamepassName in gamepasses["MS2"]){
+            v2Gamepasses.push({name:gamepassName, id:gamepasses["MS2"][gamepassName].id, power:gamepasses["MS2"][gamepassName].power});
+        }
         
         const filter = button =>  button.user.id === author.id;
 
@@ -67,7 +72,7 @@ raiders.set({
             let shit = v1Gamepasses;
             let poopArray = shit.slice(i * 10, i*10+10);
             let embedFields =[]; 
-            poopArray.forEach(obj=>embedFields.push({name:obj.name,value:`Link:[Gamepass](https://www.roblox.com/game-pass/${obj.id})\nPower: ${obj.power}`, inline:true}));
+            poopArray.forEach(obj=>embedFields.push({name:obj.name,value:`Id: ${obj.id}\nLink: [Gamepass](https://www.roblox.com/game-pass/${obj.id})\nPower: ${obj.power}`, inline:true}));
             viewArrayV1.push(embedFields); 
         }
         let iterV2 = v2Gamepasses.length / 10;
@@ -76,7 +81,7 @@ raiders.set({
             let shit = v2Gamepasses;
             let poopArray = shit.slice(i * 10, i*10+10);
             let embedFields =[]; 
-            poopArray.forEach(obj=>embedFields.push({name:obj.name,value:`Link:[Gamepass](https://www.roblox.com/game-pass/${obj.id})\nPower: ${obj.power}`, inline:true}));
+            poopArray.forEach(obj=>embedFields.push({name:obj.name,value:`Id: ${obj.id}\nLink: [Gamepass](https://www.roblox.com/game-pass/${obj.id})\nPower: ${obj.power}`, inline:true}));
             viewArrayV2.push(embedFields); 
         }
         let index = 0
@@ -163,8 +168,8 @@ raiders.set({
         }); 
 
         collector.on('end', collected => {
-            if(isSlash) message.editReply({components:[]});
-            else newMsg.edit({components:[]});
+            if(isSlash) message.editReply({components:[]}).catch(e=>e);
+            else newMsg.edit({components:[]}).catch(e=>e);
         });
     
 

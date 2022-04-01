@@ -65,8 +65,8 @@ cat.execute = async (message, args, server, isSlash) => {
 		
 	});
 	collector.on('end', collected => {
-		if(isSlash) message.editReply({components:[]});
-		else newMsg.edit({components:[]});
+		if(isSlash) message.editReply({components:[]}).catch(e=>e);
+		else newMsg.edit({components:[]}).catch(e=>e);
 	});
 
 

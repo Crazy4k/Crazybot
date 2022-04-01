@@ -266,10 +266,17 @@ timer.addEventListener("minutesUpdated",()=>{
 
 const getMembers = require("./raiderTracker/getMembers");
 const trackRaiders = require("./raiderTracker/getOnlineRaiders");
-const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
+
+function read(string){
+    let obj =  fs.readFileSync(string,"utf-8");
+    return JSON.parse(obj); 
+}
 
 (async () => {
 	try {
+
+		const raiderGroupsJSON = read("./raiderTracker/raiderGroups.json");
+
 		await mongo().then(async (mongoose) =>{
 			try{
 				let data = await raiderTrackerSchema.findOne({_id:"raiders"});
@@ -300,21 +307,21 @@ const raiderGroupsJSON = require("./raiderTracker/raiderGroups.json");
 		let groups = await getMembers(groupsArray);
 	
 		groups = [...new Set(groups)];
-		//groups = [941751145];
 		botCache.trackedRaiders = groups;
 	
 		setInterval(async () => {
 			try {
+				const raiderGroupsJSON2 = read("./raiderTracker/raiderGroups.json");
 
 				let groupsArray =  []
-				for(let group of raiderGroupsJSON){
+				for(let group of raiderGroupsJSON2){
 					groupsArray.push(group.id)
 				}
 				let groups = await getMembers(groupsArray);
 
 				console.log("UPDATED THE RAIDER CACHE")
 				groups = [...new Set(groups)];
-				botCache.trackedRaiders.raiders = groups
+				botCache.trackedRaiders = groups
 			} catch (error) {
 				console.error(); 
 				console.log("Error in line 457")
@@ -355,9 +362,7 @@ setInterval(()=>{
 	
 
 	let status = [
-		{str:`🇺🇦`,type:{type:"WATHCING"}},
-		{str:`🇺🇦`,type:{type:"WATHCING"}},
-		{str:`🇺🇦`,type:{type:"WATHCING"}},
+		{str:`standing with Ukraine `,type:{type:"PLAYING"}},
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
 		{str:"to /help",type:{type: "LISTENING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},

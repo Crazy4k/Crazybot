@@ -29,7 +29,7 @@ let history = async (id) => {
 let evalCommand = new Command("eval");
 evalCommand.set({
 	aliases         : [],
-	description     : "makes the bot do stuff with eval();",
+	description     : "[DEV_ONLY] makes the bot do stuff with eval();",
 	usage           : "eval ``` code ```",
 	cooldown        : null,
 	unique          : false,
@@ -42,7 +42,7 @@ evalCommand.set({
 
 evalCommand.execute = async function (message, args, server) {
 
-    if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !eval`);
+    if (message.author.id !== authorID) return false
     if (args.length === 0) return message.channel.send("No code was given");
 
     

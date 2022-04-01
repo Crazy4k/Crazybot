@@ -2,6 +2,28 @@ const Command = require("../../Classes/Command");
 const client = require("../../index");
 const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
+const sendAndDelete = require("../../functions/sendAndDelete");
+const botCache = require("../../caches/botCache");
+
+
+//queue
+async function myPromise(){
+    const promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(botCache.isOnRobloxCooldown);
+        }, 5000);
+    });
+    return promise;
+}
+
+async function checkQueue(){
+
+    let bool = botCache.isOnRobloxCooldown
+
+    while(bool){
+        bool = await myPromise()
+    }
+}
 
 
 let bgcheck = new Command("bgcheck");
@@ -34,10 +56,12 @@ bgcheck.set({
 
 bgcheck.execute = async (message, args, server, isSlash, ) =>{
 
+    if(isSlash)await message.deferReply().catch(e=>console.log(e));
 
     let isAuthor = false;
     
-    
+    const date1 = Date.now()
+
     let res;
     let status;
     let id;
@@ -64,20 +88,36 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     
     if(client.user.id !== "799752849163550721"){
         const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
-        message.reply({embeds: [embed]});
-        return false;
-    } else if (message.channel.id !== "930527349907267604" || message.channel.id !== "921742641534754836") {
-        const embed = makeEmbed('Wrong channel.',`Please use this command only in the <#921742641534754836> channel `, server);
-        message.reply({embeds: [embed]});
+        sendAndDelete(message,embed,server);
         return false;
     } else {
         let sentMessage;
-        if(isSlash)await message.deferReply().catch(e=>console.log(e));
-        else sentMessage = await message.reply("CrazyBot is thinking...");
-        require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage);
-        return true;
-    }
+        if(!isSlash) sentMessage = await message.reply("CrazyBot is waiting in queue...");
 
+
+        await checkQueue()
+
+        const queueTime = parseInt((Date.now() - date1) / 1000); 
+
+        botCache.isOnRobloxCooldown = true;
+        
+        try {
+
+            await require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
+        } catch (error) {
+
+            console.log(error)
+
+        } finally{
+
+            setTimeout(()=>{
+                botCache.isOnRobloxCooldown = false;
+            },7500);
+        }
+       
+        return true;
+
+    }
 };
 
 

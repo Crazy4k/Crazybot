@@ -4,15 +4,35 @@ const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
 const TSUgroups = require("../../config/TSUGroups.json");
-let gamepasses = require("../../raiderTracker/gamepasses.json");
 const getRaiderPower = require("../../raiderTracker/calculategamepasses")
 const raiderGroups = require("../../raiderTracker/raiderGroups.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
+const botCache = require("../../caches/botCache");
+const fs = require("fs")
 
-let gamepassIdsMS1 = [];
-for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
-let gamepassIdsMS2 = [];
-for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i].id);
+function read(string){
+    let obj =  fs.readFileSync(string, "utf-8");
+    return JSON.parse(obj); 
+}
+//queue
+async function myPromise(){
+    const promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(botCache.isOnRobloxCooldown);
+        }, 5000);
+    });
+    return promise;
+}
+
+async function checkQueue(){
+
+    let bool = botCache.isOnRobloxCooldown
+
+    while(bool){
+        bool = await myPromise()
+    }
+}
+
 
 
 let jointRaiderGroups = [];
@@ -123,7 +143,16 @@ check.execute = async (message, args, server, isSlash) =>{
     }
 
     if(isSlash)await message.deferReply().catch(e=>console.log(e));
+
+    const gamepasses = read("./raiderTracker/gamepasses.json");
+
+    let gamepassIdsMS1 = [];
+    for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
+    let gamepassIdsMS2 = [];
+    for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i].id);
     
+    await checkQueue()
+
         switch (username) {
            
             case "everyone":	
@@ -297,6 +326,12 @@ check.execute = async (message, args, server, isSlash) =>{
         }
         if(isSlash)message?.editReply({embeds: [embed]});
         else  message.reply({embeds: [embed]});
+
+        botCache.isOnRobloxCooldown = true;
+        setTimeout(()=>{
+            botCache.isOnRobloxCooldown = false;
+        },7500);
+
         return true;
 
     } else if(isAuthor){

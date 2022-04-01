@@ -10,7 +10,7 @@ const Command = require("../../Classes/Command");
 let evalCommand = new Command("cache");
 evalCommand.set({
 	aliases         : [],
-	description     : "Shows the dev the bot's cache.",
+	description     : "[DEV_ONLY] Shows the dev the bot's cache.",
 	usage           : "cache",
 	cooldown        : null,
 	unique          : false,
@@ -23,10 +23,7 @@ evalCommand.set({
 
 evalCommand.execute = async function (message, args, server) {
 
-    if (message.author.id !== authorID) return console.log(`${message.author.id} tried to use !cache`);
-    
-
-    
+    if (message.author.id !== authorID) return false;
     
     try {
        let embed = makeEmbed("Bot's cache!","",server,);

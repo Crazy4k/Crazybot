@@ -4,29 +4,47 @@ const colors = require("../config/colors.json");//colors....
 const Discord = require('discord.js');//Discord.js
 let {raiderCache, trackedMassRaids} = require("../caches/botCache");//an empty object that stores who is in-game
 let cache = require("../caches/botCache");//an object of objects that can be read from different files. same as above
-let gamepasses = require("./gamepasses.json");//a list of gamepasses and how strong they are
+
 const getRaiderPower = require("./calculategamepasses") //a function that calculates the sum of gamepasses
 const {findAosGroups, whatPlace} = require("./functions")//other functions
 const pickRandom = require("../functions/pickRandom")//RNG
 const pictureLinks = require("./pictures.json");
+const fs = require("fs");
 
-let gamepassIdsMS1 = [];
-for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
-let gamepassIdsMS2 = [];
-for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i].id);//split the gamepasses from the gamepasses.json file into 2 catefogies. ms1 and 2
+function read(string){
+    let obj =  fs.readFileSync(string, "utf-8");
+    return JSON.parse(obj); 
+}
+
+function getRaiderHistory(id){
+    let thing =  fs.readFileSync("./backgroundChecker/raiderGroupsHistory.json","utf-8");
+    return JSON.parse(thing)[id];
+        
+}
     
 
 //MS 2 = 4771888361
 //MS 1 = 2988554876
 
 async function createJoinEmbed(raiderCache, userId){//this function uses all the data given to it to create the embed to send and returns it (skip to line 87)
+
+    let erroredOut = false;
+    
+    const gamepasses = read("./raiderTracker/gamepasses.json");
+    let gamepassIdsMS1 = [];
+    for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
+    let gamepassIdsMS2 = [];
+    for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i].id);//split the gamepasses from the gamepasses.json file into 2 catefogies. ms1 and 2
+
     let cacheDataArray = raiderCache[userId].split(" ");//split the string in the cache with a space 
     let rootPlaceId = cacheDataArray[0];//root place id (border)
     let placeId = cacheDataArray[1];// place id (border, city, place, apartments)
     let instantlink = cacheDataArray[2];// link used by the extension 
     let tag = "N/A";//if the user isn't in a kos/aos group then his status is N/A
-    const username = await roblox.getUsernameFromId(userId).catch(e=>console.log(e));//get his username
-    const groups = await roblox.getGroups(userId).catch(e=>console.log(e));//get his groups
+    const usernameobj = getRaiderHistory(userId)//get his username
+    const username = usernameobj?.username ?? await roblox.getUsernameFromId(userId).catch(e=>erroredOut = true);
+    const groups = await roblox.getGroups(userId).catch(e=>erroredOut = true);//get his groups
+    if(erroredOut)return undefined;
     let placeString = whatPlace(placeId);//use the whatPlace() function to determine where the user is (border,city, etc..)
     let raiderStatus = findAosGroups(groups, tag);//this returns the user status (kos aos) and group
     tag = raiderStatus[1]
@@ -35,7 +53,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
     let ownedGamepasses = {};
     let gamepassOwnership;
     if(rootPlaceId === "4771888361" ){//if he is in ms1, get ms1 gamepasses else ms2
-        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass")));
+        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass"))).catch(e=>erroredOut = true);
         let i = 0;
 
         for(let gamepassName in gamepasses["MS2"]){
@@ -44,7 +62,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
             i++;
         }
     }else{
-        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass")));
+        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass"))).catch(e=>erroredOut = true);
         let i = 0;
         
         for(let gamepassName in gamepasses["MS1"]){
@@ -53,6 +71,8 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
             i++;
         }
     }
+
+    if(erroredOut)return undefined;
 
     let ownedGamepassesArray = [];
     for(let gamepass in ownedGamepasses)if(ownedGamepasses[gamepass])ownedGamepassesArray.push(gamepass);
@@ -109,8 +129,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
         for (let i = 0; i < iter; i++) {
             let shit = userIds;
             let poopArray = shit.slice(i * 100, i*100+100);
-            let smolData = await noblox.getPresences(poopArray).catch(e=>console.log(e))
-            if(!smolData)return;
+            let smolData = await noblox.getPresences(poopArray).catch(e=>e);
+            if(!smolData)continue;
             data.push(...smolData.userPresences);         
         }//this part is a bit messy, but what it does is that it uses noblox.getPresences() around 18 times and pushes the returned data them into the (data) array
         //this part is the most important and if it fails, the whole thing fails
@@ -149,6 +169,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     if(raiderCache[I]){
                         
                         let embed = await createJoinEmbed(raiderCache,I)
+                        if(!embed)continue;
 
                         changes.set(`${I}-${raiderCache[I]}`,embed);
                         joins.push(embed);
@@ -203,7 +224,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     if(!raiderCache[I] && newCache[I]){
 
                         let embed = await createJoinEmbed(newCache,I)//the function i talked about earlier
-                        
+                        if(!embed)continue;
+
                         changes.set(`${I}-${raiderCache[I]}`,embed);
                         joins.push(embed);
                     }
@@ -230,6 +252,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     if(raiderCache[I] && newCache[I] && raiderCache[I] !== newCache[I] ){
 
                         let embed = await createJoinEmbed(newCache,I)
+                        if(!embed)continue;
                         embed.setColor(colors.changeBlue);
                         embed.setTitle("A raider switched servers!");
 
@@ -239,7 +262,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     else if(!raiderCache[I] && newCache[I]){
 
                         let embed = await createJoinEmbed(newCache,I)
-                        
+                        if(!embed)continue;
+
                         changes.set(`${I}-${raiderCache[I]}`,embed);
                         joins.push(embed);
                     }
@@ -258,6 +282,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         if(!raiderCache[I] && newCache[I]){
 
                            let embed = await createJoinEmbed(newCache,I)
+                           if(!embed)continue;
                             changes.set(`${I}-${raiderCache[I]}`,embed);
                             joins.push(embed);
 

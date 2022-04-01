@@ -3,6 +3,7 @@ const client = require("../../index");
 const makeEmbed = require('../../functions/embed');
 const Command = require("../../Classes/Command");
 const sendAndDelete = require("../../functions/sendAndDelete");
+const {MessageActionRow, MessageButton} = require("discord.js");
 
 let categories;
 let commandsObject;
@@ -63,6 +64,24 @@ help.execute =  function(message, args, server) {
 	let index = "";
 	let isCategory = true;
 
+	const privacy = new MessageButton()
+    .setLabel('Privacy Policy')
+    .setStyle('LINK')
+	.setEmoji("📜")
+    .setURL("https://docs.google.com/document/d/e/2PACX-1vTgGaeF9W1EyeUxUPNiQvmZ9wbBMbZl3c7lieegyTzU8g8y0CPONysMAW1S4NMMALVt-ZuyCHd2gj2J/pub")
+	const discordInvite = new MessageButton()
+    .setLabel('Join our discord server')
+    .setStyle('LINK')
+	.setEmoji("🏘")
+    .setURL("https://discord.gg/vSFp7SjHWp")
+	const invite = new MessageButton()
+    .setLabel('Invite the bot')
+    .setStyle('LINK')
+	.setEmoji("⬇")
+    .setURL("https://top.gg/bot/799752849163550721")
+  
+    let row = new MessageActionRow().addComponents(privacy, invite, discordInvite);
+
 	if(args0){
 		switch (args0.toLowerCase()) {
 			case "fun":
@@ -108,7 +127,7 @@ help.execute =  function(message, args, server) {
 			}
 			if(isCategory){
 				let num = 1;
-				let embed = makeEmbed("Help!",`All of the commands in the \`${index}\` category.`,server,false,"developed by Crazy4k#0091");
+				let embed = makeEmbed("",`All of the commands in the \`${index}\` category.`,server,false,"developed by Crazy4k#0091");
 				for (const command of categories[index]) {
 					let perms = command.whiteList;
 				if(!perms) perms = "**-**"
@@ -121,7 +140,7 @@ help.execute =  function(message, args, server) {
 				return true;
 			} else{
 				
-				let embed = makeEmbed("Help!",`All of the info about the \`${index}\` command.`,server, false,"developed by Crazy4k#0091");
+				let embed = makeEmbed("",`All of the info about the \`${index}\` command.`,server, false,"developed by Crazy4k#0091");
 				let command = commandsObject[index];
 
 				let perms = command.whiteList;
@@ -151,7 +170,7 @@ help.execute =  function(message, args, server) {
 		
 		
 	}else{
-		let embed = makeEmbed("Click me if you want to join our discord.", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server, false,"developed by Crazy4k#0091");
+		let embed = makeEmbed("", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server, false,"developed by Crazy4k#0091");
 		embed.addFields(
 			{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
 			{name:"**events**", value:`Commands that are related to hosting events using the bot.\n\`${server.prefix}${this.name} events\` `, inline:true},
@@ -161,10 +180,8 @@ help.execute =  function(message, args, server) {
 			{name:"**admin fun**", value:`Commands that only admins can use, but it's for fun.\n\`${server.prefix}${this.name} AA\` `, inline:true},
 			{name:"**Server configurations**", value:`Commands that change the way the bot deals with the server.\n\`${server.prefix}${this.name} config\``, inline:true},
 			{name:"**other**", value:`Commands that don't fit in any other category.\n \`${server.prefix}${this.name} other\``, inline:true},
-			{name:"**Support**:",value: `Check out our [Privacy policy](https://docs.google.com/document/d/e/2PACX-1vTgGaeF9W1EyeUxUPNiQvmZ9wbBMbZl3c7lieegyTzU8g8y0CPONysMAW1S4NMMALVt-ZuyCHd2gj2J/pub) for info regarding the bot's data collection. In case you have any privacy concerns, feel free to DM the developer or email them (mhabbudi@gmail.com)`}
 		);
-		embed.setURL("https://discord.gg/vSFp7SjHWp");
-		message.reply( {embeds:[embed]} ).catch(err=>console.log(err));
+		message.reply( {embeds:[embed], components:[row]} ).catch(err=>console.log(err));
 		return true;
 		
 	}

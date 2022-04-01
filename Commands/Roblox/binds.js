@@ -251,8 +251,8 @@ binds.execute = async function(message, args, server, isSlash) {
                 }); 
 
                 collector.on('end', collected => {
-                    if(isSlash) message.editReply({components:[]});
-                    else newMsg.edit({components:[]});
+                    if(isSlash) message.editReply({components:[]}).catch(e=>e);
+                    else newMsg.edit({components:[]}).catch(e=>e);
                 });
 
                 break;
@@ -492,8 +492,8 @@ binds.execute = async function(message, args, server, isSlash) {
                             
                         });
                         collector.on('end', collected => {
-                            if(isSlash) message.editReply({components:[]});
-                            else m.edit({components:[]});
+                            if(isSlash) message.editReply({components:[]}).catch(e=>e);
+                            else m.edit({components:[]}).catch(e=>e);
                         });
 
                         replyMessage.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 60 * 3, errors : ["time"] })
