@@ -53,7 +53,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
     let ownedGamepasses = {};
     let gamepassOwnership;
     if(rootPlaceId === "4771888361" ){//if he is in ms1, get ms1 gamepasses else ms2
-        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass"))).catch(e=>erroredOut = true);
+        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass").catch(e=>erroredOut = true))).catch(e=>erroredOut = true);
         let i = 0;
 
         for(let gamepassName in gamepasses["MS2"]){
@@ -62,7 +62,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
             i++;
         }
     }else{
-        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass"))).catch(e=>erroredOut = true);
+        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => roblox.getOwnership(userId, gamepassId, "GamePass").catch(e=>erroredOut = true))).catch(e=>erroredOut = true);
         let i = 0;
         
         for(let gamepassName in gamepasses["MS1"]){

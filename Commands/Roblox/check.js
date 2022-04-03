@@ -9,28 +9,11 @@ const raiderGroups = require("../../raiderTracker/raiderGroups.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
 const fs = require("fs")
+const checkQueue = require("../../functions/checkQueue");
 
 function read(string){
     let obj =  fs.readFileSync(string, "utf-8");
     return JSON.parse(obj); 
-}
-//queue
-async function myPromise(){
-    const promise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(botCache.isOnRobloxCooldown);
-        }, 5000);
-    });
-    return promise;
-}
-
-async function checkQueue(){
-
-    let bool = botCache.isOnRobloxCooldown
-
-    while(bool){
-        bool = await myPromise()
-    }
 }
 
 
@@ -153,6 +136,7 @@ check.execute = async (message, args, server, isSlash) =>{
     
     await checkQueue()
 
+    try {
         switch (username) {
            
             case "everyone":	
@@ -243,7 +227,7 @@ check.execute = async (message, args, server, isSlash) =>{
         
         let isBanned = false;
 
-        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
+        gamepassOwnership = await Promise.all(gamepassIdsMS2.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass").catch(e=>erroredOut = true))).catch(e=>isBanned = true);
         if(isBanned){
             const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
             if(isSlash)message?.editReply({embeds: [embed]});
@@ -257,7 +241,7 @@ check.execute = async (message, args, server, isSlash) =>{
             i++;
         }
     
-        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass"))).catch(e=>isBanned = true);
+        gamepassOwnership = await Promise.all(gamepassIdsMS1.map(gamepassId => noblox.getOwnership(id, gamepassId, "GamePass").catch(e=>erroredOut = true))).catch(e=>isBanned = true);
         if(isBanned){
             const embed = makeEmbed("User not found", "Couldn't find a roblox user with this username/id\nOr the user could be banned from Roblox",server);
             if(isSlash)message?.editReply({embeds: [embed]});
@@ -328,10 +312,6 @@ check.execute = async (message, args, server, isSlash) =>{
         else  message.reply({embeds: [embed]});
 
         botCache.isOnRobloxCooldown = true;
-        setTimeout(()=>{
-            botCache.isOnRobloxCooldown = false;
-        },7500);
-
         return true;
 
     } else if(isAuthor){
@@ -345,6 +325,19 @@ check.execute = async (message, args, server, isSlash) =>{
         else  message.reply({embeds: [embed]});
         return true;
     }
+    } catch (error) {
+        console.log(error);
+        setTimeout(()=>{
+            botCache.isOnRobloxCooldown = false;
+        },7500);
+
+    } finally {
+        setTimeout(()=>{
+            botCache.isOnRobloxCooldown = false;
+        },7500);
+    }
+
+        
 
 };
 module.exports = check;

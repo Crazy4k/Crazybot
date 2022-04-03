@@ -4,26 +4,10 @@ const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
+const checkQueue = require("../../functions/checkQueue");
 
 
 //queue
-async function myPromise(){
-    const promise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(botCache.isOnRobloxCooldown);
-        }, 5000);
-    });
-    return promise;
-}
-
-async function checkQueue(){
-
-    let bool = botCache.isOnRobloxCooldown
-
-    while(bool){
-        bool = await myPromise()
-    }
-}
 
 
 let bgcheck = new Command("bgcheck");
@@ -96,6 +80,8 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
 
 
         await checkQueue()
+
+        await sentMessage?.edit("CrazyBot is collecting data from Roblox...").catch(e=>e);
 
         const queueTime = parseInt((Date.now() - date1) / 1000); 
 
