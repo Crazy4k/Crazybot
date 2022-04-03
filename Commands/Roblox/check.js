@@ -295,7 +295,7 @@ check.execute = async (message, args, server, isSlash) =>{
         if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
         embed.addField(`\💰Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
         embed.addField(`\💪Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
-        embed.addField(`\🏷️Lebels`,`\`${uniqueLebels.join("`,      `")}\``);
+        embed.addField(`\🏷Labels`,`\`${uniqueLebels.join("`,      `")}\``);
         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
         if(lebels.includes("has admin")){
             embed.setColor("#7E00FC");
