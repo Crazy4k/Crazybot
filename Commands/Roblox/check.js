@@ -136,6 +136,10 @@ check.execute = async (message, args, server, isSlash) =>{
     
     await checkQueue()
 
+    botCache.isOnRobloxCooldown = true;
+    setTimeout(()=>{
+        botCache.isOnRobloxCooldown = false;
+    },10000);
     try {
         switch (username) {
            

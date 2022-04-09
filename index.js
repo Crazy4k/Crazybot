@@ -332,10 +332,12 @@ function read(string){
 	
 		setInterval(async () => {
 			try {
-				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels, botCache.raiderTrackerChannelCache.raids.channels)	
+				
+				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels, botCache.raiderTrackerChannelCache.raids.channels)
+				botCache.isOnRobloxCooldown = false;	
 			} catch (error) {
 				console.log("error in the raider tracker")
-				console.log(console.log(error));
+				console.log(error)
 			}
 			
 		}, 270 * 1000);
