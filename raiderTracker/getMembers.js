@@ -25,6 +25,8 @@ module.exports = async(group) =>{
     let erroredOut = false;
 
     rolesArray = await Promise.all(group.map(id => noblox.getRoles(id))).catch(e=>erroredOut = true);
+
+    if(erroredOut)return [];
     
     for (let I = 0; I < group.length; I++) {
       const poop =[];

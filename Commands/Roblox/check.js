@@ -50,9 +50,9 @@ for(let index in TSUgroups){
         
     }else if(group.isDivision){
         jointDivGroupIds.push(group.id);
-        jointDivOfficers.push(...group.highRanks);
-        jointDivHicom.push(...group.HICOMRanks);
-        jointStaff.push(...group.managementAndStaff);
+        if(group.highRanks)jointDivOfficers.push(...group.highRanks);
+        if(group.HICOMRanks)jointDivHicom.push(...group.HICOMRanks);
+        if(group.managementAndStaff)jointStaff.push(...group.managementAndStaff);
         if(group.VIPRanks)jointVIPs.push(...group.VIPRanks);
         if(group.hasCuffs){
             if(group.cuffsRanks)jointCuffRanks.push(...group.cuffsRanks);

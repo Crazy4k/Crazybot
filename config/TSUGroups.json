@@ -92,6 +92,19 @@
         "HICOMRanks": [77700363, 77700369, 79082781, 79082783],
         "managementAndStaff": [32402720]
     },
+    "4849673": {
+        "name"      : "Congress",
+        "link"      : "https://www.roblox.com/groups/4849673",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "hasCuffs"  : false,
+        "id"        : 4849673,
+        "highRanks" : [],
+        "VIPRanks"  : [],
+        "HICOMRanks": [],
+        "managementAndStaff": []
+    },
     "5902649":{
         "name"      : "109th Infantry",
         "link"      : "https://www.roblox.com/groups/5902649",
@@ -166,7 +179,7 @@
         "managementAndStaff": [78969810, 32134284, 32134298, 32134208 ]
     },
     "13300850": {
-        "name"      : "AE&EC",
+        "name"      : "AEEC",
         "link"      : "https://www.roblox.com/groups/13300850/Army-Education-and-Enrollment-Command#!",
         "isBranch"  : false,
         "isDivision": true,
@@ -250,7 +263,7 @@
         "name"      : "Monarch",
         "link"      : "https://www.roblox.com/groups/5157127",
         "isBranch"  : false,
-        "isDivision": false,
+        "isDivision": true,
         "isRaider"  : false,
         "hasCuffs"  : true,
         "id"        : 5157127
@@ -259,7 +272,7 @@
         "name"      : "Phoenix",
         "link"      : "https://www.roblox.com/groups/4291835",
         "isBranch"  : false,
-        "isDivision": false,
+        "isDivision": true,
         "isRaider"  : false,
         "hasCuffs"  : true,
         "id"        : 4291835

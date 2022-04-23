@@ -324,10 +324,10 @@ function read(string){
 				botCache.trackedRaiders = groups
 			} catch (error) {
 				console.error(); 
-				console.log("Error in line 457")
+				
 			}
 			
-		}, 6 * 60 * 60 * 1000);
+		}, 12 * 60 * 60 * 1000);
 		
 	
 		setInterval(async () => {
@@ -345,12 +345,29 @@ function read(string){
 
 	} catch (error) {
 		console.log(error)
-		console.log("line 477")
 	}
 
 	
 })()
 
+//TSU rank logs
+
+const updateHistory = require("./Rank logs/updateHistory");
+const getRanksForLogs = require("./Rank logs/getRanks");
+
+getRanksForLogs();
+
+setInterval(async () => {
+	getRanksForLogs();
+	
+}, 24 * 60 * 60 * 1000);
+
+setTimeout(()=>{updateHistory(client);},10000);
+
+setInterval(async () => {
+	updateHistory(client);
+	
+}, 4 * 60 * 1000);
 
 let iter = 0;
 
@@ -364,7 +381,7 @@ setInterval(()=>{
 	
 
 	let status = [
-		{str:`standing with Ukraine `,type:{type:"PLAYING"}},
+		{str:`TSU RANK LOGS NOW!!`,type:{type:"PLAYING"}},
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
 		{str:"to /help",type:{type: "LISTENING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
