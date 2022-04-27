@@ -17,6 +17,7 @@ const messageDeleteBulk = require("../event_listeners/messageDeleteBulk");
 const roleCreate 		= require("../event_listeners/roleCreate");
 const roleDelete		= require("../event_listeners/roleDelete");
 const roleUpdate		= require("../event_listeners/roleUpdate");
+const rateLimit         = require("./rateLimit");
 
 const errorHandler      = require("../functions/error_handler");
 const botCache = require("../caches/botCache");
@@ -104,6 +105,15 @@ module.exports = (client, mongo) => {
         } catch (error) {
             console.log(error);
             console.log("guildCreate error");
+        }
+    });
+    client.on("rateLimit",async (limit)=>{
+        if(!botCache.isReady)return
+        try {
+            rateLimit(limit, client);
+        } catch (error) {
+            console.log(error);
+            console.log("rate limit error");
         }
     });
     
