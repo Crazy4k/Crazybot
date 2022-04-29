@@ -159,11 +159,11 @@ module.exports = async (client) =>{
   }
   cache.compare = changes;
 
-  console.log("promotions", promotions);
-  console.log("demotions", demotions);
+  if(promotions.length)console.log("promotions", promotions);
+  if(demotions.length)console.log("demotions", demotions);
 
   
-  let thing =  fs.readFileSync("./Private JSON files/TSU_careers.json","utf-8");
+  let thing =  fs.readFileSync("./Private_JSON_files/TSU_careers.json","utf-8");
   const careers = JSON.parse(thing);
 
 
@@ -255,7 +255,7 @@ module.exports = async (client) =>{
   }
 
   let stringObj = JSON.stringify(careers, null, 2);
-  fs.writeFile("./Private JSON files/TSU_careers.json",stringObj ,(err, config)=>{
+  fs.writeFile("./Private_JSON_files/TSU_careers.json",stringObj ,(err, config)=>{
     if(err) {
       console.log(err);
     }
