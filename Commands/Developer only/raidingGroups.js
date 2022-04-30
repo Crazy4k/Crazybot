@@ -8,7 +8,7 @@ const authorID = bot_info.authorID;
 
 
 function read(){
-    let obj =  fs.readFileSync("./raiderTracker/raiderGroups.json","utf-8");
+    let obj =  fs.readFileSync("./[TSU]_Raider_Tracker/raiderGroups.json","utf-8");
     return JSON.parse(obj); 
 }
 
@@ -16,7 +16,7 @@ function read(){
 function write(obj){
     let stringObj = JSON.stringify(obj, null, 2);
 
-    fs.writeFile("./raiderTracker/raiderGroups.json",stringObj ,(err, config)=>{
+    fs.writeFile("./[TSU]_Raider_Tracker/raiderGroups.json",stringObj ,(err, config)=>{
       if(err) {
         console.log(err);
       }

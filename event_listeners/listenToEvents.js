@@ -60,11 +60,11 @@ module.exports = (client, mongo) => {
 
         if(client.user.id === "869954815982190632" || client.user.id === "799752849163550721"){
             console.log("Background checker folder detected!")
-            const updateRaiderHistory = require("../backgroundChecker/updateRaiderHistory");
-            const cache = require("../backgroundChecker/cache");
-            const getMembers = require("../raiderTracker/getMembers");
-            const raiderGroups = require("../backgroundChecker/allRaiderGroups.json");
-            const getbadges = require("../backgroundChecker/getbadges");
+            const updateRaiderHistory = require("../[TSU]_Background_Checker/updateRaiderHistory");
+            const cache = require("../[TSU]_Background_Checker/cache");
+            const getMembers = require("../[TSU]_Raider_Tracker/getMembers");
+            const raiderGroups = require("../[TSU]_Background_Checker/allRaiderGroups.json");
+            const getbadges = require("../[TSU]_Background_Checker/getbadges");
 
             let groupsArray = [];
             for(let i in raiderGroups){

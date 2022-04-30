@@ -4,12 +4,13 @@ const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
 const TSUgroups = require("../../config/TSUGroups.json");
-const getRaiderPower = require("../../raiderTracker/calculategamepasses")
-const raiderGroups = require("../../raiderTracker/raiderGroups.json");
+const getRaiderPower = require("../../[TSU]_Raider_Tracker/calculategamepasses")
+const raiderGroups = require("../../[TSU]_Raider_Tracker/raiderGroups.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
 const fs = require("fs")
 const checkQueue = require("../../functions/checkQueue");
+const {MessageActionRow, MessageButton} = require("discord.js");
 
 function read(string){
     let obj =  fs.readFileSync(string, "utf-8");
@@ -127,7 +128,7 @@ check.execute = async (message, args, server, isSlash) =>{
 
     if(isSlash)await message.deferReply().catch(e=>console.log(e));
 
-    const gamepasses = read("./raiderTracker/gamepasses.json");
+    const gamepasses = read("./[TSU]_Raider_Tracker/gamepasses.json");
 
     let gamepassIdsMS1 = [];
     for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
@@ -288,15 +289,27 @@ check.execute = async (message, args, server, isSlash) =>{
         if(!ownedGamepassesInV1Array.length)ownedGamepassesInV1Array.push("**-**");
         if(!ownedGamepassesInV2Array.length)ownedGamepassesInV2Array.push("**-**");
 
+        //button
+
+        const profileButton = new MessageButton()
+        .setLabel(`${robloxUsername}'s profile`)
+        .setStyle('LINK')
+        .setEmoji("👤")
+        .setURL(`https://www.roblox.com/users/${id}/profile`);
+  
+        let row = new MessageActionRow().addComponents(profileButton);
+
+
         //BUILD THE EMBED
         const uniqueLebels = [...new Set(lebels)] 
         const embed = makeEmbed(`${robloxUsername}'s soviet profile`,`Here are the info related to the player`,server);
+        embed.addField("\u200b","**General info**",false)
         embed.addField(`Username:`,`**${robloxUsername}**(${id})`,true);
-        embed.addField(`Profile link`,`[CLICK HERE](https://www.roblox.com/users/${id})`,true);
 
         if(notableTSU.length)embed.addField("The Soviet Union groups:",`${notableTSU.join("\n")}`,false);
         if(globalGroups.length)embed.addField("Noteable groups",globalGroups.join("\n"),false)
         if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
+        embed.addField("\u200b","**Inventory**",false)
         embed.addField(`\💰Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);
         embed.addField(`\💪Raider power`,`**V1:** ${raiderPowerV1}\n**V2:** ${raiderPowerV2}`);
         embed.addField(`\🏷Labels`,`\`${uniqueLebels.join("`,      `")}\``);
@@ -312,8 +325,8 @@ check.execute = async (message, args, server, isSlash) =>{
         }else if(lebels.includes("Possible raider")){
             embed.setColor("#fbbd01");
         }
-        if(isSlash)message?.editReply({embeds: [embed]});
-        else  message.reply({embeds: [embed]});
+        if(isSlash)message?.editReply({embeds: [embed], components: [row]});
+        else  message.reply({embeds: [embed], components: [row]});
 
         botCache.isOnRobloxCooldown = true;
         return true;

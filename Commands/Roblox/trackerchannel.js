@@ -3,7 +3,7 @@ const checkChannels = require("../../functions/Response based Checkers/checkChan
 const mongo = require("../../mongo");
 let botCache = require("../../caches/botCache");
 const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
-const raiderGroupsJSON = require("../../raiderTracker/raiderGroups.json");
+const raiderGroupsJSON = require("../../[TSU]_Raider_Tracker/raiderGroups.json");
 const Command = require("../../Classes/Command");
 
 const idleMessage = "Command cancelled due to the user being idle";

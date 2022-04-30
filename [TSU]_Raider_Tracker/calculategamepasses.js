@@ -6,7 +6,7 @@ function read(string){
 
 
 module.exports = function calculatGamepasses(arrayOfOwnedGamepasses){
-    const {MS1, MS2} = read("./raiderTracker/gamepasses.json");
+    const {MS1, MS2} = read("./[TSU]_Raider_Tracker/gamepasses.json");
 
     let int = 0;
     for(let gamepass of arrayOfOwnedGamepasses){

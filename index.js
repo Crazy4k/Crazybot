@@ -264,8 +264,8 @@ timer.addEventListener("minutesUpdated",()=>{
 
 // TSU raider tracker
 
-const getMembers = require("./raiderTracker/getMembers");
-const trackRaiders = require("./raiderTracker/getOnlineRaiders");
+const getMembers = require("./[TSU]_Raider_Tracker/getMembers");
+const trackRaiders = require("./[TSU]_Raider_Tracker/getOnlineRaiders");
 
 function read(string){
     let obj =  fs.readFileSync(string,"utf-8");
@@ -275,7 +275,7 @@ function read(string){
 (async () => {
 	try {
 
-		const raiderGroupsJSON = read("./raiderTracker/raiderGroups.json");
+		const raiderGroupsJSON = read("./[TSU]_Raider_Tracker/raiderGroups.json");
 
 		await mongo().then(async (mongoose) =>{
 			try{
@@ -311,7 +311,7 @@ function read(string){
 	
 		setInterval(async () => {
 			try {
-				const raiderGroupsJSON2 = read("./raiderTracker/raiderGroups.json");
+				const raiderGroupsJSON2 = read("./[TSU]_Raider_Tracker/raiderGroups.json");
 
 				let groupsArray =  []
 				for(let group of raiderGroupsJSON2){
@@ -352,8 +352,8 @@ function read(string){
 
 //TSU rank logs
 
-const updateHistory = require("./Rank logs/updateHistory");
-const getRanksForLogs = require("./Rank logs/getRanks");
+const updateHistory = require("./[TSU]_Rank_Logs/updateHistory");
+const getRanksForLogs = require("./[TSU]_Rank_Logs/getRanks");
 
 getRanksForLogs();
 

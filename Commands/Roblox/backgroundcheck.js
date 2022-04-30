@@ -70,11 +70,11 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     }
 
     
-    if(client.user.id !== "799752849163550721"){
+    /*if(client.user.id !== "799752849163550721"){
         const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
         sendAndDelete(message,embed,server);
         return false;
-    } else {
+    } else {*/
         let sentMessage;
         if(!isSlash) sentMessage = await message.reply("CrazyBot is waiting in queue...");
 
@@ -89,7 +89,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         
         try {
 
-            await require("../../backgroundChecker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
+            await require("../../[TSU]_Background_Checker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
         } catch (error) {
 
             console.log(error)
@@ -103,7 +103,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
        
         return true;
 
-    }
+    //}
 };
 
 

@@ -49,7 +49,7 @@ devgamepasses.execute = async function(message, args, server, isSlash){
 
     if (message.author.id !== authorID) return false
 
-    const gamepassesJSON = read("./raiderTracker/gamepasses.json");
+    const gamepassesJSON = read("./[TSU]_Raider_Tracker/gamepasses.json");
 
     if(args[0] === "add"){
         let erroredOut = false;
@@ -122,7 +122,7 @@ devgamepasses.execute = async function(message, args, server, isSlash){
         }
 
 
-        write(gamepassesJSON, "./raiderTracker/gamepasses.json");
+        write(gamepassesJSON, "./[TSU]_Raider_Tracker/gamepasses.json");
 
         const embed = makeEmbed("Gamepass added",`${name} has been added gamepasses list.`, server)
         message.reply({embeds:[embed]});
@@ -169,7 +169,7 @@ devgamepasses.execute = async function(message, args, server, isSlash){
         delete gamepassesJSON[index][name]
 
 
-        write(gamepassesJSON, "./raiderTracker/gamepasses.json");
+        write(gamepassesJSON, "./[TSU]_Raider_Tracker/gamepasses.json");
 
         const embed = makeEmbed("Gamepass removed",`${name} has been removed from passes list.`, server)
         message.reply({embeds:[embed]});

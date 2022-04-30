@@ -16,15 +16,6 @@ const serverSchema = require("../../schemas/servers-schema");
 const rover = require("rover-api");
 const axios = require("axios");
 
-let history = async (id) => {
-
-    fs.readFile("./backgroundChecker/raiderGroupsHistory.json","utf-8", async (err,config)=>{
-        if(err) console.log(err);
-        else console.log(JSON.parse(config)[id]); 
-    });
-    return "Outcome has been printed to the console";
-}
-
 
 let evalCommand = new Command("eval");
 evalCommand.set({

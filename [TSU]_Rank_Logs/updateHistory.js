@@ -2,12 +2,12 @@ const tsuGroups = require("../config/TSUGroups.json")
 const noblox = require("noblox.js");
 const cache = require("./cache");
 const makeEmbed = require("../functions/embed");
-const colors = require("../config/colors.json");
 const axios = require("axios");
 const moment = require("moment");
 const settings = require("./config.json");
 const fs = require("fs");
 const {MessageActionRow, MessageButton} = require("discord.js");
+const {usernamesCache} = require("../caches/botCache");
 
 const pictures = {
   up: "https://cdn.discordapp.com/attachments/926507472611582002/968125838656671795/IMG_1545.png",
@@ -16,7 +16,7 @@ const pictures = {
   minus: "https://cdn.discordapp.com/attachments/926507472611582002/968123881988710460/IMG_1548.png",
 
 }
-const usernamesCache = {};
+
 
 module.exports = async (client) =>{
 

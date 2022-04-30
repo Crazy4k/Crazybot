@@ -1,7 +1,7 @@
 const makeEmbed = require("../../functions/embed");
 const Command = require("../../Classes/Command");
 const fs = require("fs");
-const getMembers = require("../../raiderTracker/getMembers");
+const getMembers = require("../../[TSU]_Raider_Tracker/getMembers");
 const {bot_info} = require("../../config/config.json");
 const authorID = bot_info.authorID;
 let botCache = require("../../caches/botCache");
@@ -35,7 +35,7 @@ updateraidertracker.execute = async function(message, args, server, isSlash){
 
 
 
-    const raiderGroupsJSON = read("./raiderTracker/raiderGroups.json");
+    const raiderGroupsJSON = read("./[TSU]_Raider_Tracker/raiderGroups.json");
 
     if(!raiderGroupsJSON?.length){
         const em = makeEmbed("Command failed","An error happened, try again later.",server);

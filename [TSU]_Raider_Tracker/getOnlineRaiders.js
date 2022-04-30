@@ -2,7 +2,7 @@ const roblox = require('noblox.js');//noblox.js
 const makeEmbed = require("../functions/embed");// a function that creats embeds
 const colors = require("../config/colors.json");//colors.... 
 const Discord = require('discord.js');//Discord.js
-let {raiderCache, trackedMassRaids} = require("../caches/botCache");//an empty object that stores who is in-game
+let {raiderCache, trackedMassRaids, usernamesCache} = require("../caches/botCache");//an empty object that stores who is in-game
 let cache = require("../caches/botCache");//an object of objects that can be read from different files. same as above
 
 const getRaiderPower = require("./calculategamepasses") //a function that calculates the sum of gamepasses
@@ -16,13 +16,6 @@ function read(string){
     return JSON.parse(obj); 
 }
 
-function getRaiderHistory(id){
-    let thing =  fs.readFileSync("./backgroundChecker/raiderGroupsHistory.json","utf-8");
-    return JSON.parse(thing)[id];
-        
-}
-    
-
 //MS 2 = 4771888361
 //MS 1 = 2988554876
 
@@ -30,7 +23,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
 
     let erroredOut = false;
     
-    const gamepasses = read("./raiderTracker/gamepasses.json");
+    const gamepasses = read("./[TSU]_Raider_Tracker/gamepasses.json");
     let gamepassIdsMS1 = [];
     for (const i in gamepasses["MS1"]) gamepassIdsMS1.push(gamepasses["MS1"][i].id);
     let gamepassIdsMS2 = [];
@@ -41,8 +34,7 @@ async function createJoinEmbed(raiderCache, userId){//this function uses all the
     let placeId = cacheDataArray[1];// place id (border, city, place, apartments)
     let instantlink = cacheDataArray[2];// link used by the extension 
     let tag = "N/A";//if the user isn't in a kos/aos group then his status is N/A
-    const usernameobj = getRaiderHistory(userId)//get his username
-    const username = usernameobj?.username ?? await roblox.getUsernameFromId(userId).catch(e=>erroredOut = true);
+    const username = usernamesCache[userId] ?? await roblox.getUsernameFromId(userId).catch(e=>erroredOut = true);
     const groups = await roblox.getGroups(userId).catch(e=>erroredOut = true);//get his groups
     if(erroredOut)return undefined;
     let placeString = whatPlace(placeId);//use the whatPlace() function to determine where the user is (border,city, etc..)

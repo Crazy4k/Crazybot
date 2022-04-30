@@ -19,7 +19,9 @@ let caches = {
     tempCmds : {},
     timerCache : [timer.getTimeValues(), timer.getTotalTimeValues()],
     executes : {slash: {}, legacy: {}},
-    isOnRobloxCooldown: false
+    isOnRobloxCooldown: false,
+    usernamesCache: {},
+    
 
 }
 
