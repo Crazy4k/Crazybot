@@ -385,8 +385,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log && log.guild.available){
-                                let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
-                                let ping = "@raider_pings";
+                                let role = log.guild.roles.cache.find(e=>e.name === "raids_pings");
+                                let ping = "@raids_pings";
                                 if(role)ping = `<@&${role.id}>`
                                 log.send({content:ping,embeds:[embed]}).catch(e=> console.log(e));
                             }
@@ -438,8 +438,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log && log.guild.available){
-                                let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
-                                let ping = "@raider_pings";
+                                let role = log.guild.roles.cache.find(e=>e.name === "raids_pings");
+                                let ping = "@raids_pings";
                                 if(role)ping = `<@&${role.id}>`
                                 log.send({content:ping,embeds:[embed]}).catch(e=> console.log(e));
                             }

@@ -120,6 +120,7 @@ client.on('messageCreate', async (message) => {
 				return;
 			}
 			if(!server)return;
+			if(server.onlySlash)return;
 
 
 				if (!message.author.bot){
@@ -277,29 +278,6 @@ function read(string){
 
 		const raiderGroupsJSON = read("./[TSU]_Raider_Tracker/raiderGroups.json");
 
-		await mongo().then(async (mongoose) =>{
-			try{
-				let data = await raiderTrackerSchema.findOne({_id:"raiders"});
-				botCache.raiderTrackerChannelCache.raiders = data;
-	
-			} finally{
-				console.log("FETCHED TRACKER CHANNELS");
-				mongoose.connection.close();
-	
-			}
-		});
-		await mongo().then(async (mongoose) =>{
-			try{
-				let data = await raiderTrackerSchema.findOne({_id:"raids"});
-				botCache.raiderTrackerChannelCache.raids = data;
-	
-			} finally{
-				console.log("FETCHED RAIDS CHANNELS");
-				mongoose.connection.close();
-	
-			}
-		});
-
 		let groupsArray =  []
 		for(let group of raiderGroupsJSON){
 			groupsArray.push(group.id)
@@ -332,9 +310,8 @@ function read(string){
 	
 		setInterval(async () => {
 			try {
-				
-				await trackRaiders( noblox, botCache.trackedRaiders, client, botCache.raiderTrackerChannelCache.raiders.channels, botCache.raiderTrackerChannelCache.raids.channels)
-				botCache.isOnRobloxCooldown = false;	
+				await trackRaiders( noblox, botCache.trackedRaiders, client, ["888816743936577596"], ["929679489779269652"])
+				botCache.isOnRobloxCooldown = false; 
 			} catch (error) {
 				console.log("error in the raider tracker")
 				console.log(error)

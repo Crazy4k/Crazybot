@@ -22,6 +22,8 @@ const guildSchema = mongoose.Schema({
     language:requiredString,
     prefix:requiredString,
     defaultEmbedColor:requiredString,
+    overWriteDefaultPermission: {type: Boolean, required: true},
+    onlySlash:{type: Boolean, required: true},
     deleteFailedMessagedAfter:requiredInt,
     deleteMessagesInLogs:{type:Boolean,required:true},
     deleteFailedCommands:{type:Boolean,required:true},

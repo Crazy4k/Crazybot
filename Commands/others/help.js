@@ -25,7 +25,7 @@ help.set({
 		name : "category",
 		description : "The name of the command category.",
 		required : false,
-		choices: [{name: "Fun", value: "fun"}, {name: "Events", value: "events"}, {name: "Roblox", value: "roblox"}, {name: "Moderation", value: "mod"}, {name: "Points", value: "points"}, {name: "Admin fun", value: "aa"}, {name: "Server configurations", value: "config"}, {name: "Other", value: "other"}],
+		choices: [{name: "Fun", value: "fun"}, {name: "Roblox", value: "roblox"}, {name: "Moderation", value: "mod"}, {name: "Points", value: "points"}, {name: "Admin fun", value: "aa"}, {name: "Server configurations", value: "config"}, {name: "Other", value: "other"}],
 		type: 3,
 		},
 		{
@@ -87,9 +87,6 @@ help.execute =  function(message, args, server) {
 			case "fun":
 				index = "fun";
 				break
-			case "events":
-				index = "events";
-				break;
 			case "moderation":
 			case "mod":
 				index = "Moderation";
@@ -173,7 +170,6 @@ help.execute =  function(message, args, server) {
 		let embed = makeEmbed("", `Here are the available command categories.\nIf you have any questions or want to share your opinion, join our discord.`,server, false,"developed by Crazy4k#0091");
 		embed.addFields(
 			{name:"**fun**", value:`Commands that are meant for fun.\n\`${server.prefix}${this.name} fun\` `, inline:true},
-			{name:"**events**", value:`Commands that are related to hosting events using the bot.\n\`${server.prefix}${this.name} events\` `, inline:true},
 			{name:"**Roblox**", value:`Commands that are related to Roblox and TSU.\n\`${server.prefix}${this.name} roblox\` `, inline:true},
 			{name:"**Moderation**", value:`Commands that do moderation actions.\n\`${server.prefix}${this.name} mod\` `, inline:true},
 			{name:"**points**", value:`Commands that are related to the points system.\n\`${server.prefix}${this.name} points\` `, inline:true},

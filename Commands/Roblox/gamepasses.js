@@ -21,15 +21,29 @@ const icons = {
 let raiders = new Command("gamepasses");
 
 raiders.set({
-	aliases         : ["gamepass","gp"],
+	aliases         : ["gamepass","gp", "passes"],
 	description     : "Shows the saved MS gamepasses.",
 	usage           : "gamepasses",
-	cooldown        : 5,
+	cooldown        : 15,
 	unique          : false,
 	category        : "roblox",
 	worksInDMs      : false,
 	isDevOnly       : false,
-	isSlashCommand  : true
+	isSlashCommand  : true,
+    options			: [{
+		name : "roblox_username",
+		description : "The Roblox username to check for.",
+		required : false,
+		autocomplete: false,
+		type: 3,
+		},{
+        name : "discord_username",
+        description : "Check for the Roblox account of a Discord user.",
+        required : false,
+        autocomplete: false,
+        type: 6,
+        }
+	],
 });
 
     
@@ -246,9 +260,9 @@ raiders.set({
         if(isKnown)embed.setFooter({text: `Uncapped raider power for MS${mode}: ${power[mode]}`})
         
         
-    
-        let newMsg = await message.reply({embeds:[embed], components: [row]});
-        if(isSlash) newMsg = await message.fetchReply();
+        let newMsg;
+        if(!isSlash)newMsg = await message.reply({embeds:[embed], components: [row]});
+        else newMsg = await message.editReply({embeds:[embed], components: [row]});
     
         const collector = newMsg.createMessageComponentCollector({ filter, time:   20 * 1000 });
         

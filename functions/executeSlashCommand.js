@@ -136,7 +136,7 @@ module.exports = async (command, interaction, args, server, client, recentlyRan,
                 sendAndDelete(interaction, embed, server);
                 return false;
             }
-            if(dude.permissions.has(command.whiteList)) {
+            if(dude.permissions.has(command.whiteList) || server.overWriteDefaultPermission) {
                 if(bot.permissions.has(command.requiredPerms)){
                     
                     if(recentlyRan[uniqueCooldownString]){

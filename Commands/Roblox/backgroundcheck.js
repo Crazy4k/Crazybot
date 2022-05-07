@@ -1,8 +1,5 @@
 const Command = require("../../Classes/Command");
-const client = require("../../index");
-const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
-const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
 const checkQueue = require("../../functions/checkQueue");
 
@@ -70,40 +67,37 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     }
 
     
-    /*if(client.user.id !== "799752849163550721"){
-        const embed = makeEmbed('Command unavailable',"This command is not available on this client.", server);
-        sendAndDelete(message,embed,server);
-        return false;
-    } else {*/
-        let sentMessage;
-        if(!isSlash) sentMessage = await message.reply("CrazyBot is waiting in queue...");
+    
+    let sentMessage;
+    if(!isSlash) sentMessage = await message.reply("CrazyBot is thinking...");
 
 
-        await checkQueue()
+    await checkQueue()
 
-        await sentMessage?.edit("CrazyBot is collecting data from Roblox...").catch(e=>e);
 
-        const queueTime = parseInt((Date.now() - date1) / 1000); 
+    const queueTime = parseInt((Date.now() - date1) / 1000); 
 
-        botCache.isOnRobloxCooldown = true;
-        
-        try {
+    botCache.isOnRobloxCooldown = true;
+    
+    try {
 
-            await require("../../[TSU]_Background_Checker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
-        } catch (error) {
+        await require("../../[TSU]_Background_Checker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
+    } catch (error) {
+        setTimeout(()=>{
+            botCache.isOnRobloxCooldown = false;
+        },10000);
+        console.log(error)
 
-            console.log(error)
+    } finally{
 
-        } finally{
+        setTimeout(()=>{
+            botCache.isOnRobloxCooldown = false;
+        },10000);
+    }
+    
+    return true;
 
-            setTimeout(()=>{
-                botCache.isOnRobloxCooldown = false;
-            },7500);
-        }
-       
-        return true;
-
-    //}
+    
 };
 
 

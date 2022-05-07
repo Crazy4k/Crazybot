@@ -24,8 +24,7 @@ let trelloInfo = {
     kgbTrelloId: "60239dcea166e18eca0f89ea"
 
 }
-let loggingChannelId = "936338228192100372";
-//let loggingChannelId = "930527323260866671"
+let loggingChannelId = "930527323260866671"
 
 
 let jointRaiderGroups = [];
@@ -68,7 +67,11 @@ function getRaiderHistory(id){
     return JSON.parse(thing)[id];
         
 }
-
+function getTSUHistory(id){
+    let thing =  fs.readFileSync("./Private_JSON_files/TSU_careers.json","utf-8");
+    return JSON.parse(thing)[id];
+        
+}
 
 
 module.exports = async (message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, pendingMessage, queueTime) =>{
@@ -79,21 +82,30 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         const mainButton = new MessageButton()
         .setCustomId('main')
         .setLabel('Main Info')
+        .setEmoji("🏠")
         .setStyle("SECONDARY");
         const friendsButton = new MessageButton()
         .setCustomId('friends')
         .setLabel('Friends')
+        .setEmoji("👥")
         .setStyle("SECONDARY");
         const clothesButton =  new MessageButton()
         .setCustomId('clothes')
         .setLabel('Clothes')
+        .setEmoji("👚")
         .setStyle("SECONDARY")
         .setDisabled(true);
         const missingBadgesButton = new MessageButton()
         .setCustomId('badges')
-        .setLabel('Missing badges')
+        .setLabel('Missing badges') 
+        .setEmoji("📚")
         .setStyle("SECONDARY");
-        const row = new MessageActionRow().addComponents(mainButton, friendsButton, clothesButton, missingBadgesButton);
+        const historyButton = new MessageButton()
+        .setCustomId("history")
+        .setLabel("History")
+        .setEmoji("⌛")
+        .setStyle("SECONDARY");
+        const row = new MessageActionRow().addComponents(mainButton, historyButton, friendsButton, clothesButton, missingBadgesButton);
     
         //switch for the first argument and determine who to execute the command on
         switch (username) {
@@ -113,7 +125,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     if(robloxUsername){
                         id = args0;
                         usernamesCache[id] = robloxUsername;
-                        console.log(usernamesCache);
+                        
                     }
                 }
                 break;
@@ -213,7 +225,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
            
             let raiderClothesOwnerShip = await Promise.all(raiderClothes.map(asset => noblox.getOwnership(id, asset, "Asset").catch(e=> erroredOut = true))).catch(e=>erroredOut = true);
-            let earlyBadges = information.isbanned ? [] : await noblox.getPlayerBadges(id,30,"Asc").catch(e=>{hasPublicInventory = false;erroredOut = true}).catch(e=>erroredOut = true);
+            let earlyBadges = information.isbanned ? [] : await noblox.getPlayerBadges(id,30,"Asc").catch(e=>{hasPublicInventory = false;erroredOut = true})
     
             
             if(erroredOut){
@@ -246,7 +258,9 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             }
     
             let raiderHistory = await getRaiderHistory(id);
-            let raiderFriendsData = information.isBanned ? {notes: [],raiderFriends: [], susFriends : [] } : await friendShipChecker(friends);
+            let tsuHistory = await getTSUHistory(id);
+
+            let raiderFriendsData = information.isBanned ? {notes: [],raiderFriends: [], susFriends : [], goodFriends: [] } : await friendShipChecker(friends);
     
             //past raiding groups
             let exRaidingGroups = [];
@@ -275,6 +289,32 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 }
                 
             } else score += 1.5;
+
+            //past tsu groups
+            let exTSUGroups = [];
+            if(tsuHistory){
+                const max = tsuHistory.ranks.length - 1;
+                
+                let iteration = 0;
+                let index = 0;
+    
+                for (let j = 1; j <= Math.ceil(max/7); j++) {
+    
+                    let field = [];
+                    if(!index)field.push("`(Year-Month-Day)`");
+                    
+                    while (index < (7 + 1 * iteration)) {
+                        if(!tsuHistory.groups[index])break;
+                        
+                        field.push(`*User was a ${tsuHistory.ranks[index ]} in **${tsuHistory.groups[index]}** first seen on ${tsuHistory.dates[index]}`);
+                        index++;
+                    }
+    
+                    iteration += 7;           
+                         
+                    exTSUGroups.push(field);
+                }
+            }
     
     
             // GET BLACKLISTS
@@ -401,6 +441,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             const badgesEmbed = makeEmbed(`${robloxUsername}'s badges`, ``, server);
             badgesEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
             let badgesEmbedString = [];
+
+            const historyEmbed = makeEmbed(`${robloxUsername}'s history`, `Past ranks`, server);
+            historyEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
+
             
     
             // STATS
@@ -436,25 +480,45 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             if(exRaidingGroups.length){
                 
-                score -= 0.5;
+                score--;
                 if(exRaidingGroups.length > 3)score--;
-                embed.addField("\u200b","**Raiding history**", false);
-                exRaidingGroups.forEach(f=>embed.addField("\u200b",f.join("\n"), false));
+
+                historyEmbed.addField("\u200b","**Raiding history**", false);
+                exRaidingGroups.forEach(f=>historyEmbed.addField("\u200b",f.join("\n"), false));
                 
                 if(raiderGroups.length)notes.push("User is in a raiding group.");
                 else notes.push("User is an ex-raider."); 
-            } else score++;
+            } 
+
+            // ex tsu groups
+            if(exTSUGroups.length){
+                
+                historyEmbed.addField("\u200b","**TSU history**", false);
+                exTSUGroups.forEach(f=>historyEmbed.addField("\u200b",f.join("\n"), false));
+            }
+
+            
     
             // sus friends
             if(raiderFriendsData.notes.length)notes.push(raiderFriendsData.notes);
-            if(raiderFriendsData.raiderFriends.length || raiderFriendsData.susFriends.length){
-                if(information?.friendCount / raiderFriendsData.raiderFriends.length < 0.3)score+=0.3;
-                if(information?.friendCount / raiderFriendsData.susFriends.length < 0.4)score+=0.4;
+            if(raiderFriendsData.raiderFriends.length || raiderFriendsData.susFriends.length || raiderFriendsData.goodFriends.length){
+                if(raiderFriendsData.raiderFriends.length / information?.friendCount  < 0.2)score += 1;
+                else {
+                    notes.push("User has a lot of raider friends");
+                    score -= 1;
+                }
+                if(raiderFriendsData.susFriends.length / information?.friendCount  < 0.25)score += 1;
+                if(raiderFriendsData.goodFriends.length / information?.friendCount  > 0.25){
+                    notes.push("User has a lot of TSU friends");
+                    score--;
+                }
     
                 friendsEmbedSrting.push("\n**Raider friends**\n");
                 friendsEmbedSrting.push(raiderFriendsData.raiderFriends.length ? raiderFriendsData.raiderFriends.join(",  ") : "-");
                 friendsEmbedSrting.push("\n**ex-raider friends**\n");
                 friendsEmbedSrting.push(raiderFriendsData.susFriends.length ? raiderFriendsData.susFriends.join(",  ") : "-");
+                friendsEmbedSrting.push("\n**Important/formerly important TSU friends\n**");
+                friendsEmbedSrting.push(raiderFriendsData.goodFriends.length ? raiderFriendsData.goodFriends.join(", ") : "-")
                 
             } else score += 1;
     
@@ -462,7 +526,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             //badges
             if(notOwnedBadges.MS1.length || notOwnedBadges.MS2.length){
-                let string = [];
+                
                 badgesEmbedString.push("**Missing Badges:**\n\n")
                 badgesEmbedString.push("\n**MS1:**\n");
                 
@@ -516,6 +580,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             friendsEmbed.setColor(color);
             clothesEmbed.setColor(color);
             badgesEmbed.setColor(color);
+            historyEmbed.setColor(color);
             
             if(friendsEmbedSrting.length)friendsEmbed.setDescription(friendsEmbedSrting.join("\n")); else friendsButton.setDisabled(true)
             if(clothesEmbedSrtring.length)clothesEmbed.setDescription(clothesEmbedSrtring.join("\n")); else clothesButton.setDisabled(true);
@@ -527,9 +592,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 friends: friendsEmbed,
                 clothes: clothesEmbed,
                 badges : badgesEmbed,
+                history: historyEmbed,
                 all: []
             }
-            for(let i of [embed, friendsEmbed, clothesEmbed, badgesEmbed]){
+            for(let i of [embed, historyEmbed, friendsEmbed, clothesEmbed, badgesEmbed]){
                 if(i.description)embedsObject.all.push(i);
             }
             
@@ -544,7 +610,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     
                     pendingMessage?.delete().catch(e=>e);
     
-                    if(isSlash)message?.editReply({embeds: [embed], components: [row]});
+                    if(isSlash)await message?.editReply({embeds: [embed], components: [row]});
                     let newMsg = !isSlash ? await message.reply({embeds:[embed], components: [row]}) : await message.fetchReply();
                     
                     
@@ -557,7 +623,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         if(friendsEmbedSrting.length)friendsButton.setDisabled(false);
                         if(clothesEmbedSrtring.length)clothesButton.setDisabled(false);
                         missingBadgesButton.setDisabled(false);
-                        
+                        historyButton.setDisabled(false);
                         
     
                         switch (i.customId) {
@@ -572,6 +638,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                                 break;
                             case "clothes":
                                 clothesButton.setDisabled(true);
+                            case "history":
+                                historyButton.setDisabled(true);
                         }
     
                         

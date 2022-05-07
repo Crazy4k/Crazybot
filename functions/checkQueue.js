@@ -1,5 +1,4 @@
 const botCache = require("../caches/botCache");
-const fs = require("fs")
 
 async function myPromise(){
     const promise = new Promise((resolve, reject) => {
