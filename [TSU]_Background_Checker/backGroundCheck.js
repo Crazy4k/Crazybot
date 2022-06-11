@@ -2,6 +2,7 @@ const client = require("../index");
 const rover = require("rover-api");
 const makeEmbed = require("../functions/embed");
 const noblox = require("noblox.js");
+const bgcschema = require("../schemas/bgc-schema");
 const TSUgroups = require("../config/TSUGroups.json");
 const raiderGroups = require("./allRaiderGroups.json");
 const sendAndDelete = require("../functions/sendAndDelete");
@@ -13,6 +14,7 @@ const cache = require("./cache");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const {usernamesCache} = require("../caches/botCache");
 const reportBug = require("../functions/reportErrorToDev");
+const mongo = require(".././mongo");
 
 const token = process.env.TRELLO_TOKEN;
 const key = process.env.TRELLO_KEY;
@@ -97,7 +99,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         .setDisabled(true);
         const missingBadgesButton = new MessageButton()
         .setCustomId('badges')
-        .setLabel('Missing badges') 
+        .setLabel('Badges') 
         .setEmoji("📚")
         .setStyle("SECONDARY");
         const historyButton = new MessageButton()
@@ -262,6 +264,44 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
 
             let raiderFriendsData = information.isBanned ? {notes: [],raiderFriends: [], susFriends : [], goodFriends: [] } : await friendShipChecker(friends);
     
+            
+
+            if(!cache.scores[id]){
+                 mongo().then(async (mongoose) =>{
+                    try{
+                       cache.scores[id] = await bgcschema.findOne({_id:id});
+        
+                    } finally{
+        
+                        console.log("FETCHED FROM DATABASE");
+                        mongoose.connection.close();
+                    }
+                })
+            }
+            if(!cache.scores[id]){
+
+                mongo().then(async (mongoose) =>{
+                    try{
+                        await bgcschema.findOneAndUpdate({_id:id},{
+                            lastScore: 0,
+                            stagnatedBefore: false
+                        },{upsert:true});
+
+                        if(!cache.scores[id])cache.scores[id] = {
+                            stagnatedBefore: 0, 
+                            lastScore: false
+                        };
+                        
+                    } finally{
+            
+                        console.log("WROTE TO DATABASE");
+                        mongoose.connection.close();
+                    }
+                });
+            }
+            
+            
+
             //past raiding groups
             let exRaidingGroups = [];
             if(raiderHistory){
@@ -377,28 +417,28 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 ownerShipObject[badge] = isOwned;
                 
             }
-            const notOwnedBadges = {MS1: [], MS2: []};
+            const ownedBadges = {MS1: [], MS2: []};
             for(let badgeId in ownerShipObject){
                 
-                if(cache.badges.MS1[badgeId] && !ownerShipObject[badgeId])notOwnedBadges.MS1.push(cache.badges.MS1[badgeId]);
-                else if(cache.badges.MS2[badgeId] && !ownerShipObject[badgeId])notOwnedBadges.MS2.push(cache.badges.MS2[badgeId]);
+                if(cache.badges.MS1[badgeId] && ownerShipObject[badgeId])ownedBadges.MS1.push(cache.badges.MS1[badgeId]);
+                else if(cache.badges.MS2[badgeId] && ownerShipObject[badgeId])ownedBadges.MS2.push(cache.badges.MS2[badgeId]);
             }
     
-            let amountOfUnownedBadgesBadges = notOwnedBadges.MS1.length + notOwnedBadges.MS2.length; 
-            let amountOfTotalBadges = cache.badges.MS2Length + cache.badges.MS1Length;
-    
-            if(notOwnedBadges.MS1.length === cache.badges.MS1Length) notOwnedBadges.MS1 = ["All badges"];
-            if(notOwnedBadges.MS2.length === cache.badges.MS2Length) notOwnedBadges.MS2 = ["All badges"];
-    
-            
-            notes.push(`User owns ${amountOfTotalBadges - amountOfUnownedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
+            let amountOfOwnedBadgesBadges = ownedBadges.MS1.length + ownedBadges.MS2.length; 
             
     
-            if(!ownerShipObject[2124474041] && notOwnedBadges.MS1.length > 1){
+            if(ownedBadges.MS1.length === 0) ownedBadges.MS1 = ["No badges"];
+            if(ownedBadges.MS2.length === 0) ownedBadges.MS2 = ["No badges"];
+    
+            
+            notes.push(`User owns ${amountOfOwnedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
+            
+    
+            if(!ownerShipObject[2124474041] && ownedBadges.MS1.length > 1){
                 notes.push("User deleted the MS1 welcome badge.")
                 score -= 1.75;
             }
-            if(!ownerShipObject[2124518225] && notOwnedBadges.MS2.length > 1){
+            if(!ownerShipObject[2124518225] && ownedBadges.MS2.length > 1){
                 notes.push("User deleted the MS2 welcome badge.")
                 score -= 1.75;
             }
@@ -448,10 +488,15 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             // STATS
-            embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
+            embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
             if(information?.friendCount > 30)score += 0.5;
             if(information?.followerCount > 30 && information?.followerCount < 1000) score +=0.5;
             if(information?.age > 300)score += 0.5; else if(information?.age > 600) score++; else if(information?.age > 900) score += 2;
+            if(notableTSU.length / groups.length >= 0.5){
+                score -= 0.5;
+                notes.push("User is in too many TSU groups");
+            }
+            notes.push(`TSU groups/total groups ratio: ${ (notableTSU.length / groups.length).toFixed(2)}`);
             if(information?.age < 365)notes.push("Account is a bit young.")
     
             // past names
@@ -463,7 +508,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             //groups
             if(notableTSU.length || globalGroups.length || raiderGroups.length){
                 if(notableTSU.length && !raiderGroups.length)score+=0.5;
-                if(notableTSU.length > 4)score++;
+                if(notableTSU.length > 5)score++;
                 embed.addField("Groups",`${notableTSU.length ? "**The Soviet Union Groups**:\n\n"+notableTSU.join("\n")+"\n\n" : ""}${globalGroups.length ? "**Notable Groups**:\n\n"+globalGroups.join("\n")+"\n\n" : ""}${raiderGroups.length ? "**Raider Groups**:\n\n"+raiderGroups.join("\n")+"\n\n" : ""}`,false);
             }
     
@@ -525,19 +570,19 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             //badges
-            if(notOwnedBadges.MS1.length || notOwnedBadges.MS2.length){
+            if(ownedBadges.MS1.length || ownedBadges.MS2.length){
                 
-                badgesEmbedString.push("**Missing Badges:**\n\n")
+                badgesEmbedString.push("**Owned Badges:**\n\n")
                 badgesEmbedString.push("\n**MS1:**\n");
                 
-                if(notOwnedBadges.MS1.length){
-                    badgesEmbedString.push(notOwnedBadges.MS1.join(",    "));
+                if(ownedBadges.MS1.length){
+                    badgesEmbedString.push(ownedBadges.MS1.join(",    "));
                 } else badgesEmbedString.push("**-**");
     
                 badgesEmbedString.push("\n**MS2:**\n");
     
-                if(notOwnedBadges.MS2.length){
-                    badgesEmbedString.push(notOwnedBadges.MS2.join(",    "));
+                if(ownedBadges.MS2.length){
+                    badgesEmbedString.push(ownedBadges.MS2.join(",    "));
                 } else badgesEmbedString.push("**-**");
                 
                 
@@ -566,12 +611,35 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             } else notes.push("User has a private inventory.");
     
+
+            let stagnated = !!(score !== cache.scores[id]?.lastScore && typeof cache.scores?.[id]?.lastScore === "number") || !!cache.scores?.[id]?.stagnatedBefore;
+            if(stagnated)notes.push("User's score differs from previous BGCs. Consider checking their name in the archive.")
+            console.log("stagnated", stagnated)
     
             //notes
             if(score > maxScore) score = maxScore;
             embed.addField("Score", `${score}`, true);
             notes = [...new Set(notes)]; 
             if(notes.length)embed.addField("Extra notes", notes.join("\n"), true);
+            
+
+            mongo().then(async (mongoose) =>{
+				try{
+                    
+                    
+					await bgcschema.findOneAndUpdate({_id:id},{
+						lastScore: score,
+                        stagnatedBefore: !!stagnated
+					},{upsert:true});
+                    if(!cache.scores[id])cache.scores[id] = {};
+                    cache.scores[id].stagnatedBefore = stagnated;
+                    cache.scores[id].lastScore = score;
+				} finally{
+		
+					console.log("WROTE TO DATABASE");
+					mongoose.connection.close();
+				}
+			});
             
            
             let color = score > 9 ? "32FC00" : score > 7 ? "E9FC00" : score > 5 ? "FC8900" : score > 3 ? "FC2A00" : "420000"

@@ -4,5 +4,6 @@ module.exports = {
         MS1: {},
         MS2: {},
         Ids: []
-    }
+    },
+    scores: {}
 }
