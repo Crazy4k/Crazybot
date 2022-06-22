@@ -2,7 +2,6 @@ const client = require("../index");
 const rover = require("rover-api");
 const makeEmbed = require("../functions/embed");
 const noblox = require("noblox.js");
-const bgcschema = require("../schemas/bgc-schema");
 const TSUgroups = require("../config/TSUGroups.json");
 const raiderGroups = require("./allRaiderGroups.json");
 const sendAndDelete = require("../functions/sendAndDelete");
@@ -14,7 +13,6 @@ const cache = require("./cache");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const {usernamesCache} = require("../caches/botCache");
 const reportBug = require("../functions/reportErrorToDev");
-const mongo = require(".././mongo");
 
 const token = process.env.TRELLO_TOKEN;
 const key = process.env.TRELLO_KEY;
@@ -266,39 +264,6 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             
 
-            if(!cache.scores[id]){
-                 mongo().then(async (mongoose) =>{
-                    try{
-                       cache.scores[id] = await bgcschema.findOne({_id:id});
-        
-                    } finally{
-        
-                        console.log("FETCHED FROM DATABASE");
-                        mongoose.connection.close();
-                    }
-                })
-            }
-            if(!cache.scores[id]){
-
-                mongo().then(async (mongoose) =>{
-                    try{
-                        await bgcschema.findOneAndUpdate({_id:id},{
-                            lastScore: 0,
-                            stagnatedBefore: false
-                        },{upsert:true});
-
-                        if(!cache.scores[id])cache.scores[id] = {
-                            stagnatedBefore: 0, 
-                            lastScore: false
-                        };
-                        
-                    } finally{
-            
-                        console.log("WROTE TO DATABASE");
-                        mongoose.connection.close();
-                    }
-                });
-            }
             
             
 
@@ -496,7 +461,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 score -= 0.5;
                 notes.push("User is in too many TSU groups");
             }
-            notes.push(`TSU groups/total groups ratio: ${ (notableTSU.length / groups.length).toFixed(2)}`);
+            notes.push(`TSU groups/total groups ratio: ${ (notableTSU.length / groups.length).toFixed(2)} / 1`);
             if(information?.age < 365)notes.push("Account is a bit young.")
     
             // past names
@@ -612,9 +577,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             } else notes.push("User has a private inventory.");
     
 
-            let stagnated = !!(score !== cache.scores[id]?.lastScore && typeof cache.scores?.[id]?.lastScore === "number") || !!cache.scores?.[id]?.stagnatedBefore;
-            if(stagnated)notes.push("User's score differs from previous BGCs. Consider checking their name in the archive.")
-            console.log("stagnated", stagnated)
+            
     
             //notes
             if(score > maxScore) score = maxScore;
@@ -623,23 +586,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             if(notes.length)embed.addField("Extra notes", notes.join("\n"), true);
             
 
-            mongo().then(async (mongoose) =>{
-				try{
-                    
-                    
-					await bgcschema.findOneAndUpdate({_id:id},{
-						lastScore: score,
-                        stagnatedBefore: !!stagnated
-					},{upsert:true});
-                    if(!cache.scores[id])cache.scores[id] = {};
-                    cache.scores[id].stagnatedBefore = stagnated;
-                    cache.scores[id].lastScore = score;
-				} finally{
-		
-					console.log("WROTE TO DATABASE");
-					mongoose.connection.close();
-				}
-			});
+            
             
            
             let color = score > 9 ? "32FC00" : score > 7 ? "E9FC00" : score > 5 ? "FC8900" : score > 3 ? "FC2A00" : "420000"

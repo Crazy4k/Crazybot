@@ -276,14 +276,5 @@
         "isRaider"  : false,
         "hasCuffs"  : true,
         "id"        : 4291835
-    },
-    "14679792":{
-        "name"      : "test",
-        "link"      : "https://www.roblox.com/groups/14679792",
-        "isBranch"  : false,
-        "isDivision": true,
-        "isRaider"  : false,
-        "hasCuffs"  : true,
-        "id"        : 14679792
     }
 }
