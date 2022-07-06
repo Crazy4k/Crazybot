@@ -587,6 +587,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
 
             
+
+            const logEmbed = makeEmbed("",`${loggingInfo.username} (<@${loggingInfo.DiscordId}>) has done a background check on this user:`, server)
             
            
             let color = score > 9 ? "32FC00" : score > 7 ? "E9FC00" : score > 5 ? "FC8900" : score > 3 ? "FC2A00" : "420000"
@@ -596,6 +598,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             clothesEmbed.setColor(color);
             badgesEmbed.setColor(color);
             historyEmbed.setColor(color);
+            logEmbed.setColor(color);
             
             if(friendsEmbedSrting.length)friendsEmbed.setDescription(friendsEmbedSrting.join("\n")); else friendsButton.setDisabled(true)
             if(clothesEmbedSrtring.length)clothesEmbed.setDescription(clothesEmbedSrtring.join("\n")); else clothesButton.setDisabled(true);
@@ -603,6 +606,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
     
             const embedsObject = {
+                log: logEmbed,
                 main: embed,
                 friends: friendsEmbed,
                 clothes: clothesEmbed,
@@ -610,7 +614,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 history: historyEmbed,
                 all: []
             }
-            for(let i of [embed, historyEmbed, friendsEmbed, clothesEmbed, badgesEmbed]){
+            for(let i of [logEmbed, embed, historyEmbed, friendsEmbed, clothesEmbed, badgesEmbed]){
                 if(i.description)embedsObject.all.push(i);
             }
             
@@ -618,9 +622,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             //sending the embed
             let loggingChannel = client.channels.cache.get(loggingChannelId);
+            
             if(loggingChannel && loggingChannel.guild.available){
                 
-                loggingChannel.send({embeds:embedsObject.all, content: `${loggingInfo.username} (<@${loggingInfo.DiscordId}>) has done a background check on this user:`}).then(async yes=>{
+                loggingChannel.send({embeds:embedsObject.all}).then(async yes=>{
                     
                     
                     pendingMessage?.delete().catch(e=>e);

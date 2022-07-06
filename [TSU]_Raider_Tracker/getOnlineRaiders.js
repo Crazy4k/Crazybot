@@ -183,12 +183,10 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     let log = discordClient.channels.cache.get(id);//check again if the channel is deleted or something then send the embed in it
 
                     if(log && log.guild.available){//if the log channel is defined (exists)
-                        let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");//look for a role called "@raider_pings"
-                        let ping = "@raider_pings";//if the role doesn't exist, it only says @raider_pings in the message to give a hint to the user that the role can be created
-                        if(role)ping = `<@&${role.id}>`//if the role does exist, ping it instead
+                       
 
                         for(let embedsArray of embeds){
-                            log.send({content:ping,embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
+                            log.send({content:"@here",embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
                         }
                     }
                     
@@ -312,12 +310,9 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                     let log = discordClient.channels.cache.get(id);
                     if(log && log.guild.available){
                         
-                        let role = log.guild.roles.cache.find(e=>e.name === "raider_pings");
-                        let ping = "@raider_pings";
-                        if(role)ping = `<@&${role.id}>`
-
+                    
                         for(let embedsArray of embeds){
-                            log.send({content:ping,embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
+                            log.send({content:"@here",embeds:embedsArray}).catch(e=> console.log(e));//send the embed(s)
                         }
                     }
                     
@@ -385,10 +380,8 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log && log.guild.available){
-                                let role = log.guild.roles.cache.find(e=>e.name === "raids_pings");
-                                let ping = "@raids_pings";
-                                if(role)ping = `<@&${role.id}>`
-                                log.send({content:ping,embeds:[embed]}).catch(e=> console.log(e));
+                                
+                                log.send({content:"@here",embeds:[embed]}).catch(e=> console.log(e));
                             }
                             
                         }
@@ -438,10 +431,7 @@ module.exports = async function stalk( noblox, userIds, discordClient , trackerC
                         for(let id of arrayOfOtherChannels){
                             let log = discordClient.channels.cache.get(id);
                             if(log && log.guild.available){
-                                let role = log.guild.roles.cache.find(e=>e.name === "raids_pings");
-                                let ping = "@raids_pings";
-                                if(role)ping = `<@&${role.id}>`
-                                log.send({content:ping,embeds:[embed]}).catch(e=> console.log(e));
+                                log.send({content:"@here",embeds:[embed]}).catch(e=> console.log(e));
                             }
                             
                         }
