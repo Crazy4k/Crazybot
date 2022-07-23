@@ -1,5 +1,15 @@
 const cache = require("./cache");
 const fs = require("fs");
+const TSUGroups = require("../config/TSUGroups.json");
+
+
+
+let TSUGroupNamesToIds = {};
+for (let i in TSUGroups){
+    if(!TSUGroups[i].isRaider)TSUGroupNamesToIds[TSUGroups[i].name] = i;
+    
+}
+
 
 /**
  * loops through the provided friends response and returns data containing whether there are raiders amongst these friends
@@ -35,11 +45,17 @@ async function checkFriends(friends){
             } else if(raiders[userId])susFriends.push(`${friendsUserIdsAndNames[userId]}`);
             const comrade = comrades[userId];
             if(comrade){
-                let highRanks = comrade.roles.filter(a=>a >= 70);
-                if(highRanks.length)goodFriends.push(`${friendsUserIdsAndNames[userId]}`)
+                for(let groupName of comrade.groups){
+                    
+                    if(!TSUGroups?.[TSUGroupNamesToIds?.[groupName]]?.ImportantRole) continue;
+                    
+                    if(comrade.roles[comrade.groups.indexOf(groupName)] >= TSUGroups[TSUGroupNamesToIds[groupName]].ImportantRole)goodFriends.push(`${friendsUserIdsAndNames[userId]}`)
+                }
+                
                 
             }
         }
+        goodFriends = [...new Set(goodFriends)];
         if(raiderFriends.length)notes.push("User has raider friends."); else notes.push("User has no raider friends."); 
         resolve({notes, raiderFriends, susFriends, goodFriends});
 

@@ -24,7 +24,7 @@ module.exports = async (client) =>{
   const hierarchy = cache.roles;
   const ranks = cache.ranks;
   const changes = {}
-  const date = moment().format("YYYY-MM-DD");
+  
   
   for(let groupId in ranks){
     
@@ -187,7 +187,7 @@ module.exports = async (client) =>{
           tsuGroups[group].name
         ],
         dates: [
-          date
+          moment().format("YYYY-MM-DD")
         ]
       };
     } else {
@@ -198,12 +198,13 @@ module.exports = async (client) =>{
         if(member.roles[index] < hierarchy[promotion.newRank].hierarchy){
           careers[userId].roles.splice(index, 1, hierarchy[promotion.newRank].hierarchy );
           careers[userId].ranks.splice(index, 1, hierarchy[promotion.newRank].name);
+          careers[userId].dates.splice(index, 1, moment().format("YYYY-MM-DD"));
           
         }
       } else {
         //user is new the to the group, push rank
         careers[userId].groups.push(tsuGroups[group].name);
-        careers[userId].dates.push(date);
+        careers[userId].dates.push(moment().format("YYYY-MM-DD"));
         careers[userId].roles.push(hierarchy[promotion.newRank].hierarchy)
         careers[userId].ranks.push(hierarchy[promotion.newRank].name);
       }
