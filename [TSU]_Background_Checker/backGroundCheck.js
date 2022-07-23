@@ -222,14 +222,32 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             }
     
             let hasPublicInventory = true;
+            let nextCursor = "yes";
+            let inventory = [];
+            let limit = 10;
+            let current = 1;
+
+            do{
+                let requst = await axios.get(`https://inventory.roblox.com/v2/users/${id}/inventory?assetTypes=TShirt%2C,Pants%2C,Shirt&limit=100${nextCursor === "yes" ? "" : "&cursor=" + nextCursor}&sortOrder=Asc`).catch(e=>{hasPublicInventory = false});
+                nextCursor = requst?.data?.nextPageCursor;
+                if(hasPublicInventory){
+                    inventory.push(...requst.data.data);
+                }
+                current++
+            }
+            while(nextCursor && limit >= current)
             
            
-            let raiderClothesOwnerShip = await Promise.all(raiderClothes.map(asset => noblox.getOwnership(id, asset, "Asset").catch(e=> erroredOut = true))).catch(e=>erroredOut = true);
-            let earlyBadges = information.isbanned ? [] : await noblox.getPlayerBadges(id,30,"Asc").catch(e=>{hasPublicInventory = false;erroredOut = true})
+
+            
+            
+           
+            //let inventory = await Promise.all(raiderClothes.map(asset => noblox.getOwnership(id, asset, "Asset").catch(e=> {erroredOut = true; console.log(e)}))).catch(e=>{erroredOut = true; console.log(e)});
+            let earlyBadges = information.isbanned ? [] : await noblox.getPlayerBadges(id,30,"Asc").catch(e=>{hasPublicInventory = false;erroredOut = true; console.log(e)});
     
             
             if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Roblox, try again later`,server);
+                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving inventory data from Roblox, try again later`,server);
                 pendingMessage?.delete().catch(e=>e);
                 sendAndDelete(message, embed, server);
                 return;                
@@ -241,7 +259,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Roblox, try again later`,server);
+                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving group & friends data from Roblox, try again later`,server);
                 pendingMessage?.delete().catch(e=>e);
                 sendAndDelete(message, embed, server);
                 return;                
@@ -326,7 +344,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             const trelloData = await axios.get(`https://api.trello.com/1/search?query=${robloxUsername}&idBoards=${trelloInfo.blackListBoardId}&modelTypes=cards&key=${trelloInfo.key}&token=${trelloInfo.token}`).catch(e=>erroredOut = true);
             
             if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Roblox, try again later`,server);
+                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Trello, try again later`,server);
                 pendingMessage?.delete().catch(e=>e);
                 sendAndDelete(message, embed, server);
                 return;                
@@ -369,7 +387,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             let badgeOwnderShip = await Promise.all(cache.badges.Ids.map(badgeId => noblox.getOwnership(id,badgeId,"Badge").catch(e=> erroredOut = true))).catch(e=>erroredOut = true)
             
             if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Roblox, try again later`,server);
+                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving badge data from Roblox, try again later`,server);
                 pendingMessage?.delete().catch(e=>e);
                 sendAndDelete(message, embed, server);
                 return;                
@@ -413,14 +431,16 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             const ownedRaiderAssets = [];
     
-            if(hasPublicInventory && !information.isBanned){
+            if(hasPublicInventory && !information.isBanned && inventory.length){
                 
-                for (let i = 0; i < raiderClothesOwnerShip.length; i++) {
-                    const bool = raiderClothesOwnerShip[i];
-                    const asset = raiderClothes[i];
-                    if(bool)ownedRaiderAssets.push(asset)
+                for(let asset of inventory)
+                {
                     
+                    let index = raiderClothes.indexOf(asset.assetId);
+                    if(index >= 0)ownedRaiderAssets.push(raiderClothes[index]);
+                   
                 }
+                
     
             }
     
@@ -581,6 +601,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             //notes
             if(score > maxScore) score = maxScore;
+            if(score < 0) score = 0;
             embed.addField("Score", `${score}`, true);
             notes = [...new Set(notes)]; 
             if(notes.length)embed.addField("Extra notes", notes.join("\n"), true);
