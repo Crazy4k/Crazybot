@@ -224,12 +224,16 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             let hasPublicInventory = true;
             let nextCursor = "yes";
             let inventory = [];
-            let limit = 10;
-            let current = 1;
+            let badges = [];
+            let limit = 25;
+            let current = 0;
 
             do{
-                let requst = await axios.get(`https://inventory.roblox.com/v2/users/${id}/inventory?assetTypes=TShirt%2C,Pants%2C,Shirt&limit=100${nextCursor === "yes" ? "" : "&cursor=" + nextCursor}&sortOrder=Asc`).catch(e=>{hasPublicInventory = false});
+
+                let requst = await axios.get(`https://inventory.roblox.com/v2/users/${id}/inventory?assetTypes=TShirt%2C,Pants%2C,Shirt&limit=100${nextCursor === "yes" ? "" : "&cursor=" + nextCursor}&sortOrder=Asc`).catch(e=>{hasPublicInventory = false; nextCursor = null;});
+                
                 nextCursor = requst?.data?.nextPageCursor;
+                
                 if(hasPublicInventory){
                     inventory.push(...requst.data.data);
                 }
@@ -237,21 +241,29 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             }
             while(nextCursor && limit >= current)
             
-           
+            if(current >= limit)notes.push("User has a lot of clothing assets");
+            nextCursor = "yes";
+            current = 0;
+
+            if(!hasPublicInventory){
+                maxScore = 7;
+            } else {
+                do{
+
+                    let requst = await axios.get(`https://badges.roblox.com/v1/users/${id}/badges?limit=100${nextCursor === "yes" ? "" : "&cursor=" + nextCursor}&sortOrder=Asc`).catch(e=>{hasPublicInventory = false; nextCursor = null;});
+                    
+                    nextCursor = requst?.data?.nextPageCursor;
+                    
+                    if(hasPublicInventory){
+                        badges.push(...requst.data.data);
+                    }
+                    current++
+                }
+                while(nextCursor && limit >= current)
+            }
 
             
-            
-           
-            //let inventory = await Promise.all(raiderClothes.map(asset => noblox.getOwnership(id, asset, "Asset").catch(e=> {erroredOut = true; console.log(e)}))).catch(e=>{erroredOut = true; console.log(e)});
-            let earlyBadges = information.isbanned ? [] : await noblox.getPlayerBadges(id,30,"Asc").catch(e=>{hasPublicInventory = false;erroredOut = true; console.log(e)});
-    
-            
-            if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving inventory data from Roblox, try again later`,server);
-                pendingMessage?.delete().catch(e=>e);
-                sendAndDelete(message, embed, server);
-                return;                
-            }
+            if(current >= limit)notes.push("User has a lot of badges");
             
             const resolve = await Promise.all([groups, friends]).catch(e=>erroredOut = true);
             groups = resolve[0];
@@ -265,14 +277,11 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 return;                
             }
     
-            
-            if(!hasPublicInventory){
-                earlyBadges = [];
-                maxScore = 8;
-            }
-    
-            for(let badge of earlyBadges){
-                if(cache.badges.Ids.includes(badge.id))notes.push("User has an MS badge very early on. An alt account?")
+            if(hasPublicInventory){
+                for (let i = 0; i < 30; i++) {
+                    const badge = badges[i];
+                    if(cache.badges.Ids.includes(badge.id))notes.push("User has an MS badge very early on. An alt account?")
+                }
             }
     
             let raiderHistory = await getRaiderHistory(id);
@@ -384,47 +393,56 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
     
             //GET BADGE OWNERSHIP
-            let badgeOwnderShip = await Promise.all(cache.badges.Ids.map(badgeId => noblox.getOwnership(id,badgeId,"Badge").catch(e=> erroredOut = true))).catch(e=>erroredOut = true)
-            
-            if(erroredOut){
-                const embed = makeEmbed("There was an error!", `An errored occoured while retreiving badge data from Roblox, try again later`,server);
-                pendingMessage?.delete().catch(e=>e);
-                sendAndDelete(message, embed, server);
-                return;                
-            }
-            
-            let ownerShipObject = {};
-            for (let i = 0; i < badgeOwnderShip.length; i++) {
-                const badge = cache.badges.Ids[i];
-                const isOwned = badgeOwnderShip[i];
-                ownerShipObject[badge] = isOwned;
-                
-            }
+           
             const ownedBadges = {MS1: [], MS2: []};
-            for(let badgeId in ownerShipObject){
+
+            if(hasPublicInventory)
+            {
                 
-                if(cache.badges.MS1[badgeId] && ownerShipObject[badgeId])ownedBadges.MS1.push(cache.badges.MS1[badgeId]);
-                else if(cache.badges.MS2[badgeId] && ownerShipObject[badgeId])ownedBadges.MS2.push(cache.badges.MS2[badgeId]);
+                let tempBadgesObject = {};
+
+                for(let badge of badges){
+                   tempBadgesObject[badge.id] = true;
+                }
+
+                let badgeOwnderShip = cache.badges.Ids.map(badgeId => tempBadgesObject[badgeId] ?? false);
+                
+
+                let ownerShipObject = {};
+                for (let i = 0; i < badgeOwnderShip.length; i++) {
+                    const badge = cache.badges.Ids[i];
+                    const isOwned = badgeOwnderShip[i];
+                    ownerShipObject[badge] = isOwned;
+                    
+                }
+                
+
+                for(let badgeId in ownerShipObject){
+                    
+                    if(cache.badges.MS1[badgeId] && ownerShipObject[badgeId])ownedBadges.MS1.push(cache.badges.MS1[badgeId]);
+                    else if(cache.badges.MS2[badgeId] && ownerShipObject[badgeId])ownedBadges.MS2.push(cache.badges.MS2[badgeId]);
+                }
+        
+                let amountOfOwnedBadgesBadges = ownedBadges.MS1.length + ownedBadges.MS2.length; 
+                
+        
+                if(ownedBadges.MS1.length === 0) ownedBadges.MS1 = ["No badges"];
+                if(ownedBadges.MS2.length === 0) ownedBadges.MS2 = ["No badges"];
+        
+                
+                notes.push(`User owns ${amountOfOwnedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
+                
+        
+                if(!ownerShipObject[2124474041] && ownedBadges.MS1.length > 1){
+                    notes.push("User deleted the MS1 welcome badge.")
+                    score -= 1.75;
+                }
+                if(!ownerShipObject[2124518225] && ownedBadges.MS2.length > 1){
+                    notes.push("User deleted the MS2 welcome badge.")
+                    score -= 1.75;
+                }
             }
-    
-            let amountOfOwnedBadgesBadges = ownedBadges.MS1.length + ownedBadges.MS2.length; 
             
-    
-            if(ownedBadges.MS1.length === 0) ownedBadges.MS1 = ["No badges"];
-            if(ownedBadges.MS2.length === 0) ownedBadges.MS2 = ["No badges"];
-    
-            
-            notes.push(`User owns ${amountOfOwnedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
-            
-    
-            if(!ownerShipObject[2124474041] && ownedBadges.MS1.length > 1){
-                notes.push("User deleted the MS1 welcome badge.")
-                score -= 1.75;
-            }
-            if(!ownerShipObject[2124518225] && ownedBadges.MS2.length > 1){
-                notes.push("User deleted the MS2 welcome badge.")
-                score -= 1.75;
-            }
     
             //GET RAIDER CLOTHES OWNERSHIP
             
@@ -473,7 +491,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             // STATS
-            embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
+            embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${hasPublicInventory ? "\n*Basic clothing assets: "+ inventory.length : ""} ${hasPublicInventory ? "\n*Badges: " + badges.length + (current >= limit ? "+" : "") : ""} ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
             if(information?.friendCount > 30)score += 0.5;
             if(information?.followerCount > 30 && information?.followerCount < 1000) score +=0.5;
             if(information?.age > 300)score += 0.5; else if(information?.age > 600) score++; else if(information?.age > 900) score += 2;
@@ -555,8 +573,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             //badges
-            if(ownedBadges.MS1.length || ownedBadges.MS2.length){
+           
                 
+            if(ownedBadges.MS1.length || ownedBadges.MS2.length){
+            
                 badgesEmbedString.push("**Owned Badges:**\n\n")
                 badgesEmbedString.push("\n**MS1:**\n");
                 
@@ -573,8 +593,12 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 
                 
             }
+            
+            
     
-         //raider clothes
+            //raider clothes
+
+
             if(hasPublicInventory){
                 clothesButton.setDisabled(false);
                 if(ownedRaiderAssets.length){
@@ -597,9 +621,9 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             } else notes.push("User has a private inventory.");
     
 
-            
-    
             //notes
+
+
             if(score > maxScore) score = maxScore;
             if(score < 0) score = 0;
             embed.addField("Score", `${score}`, true);
@@ -621,9 +645,9 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             historyEmbed.setColor(color);
             logEmbed.setColor(color);
             
-            if(friendsEmbedSrting.length)friendsEmbed.setDescription(friendsEmbedSrting.join("\n")); else friendsButton.setDisabled(true)
+            if(friendsEmbedSrting.length)friendsEmbed.setDescription(friendsEmbedSrting.join("\n")); else friendsButton.setDisabled(true);
             if(clothesEmbedSrtring.length)clothesEmbed.setDescription(clothesEmbedSrtring.join("\n")); else clothesButton.setDisabled(true);
-            if(badgesEmbedString.length)badgesEmbed.setDescription(badgesEmbedString.join("\n"));
+            if(badgesEmbedString.length)badgesEmbed.setDescription(badgesEmbedString.join("\n")); else missingBadgesButton.setDisabled(true);
     
     
             const embedsObject = {
@@ -642,6 +666,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
     
             //sending the embed
+
+            
             let loggingChannel = client.channels.cache.get(loggingChannelId);
             
             if(loggingChannel && loggingChannel.guild.available){
@@ -663,7 +689,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         mainButton.setDisabled(false)
                         if(friendsEmbedSrting.length)friendsButton.setDisabled(false);
                         if(clothesEmbedSrtring.length)clothesButton.setDisabled(false);
-                        missingBadgesButton.setDisabled(false);
+                        if(badgesEmbedString)missingBadgesButton.setDisabled(false);
                         historyButton.setDisabled(false);
                         
     

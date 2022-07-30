@@ -12,7 +12,7 @@ bgcheck.set({
     aliases         : ["backgroundcheck","bcheck", "bgc"],
     description     : "Shows the user's TSU profile and status",
     usage           : "bgcheck <roblox username or ID>",
-    cooldown        : 22,
+    cooldown        : 30,
     unique          : true,
     category        : "roblox",
     worksInDMs      : false,
@@ -85,14 +85,14 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     } catch (error) {
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;
-        },10000);
+        },17500);
         console.log(error)
 
     } finally{
 
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;
-        },10000);
+        },17500);
     }
     
     return true;

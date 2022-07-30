@@ -346,12 +346,12 @@ check.execute = async (message, args, server, isSlash) =>{
         console.log(error);
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;
-        },7500);
+        },12500);
 
     } finally {
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;
-        },7500);
+        },12500);
     }
 
         
