@@ -14,6 +14,37 @@ const {MessageActionRow, MessageButton} = require("discord.js");
 const {usernamesCache} = require("../caches/botCache");
 const reportBug = require("../functions/reportErrorToDev");
 
+
+
+
+let jointOfficers = [];
+let jointDivOfficers = [];
+let jointHicom = [];
+let jointBranchLeaders = [];
+let jointDivHicom = [];
+let jointStaff = [];
+
+
+
+
+for(let index in TSUgroups){
+    let group = TSUgroups[index]
+    if(group.isBranch){
+        
+        jointBranchLeaders.push(group.branchLeader);
+        jointOfficers.push(...group.highRanks);
+        jointHicom.push(...group.HICOMRanks);
+        jointStaff.push(...group.managementAndStaff);
+        
+    }else if(group.isDivision){
+        
+        if(group.highRanks)jointDivOfficers.push(...group.highRanks);
+        if(group.HICOMRanks)jointDivHicom.push(...group.HICOMRanks);
+        if(group.managementAndStaff)jointStaff.push(...group.managementAndStaff);
+
+    } 
+}
+
 const token = process.env.TRELLO_TOKEN;
 const key = process.env.TRELLO_KEY;
 
@@ -204,7 +235,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             let notes = [];
             let isBanned = false;
-            let score = 3;
+            let score = 0;
             let maxScore = 10;
     
             let information = await noblox.getPlayerInfo({userId: id}).catch(error=>isBanned = true);
@@ -246,7 +277,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             current = 0;
 
             if(!hasPublicInventory){
-                maxScore = 7;
+                maxScore = 8;
             } else {
                 do{
 
@@ -276,11 +307,20 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 sendAndDelete(message, embed, server);
                 return;                
             }
-    
-            if(hasPublicInventory){
+
+            
+            if(hasPublicInventory && badges.length){
                 for (let i = 0; i < 30; i++) {
+
                     const badge = badges[i];
-                    if(cache.badges.Ids.includes(badge.id))notes.push("User has an MS badge very early on. An alt account?")
+
+                    if(!badge)break;
+                    
+                    if(cache.badges.Ids.includes(badge.id)){
+                        notes.push("User has an MS badge very early on. An alt account?");
+                        maxScore -= 1;
+                        break;
+                    }
                 }
             }
     
@@ -320,7 +360,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     exRaidingGroups.push(field);
                 }
                 
-            } else score += 1.5;
+            } else score += 1;
 
             //past tsu groups
             let exTSUGroups = [];
@@ -396,8 +436,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
            
             const ownedBadges = {MS1: [], MS2: []};
 
-            if(hasPublicInventory)
-            {
+            if(hasPublicInventory){
                 
                 let tempBadgesObject = {};
 
@@ -428,6 +467,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         
                 if(ownedBadges.MS1.length === 0) ownedBadges.MS1 = ["No badges"];
                 if(ownedBadges.MS2.length === 0) ownedBadges.MS2 = ["No badges"];
+
+                if((ownedBadges.MS1.length + ownedBadges.MS2.length) / badges.length > 0.1)maxScore -= 1;
         
                 
                 notes.push(`User owns ${amountOfOwnedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
@@ -435,12 +476,18 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         
                 if(!ownerShipObject[2124474041] && ownedBadges.MS1.length > 1){
                     notes.push("User deleted the MS1 welcome badge.")
-                    score -= 1.75;
-                }
+                } else score += 0.125;
                 if(!ownerShipObject[2124518225] && ownedBadges.MS2.length > 1){
                     notes.push("User deleted the MS2 welcome badge.")
-                    score -= 1.75;
-                }
+                } else score += 0.125;
+                
+                
+                if(badges.length > 100) score += 0.25; else maxScore -= 3;
+                if(badges.length > 250) score += 0.25; else maxScore -= 2;
+                if(badges.length > 500) score += 0.25;
+                if(badges.length > 750) score += 0.25;
+                if(badges.length > 1000) score += 0.25;
+                
             }
             
     
@@ -492,26 +539,28 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             // STATS
             embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${hasPublicInventory ? "\n*Basic clothing assets: "+ inventory.length : ""} ${hasPublicInventory ? "\n*Badges: " + badges.length + (current >= limit ? "+" : "") : ""} ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
-            if(information?.friendCount > 30)score += 0.5;
-            if(information?.followerCount > 30 && information?.followerCount < 1000) score +=0.5;
-            if(information?.age > 300)score += 0.5; else if(information?.age > 600) score++; else if(information?.age > 900) score += 2;
+            if(information?.friendCount > 30)score += 0.25;
+            if(information?.followerCount > 30 && information?.followerCount < 500) score +=0.25;
+            if(information?.age > 365)score += 0.25; else if(information?.age > 730) score += 0.5
             if(notableTSU.length / groups.length >= 0.5){
-                score -= 0.5;
                 notes.push("User is in too many TSU groups");
-            }
+            } else score += 0.25;
+
             notes.push(`TSU groups/total groups ratio: ${ (notableTSU.length / groups.length).toFixed(2)} / 1`);
-            if(information?.age < 365)notes.push("Account is a bit young.")
+            if(information?.age < 365)notes.push("Account is a bit young.");
     
             // past names
+
             if(information.oldNames?.length){ 
-                score++;
+                score += 0.25;
                 embed.addField("Past usernames: ", information.oldNames.join(", "));
             }
     
             //groups
             if(notableTSU.length || globalGroups.length || raiderGroups.length){
-                if(notableTSU.length && !raiderGroups.length)score+=0.5;
-                if(notableTSU.length > 5)score++;
+
+                if(notableTSU.length) score += 1.5;
+                if(notableTSU.length > 5) score += 0.5;
                 embed.addField("Groups",`${notableTSU.length ? "**The Soviet Union Groups**:\n\n"+notableTSU.join("\n")+"\n\n" : ""}${globalGroups.length ? "**Notable Groups**:\n\n"+globalGroups.join("\n")+"\n\n" : ""}${raiderGroups.length ? "**Raider Groups**:\n\n"+raiderGroups.join("\n")+"\n\n" : ""}`,false);
             }
     
@@ -522,21 +571,19 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     strings.push(`${obj.div}: [${obj.name}](${obj.url})   ${obj.assigner}`);
                 }
                 embed.addField("Blacklists",strings.join("\n"), false);
-            } else score++
+            } else score += 1.25;
     
             //ex rading groups
     
             if(exRaidingGroups.length){
                 
-                score--;
-                if(exRaidingGroups.length > 3)score--;
-
                 historyEmbed.addField("\u200b","**Raiding history**", false);
                 exRaidingGroups.forEach(f=>historyEmbed.addField("\u200b",f.join("\n"), false));
                 
                 if(raiderGroups.length)notes.push("User is in a raiding group.");
                 else notes.push("User is an ex-raider."); 
-            } 
+
+            }  else score += 1;
 
             // ex tsu groups
             if(exTSUGroups.length){
@@ -546,19 +593,34 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             }
 
             
-    
+            branches.forEach(group => {
+                
+                if(jointOfficers.includes(group.RoleId)) score += 1;
+                else if(jointHicom.includes(group.RoleId)) score += 3;
+                else if(jointBranchLeaders.includes(group.RoleId)) score += 5;
+                else if(jointStaff.includes(group.RoleId)) score += 5;
+                
+            });
+
+            divisions.forEach(group =>{
+                
+                if(jointDivOfficers.includes(group.RoleId))score += 1;
+                else if(jointStaff.includes(group.RoleId))score += 5;
+                else if(jointDivHicom.includes(group.RoleId))score += 3;
+                
+            });
+                
             // sus friends
             if(raiderFriendsData.notes.length)notes.push(raiderFriendsData.notes);
             if(raiderFriendsData.raiderFriends.length || raiderFriendsData.susFriends.length || raiderFriendsData.goodFriends.length){
-                if(raiderFriendsData.raiderFriends.length / information?.friendCount  < 0.2)score += 1;
+                if(raiderFriendsData.raiderFriends.length / information?.friendCount  < 0.2)score += 0.25;
                 else {
                     notes.push("User has a lot of raider friends");
-                    score -= 1;
+                    
                 }
-                if(raiderFriendsData.susFriends.length / information?.friendCount  < 0.25)score += 1;
+                if(raiderFriendsData.susFriends.length / information?.friendCount  < 0.15)score += 0.25;
                 if(raiderFriendsData.goodFriends.length / information?.friendCount  > 0.25){
                     notes.push("User has a lot of TSU friends");
-                    score--;
                 }
     
                 friendsEmbedSrting.push("\n**Raider friends**\n");
@@ -568,7 +630,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 friendsEmbedSrting.push("\n**Important/formerly important TSU friends\n**");
                 friendsEmbedSrting.push(raiderFriendsData.goodFriends.length ? raiderFriendsData.goodFriends.join(", ") : "-")
                 
-            } else score += 1;
+            } else score += 0.5;
     
             
     
@@ -602,21 +664,16 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             if(hasPublicInventory){
                 clothesButton.setDisabled(false);
                 if(ownedRaiderAssets.length){
-                    score -= 1.5;
-                    if(ownedRaiderAssets.length > 20) score -= 5;
-                    else if(ownedRaiderAssets.length > 10) score -= 3;
-                    else if(ownedRaiderAssets.length > 5) score -= 1;
                     
                     let string = [];
                     ownedRaiderAssets.forEach(assetId=>string.push(`[asset](https://www.roblox.com/catalog/${assetId})`));
-                    
                     
                     if(string.length){
                         clothesEmbedSrtring.push("**Owned raiding groups clothing**");
                         clothesEmbedSrtring.push(string.length ? string.join(", ") : "**-**");
                     }
     
-                } else score += 1;
+                } else score += 2;
     
             } else notes.push("User has a private inventory.");
     

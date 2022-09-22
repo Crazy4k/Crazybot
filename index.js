@@ -264,7 +264,7 @@ timer.addEventListener("minutesUpdated",()=>{
 
 
 // TSU raider tracker
-
+/*
 const getMembers = require("./[TSU]_Raider_Tracker/getMembers");
 const trackRaiders = require("./[TSU]_Raider_Tracker/getOnlineRaiders");
 
@@ -326,6 +326,8 @@ function read(string){
 
 	
 })()
+*/
+
 
 //TSU rank logs
 
@@ -337,14 +339,14 @@ getRanksForLogs();
 setInterval(async () => {
 	getRanksForLogs();
 	
-}, 24 * 60 * 60 * 1000);
+}, 7 * 24 * 60 * 60 * 1000);
 
 setTimeout(()=>{updateHistory(client);},10000);
 
 setInterval(async () => {
 	updateHistory(client);
 	
-}, 3 * 60 * 1000);
+}, 7 * 60 * 1000);
 
 let iter = 0;
 

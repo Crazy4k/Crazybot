@@ -62,7 +62,6 @@ module.exports = (client, mongo) => {
             console.log("Background checker folder detected!")
             const updateRaiderHistory = require("../[TSU]_Background_Checker/updateRaiderHistory");
             const cache = require("../[TSU]_Background_Checker/cache");
-            const getMembers = require("../[TSU]_Raider_Tracker/getMembers");
             const raiderGroups = require("../[TSU]_Background_Checker/allRaiderGroups.json");
             const getbadges = require("../[TSU]_Background_Checker/getbadges");
 
@@ -72,21 +71,18 @@ module.exports = (client, mongo) => {
             }
 
             (async()=>{
-                let raiders = await getMembers(groupsArray)
-                raiders = [...new Set(raiders)];
-                cache.raiderMembers = raiders;
-                getbadges();
+                
+                cache.raiderMembers = [];
+                await getbadges();
                 console.log("Background checker ready!")
+
             })()
             
 
         
             setInterval(async () => {
-                updateRaiderHistory();
 
-                let raiders = await getMembers(groupsArray)
-                raiders = [...new Set(raiders)];
-                cache.raiderMembers = raiders;
+                updateRaiderHistory();
                 getbadges();
                 
             }, 24 * 60 * 60 * 1000);

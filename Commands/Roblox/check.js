@@ -4,8 +4,8 @@ const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
 const TSUgroups = require("../../config/TSUGroups.json");
+const raiderGroups = require("../../[TSU]_Background_Checker/allRaiderGroups.json");
 const getRaiderPower = require("../../[TSU]_Raider_Tracker/calculategamepasses")
-const raiderGroups = require("../../[TSU]_Raider_Tracker/raiderGroups.json");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
 const fs = require("fs")
@@ -32,7 +32,10 @@ let jointVIPs = [];
 let jointCuffRanks = [];
 let other = [];
 
-for(let group of raiderGroups){
+for(let index in raiderGroups){
+    
+    let group = raiderGroups[index];
+
     TSUgroups[group.id] = group;
     TSUgroups[group.id].isRaider = true;
 }
