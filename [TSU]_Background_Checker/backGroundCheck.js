@@ -1,5 +1,5 @@
 const client = require("../index");
-const rover = require("rover-api");
+const getRobloxData = require("../functions/getRobloxData");
 const makeEmbed = require("../functions/embed");
 const noblox = require("noblox.js");
 const TSUgroups = require("../config/TSUGroups.json");
@@ -11,7 +11,7 @@ require("dotenv").config();
 const friendShipChecker = require("./friendShipChecker");
 const cache = require("./cache");
 const {MessageActionRow, MessageButton} = require("discord.js");
-const {usernamesCache} = require("../caches/botCache");
+const {usernamesCache, robloxVerificationCache} = require("../caches/botCache");
 const reportBug = require("../functions/reportErrorToDev");
 
 
@@ -183,8 +183,11 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                             
                 
                 status = 1;
-                res = await rover(username).catch(err => status = 0);
+                
+                res = await getRobloxData(username).catch(err => status = 0);
+                
                 if(!status){
+                    
                     if(isAuthor){
                         const embed = makeEmbed("User not found", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\``,server);
                         sendAndDelete(message, embed, server);
@@ -202,22 +205,29 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         if(!res)res = {status: "e"};
     
         //if the user is found, proceed, else stop
-        if(res.status === "ok" || id ){
-            
+        if(res.status === "ok" || id || status === 2 ){
+
+
             //resort the variables
             let erroredOut = false;
-            let {robloxUsername, robloxId} = res;
+            let {cachedUsername, robloxId} = res;
             if(!id)id = robloxId;
-            if(!robloxUsername) robloxUsername = args0;
+            if(!cachedUsername) cachedUsername = args0;
     
             //info to be used for the archive. if user isnt verifed, abort
             let loggingInfo = {};
             if(isAuthor){
-                loggingInfo.username = robloxUsername;
+                
+                loggingInfo.username = cachedUsername;
                 loggingInfo.DiscordId = author.id;
+
             } else {
+
                 let status = 1;
-                res = await rover(author.id).catch(err => status = 0);
+                
+                res = await getRobloxData(author.id).catch(err => status = 0);
+                
+                
                 if(!status){
                     
                     const embed = makeEmbed("Verification required", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\``,server);
@@ -225,11 +235,13 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     sendAndDelete(message, embed, server);
                     return;                
                 } else {
-                    loggingInfo.username = res.robloxUsername; 
+                    robloxVerificationCache[author.id] = {robloxId : res.robloxId, cachedUsername : res.cachedUsername}; //save verification info for later use
+                    loggingInfo.username = res.cachedUsername; 
                     loggingInfo.DiscordId = author.id;
                 }
             }
-    
+
+            
             
             //GET DATA
     
@@ -390,7 +402,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
     
             // GET BLACKLISTS
-            const trelloData = await axios.get(`https://api.trello.com/1/search?query=${robloxUsername}&idBoards=${trelloInfo.blackListBoardId}&modelTypes=cards&key=${trelloInfo.key}&token=${trelloInfo.token}`).catch(e=>erroredOut = true);
+            const trelloData = await axios.get(`https://api.trello.com/1/search?query=${cachedUsername}&idBoards=${trelloInfo.blackListBoardId}&modelTypes=cards&key=${trelloInfo.key}&token=${trelloInfo.token}`).catch(e=>erroredOut = true);
             
             if(erroredOut){
                 const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Trello, try again later`,server);
@@ -401,7 +413,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             let blacklistCards = [];
             if(trelloData)for(let card of trelloData?.data?.cards){
-                if(card?.name?.toLowerCase() === robloxUsername.toLowerCase()){
+                if(card?.name?.toLowerCase() === cachedUsername.toLowerCase()){
                     let obj = {};
                     let array = card.desc.split("\n");
                     
@@ -514,25 +526,25 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             //BUILD THE EMBED(s)
             let ping = Date.now() - benchMarkOne
     
-            const embed = makeEmbed(`${robloxUsername}'s background check`,`Data retrieved in ${ping}ms\n Time spent in queue: ${queueTime} seconds`,server,false,"Do not completely rely on this. Use it only as a tool.");
-            embed.addField(`Username:`,`${robloxUsername}`,true);
+            const embed = makeEmbed(`${cachedUsername}'s background check`,`Data retrieved in ${ping}ms\n Time spent in queue: ${queueTime} seconds`,server,false,"Do not completely rely on this. Use it only as a tool.");
+            embed.addField(`Username:`,`${cachedUsername}`,true);
             embed.addField(`ID:`,`${id}`,true);
             embed.addField(`Profile link`,`[CLICK HERE](https://www.roblox.com/users/${id})`,true);
             embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
     
-            const friendsEmbed = makeEmbed(`${robloxUsername}'s suspicious friends`, ``, server);
+            const friendsEmbed = makeEmbed(`${cachedUsername}'s suspicious friends`, ``, server);
             friendsEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
             let friendsEmbedSrting = [];
     
-            const clothesEmbed = makeEmbed(`${robloxUsername}'s suspicious clothes`, ``, server);
+            const clothesEmbed = makeEmbed(`${cachedUsername}'s suspicious clothes`, ``, server);
             clothesEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
             let clothesEmbedSrtring = [];
     
-            const badgesEmbed = makeEmbed(`${robloxUsername}'s badges`, ``, server);
+            const badgesEmbed = makeEmbed(`${cachedUsername}'s badges`, ``, server);
             badgesEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
             let badgesEmbedString = [];
 
-            const historyEmbed = makeEmbed(`${robloxUsername}'s history`, `Past ranks`, server);
+            const historyEmbed = makeEmbed(`${cachedUsername}'s history`, `Past ranks`, server);
             historyEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
 
             

@@ -12,7 +12,7 @@ bgcheck.set({
     aliases         : ["backgroundcheck","bcheck", "bgc"],
     description     : "Shows the user's TSU profile and status",
     usage           : "bgcheck <roblox username or ID>",
-    cooldown        : 30,
+    cooldown        : 27,
     unique          : true,
     category        : "roblox",
     worksInDMs      : false,

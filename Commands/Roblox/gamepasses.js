@@ -4,8 +4,9 @@ const {MessageActionRow, MessageButton} = require("discord.js");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const fs = require("fs")
 const checkUser = require("../../functions/checkUser");
-const rover = require("rover-api");
+const getRobloxData = require("../../functions/getRobloxData");
 const noblox = require("noblox.js");
+const botCache =require("../../caches/botCache");
 
 function read(string){
     let obj =  fs.readFileSync(string, "utf-8");
@@ -132,8 +133,11 @@ raiders.set({
                 break;
             }
                         
+            
             status = 1;
-            res = await rover(username).catch(err => status = 0);
+
+            res = await getRobloxData(username).catch(err => status = 0);
+                
             if(!status){
                 if(isAuthor){
                     const embed = makeEmbed("User not found", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\` or enter your roblox username like this: \`${server.prefix}check [Roblox username or ID]\``,server);
@@ -165,14 +169,14 @@ raiders.set({
     let gamepassIdsMS2 = [];
     for (const i in gamepasses["MS2"]) gamepassIdsMS2.push(gamepasses["MS2"][i].id);
 
-    let {robloxUsername, robloxId} = res;
+    let {cachedUsername, robloxId} = res;
     let isKnown = true;
 
     if(res.status === "ok" || id ){
         
         
         if(!id)id = robloxId;
-        if(!robloxUsername) robloxUsername = args0;
+        if(!cachedUsername) cachedUsername = args0;
         
         let isBanned = false;
 
@@ -254,7 +258,7 @@ raiders.set({
         let viewArray = viewArrayV1;
         let mode = 1;
     
-        const embed = makeEmbed(`Military simulator gamepasses`,`${robloxUsername && isKnown ? "Showing MS1 gamepasses of " + robloxUsername : "Showing MS1 gamepasses"}`,server);
+        const embed = makeEmbed(`Military simulator gamepasses`,`${cachedUsername && isKnown ? "Showing MS1 gamepasses of " + cachedUsername : "Showing MS1 gamepasses"}`,server);
         embed.addFields(viewArray[index]);
         embed.setThumbnail(icons[mode]);
         if(isKnown)embed.setFooter({text: `Uncapped raider power for MS${mode}: ${power[mode]}`})
@@ -326,7 +330,7 @@ raiders.set({
                     nextButton.setDisabled(false);
                 }
                 embed.setFields(viewArray[index]);
-                embed.setDescription(`${robloxUsername  && isKnown? "Showing MS"+mode+" gamepasses of " + robloxUsername : "Showing MS1 gamepasses"}`)
+                embed.setDescription(`${cachedUsername  && isKnown? "Showing MS"+mode+" gamepasses of " + cachedUsername : "Showing MS1 gamepasses"}`)
                 embed.setThumbnail(icons[mode]);
                 if(isKnown)embed.setFooter({text: `Uncapped raider power for MS${mode}: ${power[mode]}`})
                 i.update({embeds:[embed],  components: [row]});

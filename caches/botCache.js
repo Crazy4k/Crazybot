@@ -21,6 +21,8 @@ let caches = {
     executes : {slash: {}, legacy: {}},
     isOnRobloxCooldown: false,
     usernamesCache: {},
+    robloxVerificationCache: {},
+    tempRobloxVerificationCache: {}
     
 
 }

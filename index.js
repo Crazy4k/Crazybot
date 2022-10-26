@@ -24,7 +24,6 @@ const cookie = process.env.NBLXJS_COOKIE;
 const executeCommand 					= require("./functions/executeCommand");
 const executeSlashCommand 				= require("./functions/executeSlashCommand");
 const serversSchema 					= require("./schemas/servers-schema");
-const raiderTrackerSchema				= require("./schemas/raiderTracker-schema");
 const timerSchema						= require("./schemas/timer-schema");
 let {guildsCache, commandCoolDownCache} = require("./caches/botCache");
 let botCache 							= require("./caches/botCache");
@@ -228,8 +227,8 @@ mongo().then(async (mongoose) =>{
 	try{
 		const data = await timerSchema.findOne({_id:"remindme"});
 		data ? botCache.timeOutCache["remindme"] = data : botCache.timeOutCache["remindme"] = {};
-	} catch{
-		console.log("e")
+	} catch(e){
+		console.log("e",e)
 	}
 	finally{
 		console.log("FETCHED FROM DATABASE");
@@ -339,7 +338,7 @@ getRanksForLogs();
 setInterval(async () => {
 	getRanksForLogs();
 	
-}, 7 * 24 * 60 * 60 * 1000);
+},  2 * 24 * 60 * 60 * 1000);
 
 setTimeout(()=>{updateHistory(client);},10000);
 
@@ -350,14 +349,16 @@ setInterval(async () => {
 
 let iter = 0;
 
+let verificationSchema = require("./schemas/verification-schema");
+
 //update the status of the bot every 15 mins
-setInterval(()=>{
+setInterval(async ()=>{
 	client.guilds.fetch();
 	let members = 0; 
 	client.guilds.cache.each(guild => members += guild.memberCount);
 	let servers  = client.guilds.cache.size;
 
-	
+	botCache.isOnRobloxCooldown = false; //for the bgc command 
 
 	let status = [
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
@@ -371,4 +372,5 @@ setInterval(()=>{
 	if(status.length - 1 === iter)iter = 0;
 	else iter++;
 	client.user.setActivity(luckyWinner.str,luckyWinner.type);
-},1000 * 60 *15);
+
+},1000 * 60 * 15);

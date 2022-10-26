@@ -1,24 +1,32 @@
 
-const rover = require("rover-api");
+const getRobloxData = require("./getRobloxData");
 const makeEmbed = require("./embed");
 const noblox = require("noblox.js");
+const botCache = require("../caches/botCache")
 
 
 
 /**
  * Updates a discord user and syncs them with their Roblox profile: gives roles and updates nickname to match their Roblox account
- * @param {object} member A discord guild member 
+ * @param {object} message A discord guild member 
  * @param {string} userId The discord ID of the guild member
  * @param {object} server The mongoDB-stored server data
  * @param {boolean} isCommandExecution whether or not this has been executed via a command
  * @returns {object} Message Embed with the data regarding the update
  */
 
-module.exports = async (member, userId, server, isCommandExecution) =>{
+module.exports = async (message, userId, server, isCommandExecution, forceUnverified, ignoreOtherRoles) =>{
+    return new Promise(async(resolve, reject) => {
 
     let isVerified = true;
     
-    const robloxBody = await rover(userId).catch(err => isVerified = false);
+    let robloxBody;
+    if(forceUnverified) {
+        
+        robloxBody = 0;
+        isVerified = false;
+    } else robloxBody = await getRobloxData(userId).catch(err => isVerified = false);  
+    
 
 
     let embed;
@@ -27,10 +35,11 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
         let roleStatus = false;
         let nicknameStatus = false;
         let extraInfo = [];
+
         if(server.verifiedRole){
             
-            let user = member.guild.members.cache.get(userId);
-            let role = member.guild.roles.cache.get(server.verifiedRole);
+            let user = message.guild.members.cache.get(userId);
+            let role = message.guild.roles.cache.get(server.verifiedRole);
             if(role){
                 if(!user.roles.cache.get(server.verifiedRole)){
                     
@@ -49,7 +58,7 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
             
         } else extraInfo.push("Verified role isn't enabled in this server.");
         if(server.forceRobloxNames){
-            let user = member.guild.members.cache.get(userId);
+            let user = message.guild.members.cache.get(userId);
 
             await user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
             .catch(err=> {
@@ -60,10 +69,10 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
                 nicknameStatus = true;
             } else nicknameStatus = false;
         } else extraInfo.push("Roblox nicknames aren't enabled in this server.");
-        if(server.robloxBinds){
+        if(server.robloxBinds && !ignoreOtherRoles){
             
-            let robloxGroups = await noblox.getGroups(robloxBody.robloxId).catch(err=>extraInfo.push("Failed to fetch groups"));
-            let user = member.guild.members.cache.get(userId);
+            let robloxGroups = await noblox.getGroups(parseInt(robloxBody.robloxId)).catch(err=>extraInfo.push("Failed to fetch groups"));
+            let user = message.guild.members.cache.get(userId);
             if(robloxGroups && user){
 
                 let discordRolesToadd = [];
@@ -115,19 +124,21 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
             
         } 
 
-        embed = makeEmbed(`Roblox status`,``,server,false,"Powered by Rover.link");
+        embed = makeEmbed(`Roblox status`,``,server,false,);
         embed.addField("Nickname",`[${nicknameStatus ? "✅" : "❌"}]`,true);
         embed.addField("Roles",`[${roleStatus ? "✅" : "❌"}]`,true);
         if(extraInfo.length)embed.addField("**Extra info**",`${extraInfo.join("\n")}`,false);
         
-    } else if(isCommandExecution){
+    } else {
 
         let roleStatus = false;
         let nicknameStatus = false;
         let extraInfo = [];
 
-        let user = member.guild.members.cache.get(userId);
-        let role = member.guild.roles.cache.get(server.verifiedRole) ?? "";
+        let user = message.guild.members.cache.get(userId);
+        let role = message.guild.roles.cache.get(server.verifiedRole) ?? "";
+
+        
 
         if(server.verifiedRole){
             
@@ -137,6 +148,7 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
                     user.roles.remove(server.verifiedRole,"auto verified role")
                     .then(yes=> roleStatus = true)
                     .catch(err=> {
+                        
                         roleStatus = false;
                         extraInfo.push("Couldn't remove the role.");
                     });
@@ -167,13 +179,14 @@ module.exports = async (member, userId, server, isCommandExecution) =>{
             extraInfo.push("Couldn't add group roles.");
         });
 
-        embed = makeEmbed(`Roblox status`,``,server,false,"Powered by Rover.link");
+        embed = makeEmbed(`Roblox status`,``,server,false,);
         embed.addField("Nickname",`[${nicknameStatus ? "✅" : "❌"}]`,true);
         embed.addField("Roles",`[${roleStatus ? "✅" : "❌"}]`,true);
         if(extraInfo.length)embed.addField("**Extra info**",`${extraInfo.join("\n")}`,false);
     }
     
    
-    return embed;
+    return resolve(embed);
+});
 
 };

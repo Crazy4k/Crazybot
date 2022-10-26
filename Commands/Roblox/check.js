@@ -1,5 +1,5 @@
 const Command = require("../../Classes/Command");
-const rover = require("rover-api");
+const getRobloxData = require("../../functions/getRobloxData");
 const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
@@ -183,10 +183,11 @@ check.execute = async (message, args, server, isSlash) =>{
                 }
                             
                 status = 1;
-                res = await rover(username).catch(err => status = 0);
+                res = await getRobloxData(username).catch(err => status = 0);
+                
                 if(!status){
                     if(isAuthor){
-                        const embed = makeEmbed("User not found", `**You're not verfied**\n please connect your Roblox account using \`${server.prefix}verify\` or enter your roblox username like this: \`${server.prefix}check [Roblox username or ID]\``,server);
+                        const embed = makeEmbed("User not found", `Could not identify your Roblox account because you're not verfied\n please connect your Roblox account using \`${server.prefix}verify\` or enter your roblox username like this: \`${server.prefix}check [Roblox username or ID]\``,server);
                         sendAndDelete(message, embed, server);
                         return true;
                     }else{
@@ -202,7 +203,7 @@ check.execute = async (message, args, server, isSlash) =>{
     if(res.status === "ok" || id ){
         
         
-        let {robloxUsername, robloxId} = res;
+        let {cachedUsername, robloxId} = res;
         if(!id)id = robloxId;
         if(!robloxUsername) robloxUsername = args0;
         //GET GROUPS
@@ -295,7 +296,7 @@ check.execute = async (message, args, server, isSlash) =>{
         //button
 
         const profileButton = new MessageButton()
-        .setLabel(`${robloxUsername}'s profile`)
+        .setLabel(`${cachedUsername}'s profile`)
         .setStyle('LINK')
         .setEmoji("👤")
         .setURL(`https://www.roblox.com/users/${id}/profile`);
@@ -305,9 +306,9 @@ check.execute = async (message, args, server, isSlash) =>{
 
         //BUILD THE EMBED
         const uniqueLebels = [...new Set(lebels)] 
-        const embed = makeEmbed(`${robloxUsername}'s soviet profile`,`Here are the info related to the player`,server);
+        const embed = makeEmbed(`${cachedUsername}'s soviet profile`,`Here are the info related to the player`,server);
         embed.addField("\u200b","**General info**",false)
-        embed.addField(`Username:`,`**${robloxUsername}**(${id})`,true);
+        embed.addField(`Username:`,`**${cachedUsername}**(${id})`,true);
 
         if(notableTSU.length)embed.addField("The Soviet Union groups:",`${notableTSU.join("\n")}`,false);
         if(globalGroups.length)embed.addField("Noteable groups",globalGroups.join("\n"),false)

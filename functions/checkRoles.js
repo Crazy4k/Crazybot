@@ -30,32 +30,26 @@ module.exports = (message, args, num = 1) => {
 
 /*
 switch (checkRoles(message, args, 1)) {
-			case "not valid":
-			case "everyone":	
-			case "not useable":
-				try {
-					const embed = makeEmbed('invalid username',this.usage);
-					sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-					return;
-			
-				} catch (error) {
-					console.error(error);
-				}
-				break;
-			case "no args": 
-			try {
+	case "not valid":
+	case "everyone":	
+	case "not useable":
+		
+		const embed = makeEmbed('invalid username',this.usage);
+		sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+		return;
+	
+		
+		break;
+	case "no args": 
 
-				const embed = makeEmbed('Missing arguments',this.usage);
-				sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
-				return;
+		const embed = makeEmbed('Missing arguments',this.usage);
+		sendAndDelete(message,embed, server, faliedCommandTO, failedEmbedTO);
+		return;
 
-			} catch (error) {
-				console.error(error);
-			}
-				break;
-			default:
-				break;
-		}
+		break;
+	default:
+		break;
+}
 
 
 

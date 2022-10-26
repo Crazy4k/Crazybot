@@ -850,27 +850,27 @@ panel.execute = async function(message, args, server, isSlash) {
                                             .then(async m => {
         
                                                 
-                                                    m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
-                                                    .then(async a =>{
-                                                        
-                                                        switch (a.customId) {
-                                                            case "true":
-                                                                daServer.defaultEmbedColor = newColor;
-                                                                a.update({components:[]});
-                                                                break;
-                                                            case "false":
-                                                                message.channel.send(cancerCultureMessage);
-                                                                a.update({components:[]});
-                                                                return false;
-                                                                break;
-                                                            default:
-                                                                message.channel.send(cancerCultureMessage);
-                                                                a.update({components:[]});
-                                                                return false;
-                                                                break;
-                                                        }
-        
-                                                        await mongo().then(async (mongoose) =>{
+                                                m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
+                                                .then(async a =>{
+                                                    
+                                                    switch (a.customId) {
+                                                        case "true":
+                                                            daServer.defaultEmbedColor = newColor;
+                                                            a.update({components:[]});
+                                                            break;
+                                                        case "false":
+                                                            message.channel.send(cancerCultureMessage);
+                                                            a.update({components:[]});
+                                                            return false;
+                                                            break;
+                                                        default:
+                                                            message.channel.send(cancerCultureMessage);
+                                                            a.update({components:[]});
+                                                            return false;
+                                                            break;
+                                                    }
+    
+                                                    await mongo().then(async (mongoose) =>{
                                                         try{ 
                                                             await serversSchema.findOneAndUpdate({_id:message.guild.id},{
                                                                 defaultEmbedColor: newColor
@@ -881,9 +881,9 @@ panel.execute = async function(message, args, server, isSlash) {
                                                             console.log("WROTE TO DATABASE");
                                                             mongoose.connection.close();
                                                         }
-                                            });
-        
-        
+                                                    });
+    
+    
                                                 }).catch(e => {
                                                     if(isSlash) message.editReply({components:[]});
                                                     else newMsg.edit({components:[]});
@@ -1081,8 +1081,8 @@ panel.execute = async function(message, args, server, isSlash) {
                             let embed10 = makeEmbed("Server Settings", `**Disable categories**\nClick the buttons to disable/enable those command categories from being run in your server.`, server);
                             
                             
-                            let newMsg2 = await message.reply({embeds: [embed10], components: [categoriesRow,categoriesRow2, changesRow]})
-                            if(isSlash) newMsg2 = await message.fetchReply();
+                            let newMsg2 = await message.reply({embeds: [embed10], components: [categoriesRow,categoriesRow2, changesRow]}).catch(e=>e)
+                            if(isSlash) newMsg2 = await message.channel.send({embeds: [embed10], components: [categoriesRow,categoriesRow2, changesRow]}) 
         
                             const collector = newMsg2.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   20 * 1000 });
                             newMsg2.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 30, errors : ["time"] });
@@ -1700,7 +1700,7 @@ panel.execute = async function(message, args, server, isSlash) {
                             const pointsRoleEmbed = makeEmbed("Points management role",`Enter the role that you want to be able to modify points of others.\nThis role will be able to view,remove,add and change the points of all users.\nType \`no\` for no one except admins.`, server);
     
                             message.reply({embeds:[pointsRoleEmbed]});
-                            const messageFilter = m => !m.author.bot && m.author.id === author.id;
+                            
                             message.channel.awaitMessages({filter: messageFilter, max: 1, time : 120000, errors: ['time']})
                                 .then(async (a) => {
                                     let checkedRole = checkRoles(a);

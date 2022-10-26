@@ -10,10 +10,8 @@ const client = require("../../index");
 const moment = require("moment");
 const botCache = require("../../caches/botCache");
 const noblox = require("noblox.js");
-const raiderTrackerSchema = require("../../schemas/raiderTracker-schema");
 const Command = require("../../Classes/Command");
 const serverSchema = require("../../schemas/servers-schema");
-const rover = require("rover-api");
 const axios = require("axios");
 
 
