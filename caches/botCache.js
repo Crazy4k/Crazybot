@@ -22,7 +22,7 @@ let caches = {
     isOnRobloxCooldown: false,
     usernamesCache: {},
     robloxVerificationCache: {},
-    tempRobloxVerificationCache: {}
+    bgcCache: {}
     
 
 }

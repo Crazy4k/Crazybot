@@ -349,7 +349,6 @@ setInterval(async () => {
 
 let iter = 0;
 
-let verificationSchema = require("./schemas/verification-schema");
 
 //update the status of the bot every 15 mins
 setInterval(async ()=>{
@@ -373,4 +372,8 @@ setInterval(async ()=>{
 	else iter++;
 	client.user.setActivity(luckyWinner.str,luckyWinner.type);
 
-},1000 * 60 * 15);
+	//clear BGC cache
+	botCache.bgcCache = {};
+	
+
+},1000 * 60 * 20);

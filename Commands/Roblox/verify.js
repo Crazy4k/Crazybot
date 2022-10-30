@@ -37,9 +37,9 @@ const randomWords = [
     },{//physics_11
         0: "speed",1: "acceleration",2: "sun",3: "earth",4: "distance",5: "time",6: "relative",7: "radio",8: "weight",9: "strength"
     },{//starwars_12
-        0: "luke",1: "skywalker",2: "jedi",3: "sith",4: "darth",5: "vader",6: "saber",7: "kenobi",8: "Anakin",9: "yoda"
+        0: "luke",1: "skywalker",2: "jedi",3: "sith",4: "darth",5: "vader",6: "saber",7: "cool",8: "Anakin",9: "yoda"
     },{//months_13
-        0: "january",1: "february",2: "march",3: "december",4: "november",5: "june",6: "july",7: "august",8: "september",9: "october"
+        0: "one",1: "two",2: "three",3: "4",4: "five",5: "june",6: "july",7: "august",8: "september",9: "october"
     },{//days_14
         0: "monday",1: "tuesday",2: "wednesday",3: "thursday",4: "friday",5: "saturday",6: "sunday",7: "summer",8: "fall",9: "winter"
     },{//games_15
@@ -121,7 +121,7 @@ check.execute = async (message, args, server, isSlash) =>{
         
 
         let embed = makeEmbed(`Welcome back, ${robloxBody.cachedUsername}`,`How may I help you?`, server);
-        embed.addField("Verified on",`<t:${parseInt(robloxBody.firstVerified / 1000)}:D>`)
+        embed.addField("Verified on",`<t:${parentInt(parseInt(robloxBody.firstVerified)/1000)}:D>`)
         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${robloxBody.robloxId}&width=420&height=420&format=png`);
 
 
@@ -130,7 +130,7 @@ check.execute = async (message, args, server, isSlash) =>{
         let newMsg = await message.reply({embeds: [embed], components: [row, listeningRow]}).catch(err=>err);
         if(!newMsg) newMsg = await message.fetchReply();
 
-        const collector = newMsg.createMessageComponentCollector({ filter: buttonFilter, time: 30 * 1000 });
+        const collector = newMsg.createMessageComponentCollector({ filter: buttonFilter, time: 40 * 1000 });
         
 
         collector.on('collect', async i => {
@@ -182,7 +182,7 @@ check.execute = async (message, args, server, isSlash) =>{
                     message.channel.send({content: `Are you sure you want to remove your Roblox connection from CrazyBot's database?`, components: [booleanRow, listeningRow]})
                     .then( async m =>{
 
-                        m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 20, errors : ["time"] })
+                        m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 40, errors : ["time"] })
 
                         .then(async a =>{
 
@@ -258,7 +258,7 @@ check.execute = async (message, args, server, isSlash) =>{
 
         message.reply({embeds: [embed], components: [listeningRow]})
         .then( async m =>{
-            message.channel.awaitMessages({filter: messageFilter,  max : 1,time: 1000 * 15, errors : ["time"] })
+            message.channel.awaitMessages({filter: messageFilter,  max : 1,time: 1000 * 40, errors : ["time"] })
             .then(async a=>{
 
                 if(isSlash) message.editReply({components:[]});
@@ -281,7 +281,7 @@ check.execute = async (message, args, server, isSlash) =>{
                     message.channel.send({embeds:[infoEmbed], components: [booleanRow, listeningRow]})
                     .then(m=>{
                         
-                        m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 25, errors : ["time"] })
+                        m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 40, errors : ["time"] })
                         .then(a=>{
 
                             
@@ -298,13 +298,14 @@ check.execute = async (message, args, server, isSlash) =>{
                                 }
                                 
                                 let sentenceEmbed = makeEmbed("Verify that's you", `Please enter the following phrase into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\``, server)
-                                
+                                sentenceEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${usernameData.data.Id}&width=420&height=420&format=png`);
+
                                 sentenceEmbed.setImage("https://cdn.discordapp.com/attachments/926507472611582002/1034178689769943121/easterEgg.png");
                                 
                                 message.channel.send({embeds:[sentenceEmbed], components: [confirmationRow, listeningRow]})
                                 .then(m=>{
 
-                                    m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 60 * 2, errors : ["time"] })
+                                    m.awaitMessageComponent({filter: buttonFilter,  max : 1,time: 1000 * 60 * 5, errors : ["time"] })
                                     .then(async a=>{
 
                                         
@@ -356,6 +357,9 @@ check.execute = async (message, args, server, isSlash) =>{
                                                         mongoose.connection.close();
                                                     }
                                                 });
+                                            } else {
+                                                let nope = makeEmbed("Description does not match!",`The description/about section of that user does not match the provided phrase. Make sure the words are in the correct order and that there is at least 1 space between each word.`,server)
+                                                message.channel.send({embeds:[nope]});
                                             }
                                             
 

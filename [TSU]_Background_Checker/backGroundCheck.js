@@ -12,6 +12,7 @@ const friendShipChecker = require("./friendShipChecker");
 const cache = require("./cache");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const {usernamesCache, robloxVerificationCache} = require("../caches/botCache");
+const botCache = require("../caches/botCache");
 const reportBug = require("../functions/reportErrorToDev");
 
 
@@ -55,7 +56,7 @@ let trelloInfo = {
     kgbTrelloId: "60239dcea166e18eca0f89ea"
 
 }
-let loggingChannelId = "930527323260866671"
+let loggingChannelId = "936338228192100372"
 
 
 let jointRaiderGroups = [];
@@ -107,6 +108,7 @@ function getTSUHistory(id){
 
 module.exports = async (message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, pendingMessage, queueTime) =>{
     try {
+        
         let benchMarkOne = Date.now();
     
         //interactive buttons
@@ -241,7 +243,77 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 }
             }
 
+            if(botCache.bgcCache[id]){
+                let loggingChannel = client.channels.cache.get(loggingChannelId);
             
+                if(loggingChannel && loggingChannel.guild.available){
+
+                    botCache.bgcCache[id].main.setDescription("Data retrieved from cache.")
+                    loggingChannel.send({embeds: botCache.bgcCache[id].all}).then(async yes=>{
+                        
+                        
+                        pendingMessage?.delete().catch(e=>e);
+        
+                        if(isSlash)await message?.editReply({embeds: [botCache.bgcCache[id].main], components: [row]});
+                        let newMsg = !isSlash ? await message.reply({embeds:[botCache.bgcCache[id].main], components: [row]}) : await message.fetchReply();
+                        
+                        
+                        const collector = newMsg.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   4 * 60 * 1000 });
+        
+                        collector.on('collect', async i => {
+                            collector.resetTimer();
+        
+                            mainButton.setDisabled(false)
+                            if(friendsEmbedSrting.length)friendsButton.setDisabled(false);
+                            if(clothesEmbedSrtring.length)clothesButton.setDisabled(false);
+                            if(badgesEmbedString)missingBadgesButton.setDisabled(false);
+                            historyButton.setDisabled(false);
+                            
+        
+                            switch (i.customId) {
+                                case "main":
+                                    mainButton.setDisabled(true);
+                                    break;
+                                case "friends":
+                                    friendsButton.setDisabled(true);
+                                    break;
+                                case "badges":
+                                    missingBadgesButton.setDisabled(true);
+                                    break;
+                                case "clothes":
+                                    clothesButton.setDisabled(true);
+                                case "history":
+                                    historyButton.setDisabled(true);
+                            }
+        
+                            
+                            
+                            i.update({embeds:[botCache.bgcCache[id][i.customId]],  components: [row]});
+                            
+                        }); 
+                        
+                        collector.on('end', collected => {
+                            if(isSlash) message.editReply({components:[]}).catch(e=>e)//if e, message was deleted
+                            else newMsg.edit({components:[]}).catch(e=>e)//if e, message was deleted
+                        });
+                        
+        
+                    }).catch(no=>{
+                        
+                        console.log(no);
+                        const embed = makeEmbed("Command failed", "There was an error while sending the message, contact the developer if this happens again.",server);
+                        sendAndDelete(message, embed, server);
+                        pendingMessage?.delete().catch(e=>e);
+                        return;
+                    })
+                } else {
+                    const embed = makeEmbed("Command failed", "Could not trace this action. Please try again later.",server);
+                    sendAndDelete(message, embed, server);
+                    pendingMessage?.delete().catch(e=>e);
+                    return;
+                }
+                return;
+            }
             
             //GET DATA
     
@@ -732,6 +804,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 if(i.description)embedsObject.all.push(i);
             }
             
+            botCache.bgcCache[id] = embedsObject;
             
     
             //sending the embed

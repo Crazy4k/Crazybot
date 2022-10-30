@@ -205,7 +205,7 @@ check.execute = async (message, args, server, isSlash) =>{
         
         let {cachedUsername, robloxId} = res;
         if(!id)id = robloxId;
-        if(!robloxUsername) robloxUsername = args0;
+        if(!cachedUsername) cachedUsername = args0;
         //GET GROUPS
         const groups = await noblox.getGroups(id).catch(e=>console.log(e));
         let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));
