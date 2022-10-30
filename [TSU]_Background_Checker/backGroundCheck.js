@@ -56,7 +56,7 @@ let trelloInfo = {
     kgbTrelloId: "60239dcea166e18eca0f89ea"
 
 }
-let loggingChannelId = "936338228192100372"
+let loggingChannelId = "930527323260866671"
 
 
 let jointRaiderGroups = [];
