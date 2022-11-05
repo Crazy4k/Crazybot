@@ -138,7 +138,13 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         .setLabel("History")
         .setEmoji("⌛")
         .setStyle("SECONDARY");
-        const row = new MessageActionRow().addComponents(mainButton, historyButton, friendsButton, clothesButton, missingBadgesButton);
+        const scoreButton = new MessageButton()
+        .setCustomId("score")
+        .setLabel("Score details")
+        .setEmoji("🧮")
+        .setStyle("SECONDARY");
+        const row = new MessageActionRow().addComponents(mainButton, historyButton, friendsButton );
+        const row2 = new MessageActionRow().addComponents(clothesButton, missingBadgesButton, scoreButton);
     
         //switch for the first argument and determine who to execute the command on
         switch (username) {
@@ -254,8 +260,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         
                         pendingMessage?.delete().catch(e=>e);
         
-                        if(isSlash)await message?.editReply({embeds: [botCache.bgcCache[id].main], components: [row]});
-                        let newMsg = !isSlash ? await message.reply({embeds:[botCache.bgcCache[id].main], components: [row]}) : await message.fetchReply();
+                        if(isSlash)await message?.editReply({embeds: [botCache.bgcCache[id].main], components: [row, row2]});
+                        let newMsg = !isSlash ? await message.reply({embeds:[botCache.bgcCache[id].main], components: [row, row2] }) : await message.fetchReply();
                         
                         
                         const collector = newMsg.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   4 * 60 * 1000 });
@@ -264,9 +270,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                             collector.resetTimer();
         
                             mainButton.setDisabled(false)
-                            if(friendsEmbedSrting.length)friendsButton.setDisabled(false);
-                            if(clothesEmbedSrtring.length)clothesButton.setDisabled(false);
-                            if(badgesEmbedString)missingBadgesButton.setDisabled(false);
+                            if(botCache.bgcCache[id].friends.description)friendsButton.setDisabled(false);
+                            if(botCache.bgcCache[id].clothes.description)clothesButton.setDisabled(false);
+                            if(botCache.bgcCache[id].badges.description)missingBadgesButton.setDisabled(false);
+                            scoreButton.setDisabled(false);
                             historyButton.setDisabled(false);
                             
         
@@ -284,11 +291,13 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                                     clothesButton.setDisabled(true);
                                 case "history":
                                     historyButton.setDisabled(true);
+                                case "score":
+                                    scoreButton.setDisabled(true);
                             }
         
                             
                             
-                            i.update({embeds:[botCache.bgcCache[id][i.customId]],  components: [row]});
+                            i.update({embeds:[botCache.bgcCache[id][i.customId]],  components: [row, row2]});
                             
                         }); 
                         
@@ -318,6 +327,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             //GET DATA
     
             let notes = [];
+            let scoreDeductions = []
             let isBanned = false;
             let score = 0;
             let maxScore = 10;
@@ -340,7 +350,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             let nextCursor = "yes";
             let inventory = [];
             let badges = [];
-            let limit = 25;
+            let limit = 20;
             let current = 0;
 
             do{
@@ -361,7 +371,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             current = 0;
 
             if(!hasPublicInventory){
-                maxScore = 8;
+                maxScore -= 2;
+                scoreDeductions.push("User has private inventory, score limit -2")
             } else {
                 do{
 
@@ -402,6 +413,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     
                     if(cache.badges.Ids.includes(badge.id)){
                         notes.push("User has an MS badge very early on. An alt account?");
+                        scoreDeductions.push("User has an early MS badge, score limit -1.")
                         maxScore -= 1;
                         break;
                     }
@@ -444,7 +456,11 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     exRaidingGroups.push(field);
                 }
                 
-            } else score += 1;
+            } else{
+
+                score += 2;
+                scoreDeductions.push("User was never in a raiding group, score +2");
+            }
 
             //past tsu groups
             let exTSUGroups = [];
@@ -552,7 +568,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 if(ownedBadges.MS1.length === 0) ownedBadges.MS1 = ["No badges"];
                 if(ownedBadges.MS2.length === 0) ownedBadges.MS2 = ["No badges"];
 
-                if((ownedBadges.MS1.length + ownedBadges.MS2.length) / badges.length > 0.1)maxScore -= 1;
+                if((ownedBadges.MS1.length + ownedBadges.MS2.length) / badges.length > 0.1){
+                    maxScore -= 1;
+                    scoreDeductions.push("10% of this user's badges are from TSU, score limit -1.");
+                }
         
                 
                 notes.push(`User owns ${amountOfOwnedBadgesBadges } out of ${cache.badges.Ids.length} TSU badges.`);
@@ -566,11 +585,11 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 } else score += 0.125;
                 
                 
-                if(badges.length > 100) score += 0.25; else maxScore -= 3;
-                if(badges.length > 250) score += 0.25; else maxScore -= 2;
-                if(badges.length > 500) score += 0.25;
-                if(badges.length > 750) score += 0.25;
-                if(badges.length > 1000) score += 0.25;
+                if(badges.length > 100) {score += 0.25; scoreDeductions.push("User has more than 100 badges total, score +0.25");} else {maxScore -= 3; scoreDeductions.push("User has less than 100 total badges, score limit -3");}
+                if(badges.length > 250) {score += 0.25; scoreDeductions.push("User has more than 250 badges total, score +0.25");} else {maxScore -= 2; scoreDeductions.push("User has less than 250 total badges, score limit -2");}
+                if(badges.length > 500) {score += 0.25; scoreDeductions.push("User has more than 500 badges total, score +0.25");}
+                if(badges.length > 750) {score += 0.25; scoreDeductions.push("User has more than 750 badges total, score +0.25");}
+                if(badges.length > 1000) {score += 0.25; scoreDeductions.push("User has more than 1000 badges total, score +0.25");}
                 
             }
             
@@ -619,16 +638,19 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             const historyEmbed = makeEmbed(`${cachedUsername}'s history`, `Past ranks`, server);
             historyEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
 
+            const scoreEmbed = makeEmbed(`${cachedUsername}'s score details`, "", server)
+            scoreEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
+
             
     
             // STATS
             embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${hasPublicInventory ? "\n*Basic clothing assets: "+ inventory.length : ""} ${hasPublicInventory ? "\n*Badges: " + badges.length + (current >= limit ? "+" : "") : ""} ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
-            if(information?.friendCount > 30)score += 0.25;
-            if(information?.followerCount > 30 && information?.followerCount < 500) score +=0.25;
-            if(information?.age > 365)score += 0.25; else if(information?.age > 730) score += 0.5
+            if(information?.friendCount > 30){score += 0.25; scoreDeductions.push("User has more than 30 frieds, score +0.25");}
+            if(information?.followerCount > 30 && information?.followerCount < 200) {score +=0.25; scoreDeductions.push("User has between 30 and 200 followers, score + 0.25");}
+            if(information?.age > 730) {score += 0.5; scoreDeductions.push("User's account age is greater than 2 years, score +0.5");} else if(information?.age > 365){score += 0.25; scoreDeductions.push("User's account age is greater than 1 year, score +0.25");}  
             if(notableTSU.length / groups.length >= 0.5){
                 notes.push("User is in too many TSU groups");
-            } else score += 0.25;
+            } else {score += 0.5; scoreDeductions.push("More than 50% of the user's groups are not TSU-related, score +0.5");}
 
             notes.push(`TSU groups/total groups ratio: ${ (notableTSU.length / groups.length).toFixed(2)} / 1`);
             if(information?.age < 365)notes.push("Account is a bit young.");
@@ -636,15 +658,15 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             // past names
 
             if(information.oldNames?.length){ 
-                score += 0.25;
+
                 embed.addField("Past usernames: ", information.oldNames.join(", "));
             }
     
             //groups
             if(notableTSU.length || globalGroups.length || raiderGroups.length){
 
-                if(notableTSU.length) score += 1.5;
-                if(notableTSU.length > 5) score += 0.5;
+                if(notableTSU.length) {score += 1.5; scoreDeductions.push("User is in a TSU group, score +1.5");}
+                if(notableTSU.length > 5) {score += 0.5; scoreDeductions.push("User is in more than 5 TSU groups, score +0.5");}
                 embed.addField("Groups",`${notableTSU.length ? "**The Soviet Union Groups**:\n\n"+notableTSU.join("\n")+"\n\n" : ""}${globalGroups.length ? "**Notable Groups**:\n\n"+globalGroups.join("\n")+"\n\n" : ""}${raiderGroups.length ? "**Raider Groups**:\n\n"+raiderGroups.join("\n")+"\n\n" : ""}`,false);
             }
     
@@ -655,7 +677,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     strings.push(`${obj.div}: [${obj.name}](${obj.url})   ${obj.assigner}`);
                 }
                 embed.addField("Blacklists",strings.join("\n"), false);
-            } else score += 1.25;
+            } else {score += 1.25; scoreDeductions.push("User was never blacklisted, score +1.25");}
     
             //ex rading groups
     
@@ -667,7 +689,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 if(raiderGroups.length)notes.push("User is in a raiding group.");
                 else notes.push("User is an ex-raider."); 
 
-            }  else score += 1;
+            } 
 
             // ex tsu groups
             if(exTSUGroups.length){
@@ -679,30 +701,29 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
             branches.forEach(group => {
                 
-                if(jointOfficers.includes(group.RoleId)) score += 1;
-                else if(jointHicom.includes(group.RoleId)) score += 3;
-                else if(jointBranchLeaders.includes(group.RoleId)) score += 5;
-                else if(jointStaff.includes(group.RoleId)) score += 5;
+                if(jointOfficers.includes(group.RoleId)){ score += 1; scoreDeductions.push("User is an officer, score +1");}
+                else if(jointHicom.includes(group.RoleId)) {score += 3; scoreDeductions.push("User is a Hicom, score +3");}
+                else if(jointBranchLeaders.includes(group.RoleId)) {score += 5; scoreDeductions.push("User is a branch leader, score +5");}
+                else if(jointStaff.includes(group.RoleId)) {score += 5; scoreDeductions.push("User is in staff team, score +5");}
                 
             });
 
             divisions.forEach(group =>{
                 
-                if(jointDivOfficers.includes(group.RoleId))score += 1;
-                else if(jointStaff.includes(group.RoleId))score += 5;
-                else if(jointDivHicom.includes(group.RoleId))score += 3;
+                if(jointDivOfficers.includes(group.RoleId)){score += 1; scoreDeductions.push("User is divisional officer, score +1");}
+                else if(jointDivHicom.includes(group.RoleId)){score += 3; scoreDeductions.push("User is divisional Hicom, score +3");}
                 
             });
                 
             // sus friends
             if(raiderFriendsData.notes.length)notes.push(raiderFriendsData.notes);
             if(raiderFriendsData.raiderFriends.length || raiderFriendsData.susFriends.length || raiderFriendsData.goodFriends.length){
-                if(raiderFriendsData.raiderFriends.length / information?.friendCount  < 0.2)score += 0.25;
+                if(raiderFriendsData.raiderFriends.length / information?.friendCount  < 0.1){score += 0.5; scoreDeductions.push("User has less than 10% TSU raider friends, score +0.5");}
                 else {
                     notes.push("User has a lot of raider friends");
                     
                 }
-                if(raiderFriendsData.susFriends.length / information?.friendCount  < 0.15)score += 0.25;
+                if(raiderFriendsData.susFriends.length / information?.friendCount  < 0.10){score += 0.5; scoreDeductions.push("User has less than 10% sus friends, score +0.5");}
                 if(raiderFriendsData.goodFriends.length / information?.friendCount  > 0.25){
                     notes.push("User has a lot of TSU friends");
                 }
@@ -714,7 +735,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 friendsEmbedSrting.push("\n**Important/formerly important TSU friends\n**");
                 friendsEmbedSrting.push(raiderFriendsData.goodFriends.length ? raiderFriendsData.goodFriends.join(", ") : "-")
                 
-            } else score += 0.5;
+            } 
     
             
     
@@ -757,7 +778,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         clothesEmbedSrtring.push(string.length ? string.join(", ") : "**-**");
                     }
     
-                } else score += 2;
+                } else {score += 2; scoreDeductions.push("User has no raider-related assets, score +2");}
     
             } else notes.push("User has a private inventory.");
     
@@ -785,10 +806,14 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             badgesEmbed.setColor(color);
             historyEmbed.setColor(color);
             logEmbed.setColor(color);
+
+            scoreEmbed.setColor(color);
             
             if(friendsEmbedSrting.length)friendsEmbed.setDescription(friendsEmbedSrting.join("\n")); else friendsButton.setDisabled(true);
             if(clothesEmbedSrtring.length)clothesEmbed.setDescription(clothesEmbedSrtring.join("\n")); else clothesButton.setDisabled(true);
             if(badgesEmbedString.length)badgesEmbed.setDescription(badgesEmbedString.join("\n")); else missingBadgesButton.setDisabled(true);
+
+            scoreEmbed.setDescription(`Current score: ${score}/10\n Score limit: ${maxScore}\n\n\n **Score calculation**\n\n\n ${scoreDeductions.join("\n")}`);
     
     
             const embedsObject = {
@@ -798,9 +823,10 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 clothes: clothesEmbed,
                 badges : badgesEmbed,
                 history: historyEmbed,
+                score: scoreEmbed,
                 all: []
             }
-            for(let i of [logEmbed, embed, historyEmbed, friendsEmbed, clothesEmbed, badgesEmbed]){
+            for(let i of [logEmbed, embed, historyEmbed, friendsEmbed, clothesEmbed, badgesEmbed, scoreEmbed]){
                 if(i.description)embedsObject.all.push(i);
             }
             
@@ -819,8 +845,8 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     
                     pendingMessage?.delete().catch(e=>e);
     
-                    if(isSlash)await message?.editReply({embeds: [embed], components: [row]});
-                    let newMsg = !isSlash ? await message.reply({embeds:[embed], components: [row]}) : await message.fetchReply();
+                    if(isSlash)await message?.editReply({embeds: [embed], components: [row, row2]});
+                    let newMsg = !isSlash ? await message.reply({embeds:[embed], components: [row, row2]}) : await message.fetchReply();
                     
                     
                     const collector = newMsg.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   4 * 60 * 1000 });
@@ -833,6 +859,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         if(clothesEmbedSrtring.length)clothesButton.setDisabled(false);
                         if(badgesEmbedString)missingBadgesButton.setDisabled(false);
                         historyButton.setDisabled(false);
+                        scoreButton.setDisabled(false);
                         
     
                         switch (i.customId) {
@@ -849,11 +876,13 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                                 clothesButton.setDisabled(true);
                             case "history":
                                 historyButton.setDisabled(true);
+                            case "score":
+                                scoreButton.setDisabled(true);
                         }
     
                         
                         
-                        i.update({embeds:[embedsObject[i.customId]],  components: [row]});
+                        i.update({embeds:[embedsObject[i.customId]],  components: [row, row2]});
                         
                     }); 
                     

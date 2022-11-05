@@ -19,7 +19,7 @@ const randomWords = [
     },{//food_2
         0: "apple",1: "juice",2: "banana",3: "noodle",4: "potato",5: "tomato",6: "ketchup",7: "mango",8: "rice",9: "orange"
     },{//tech_3
-        0: "phone",1: "laptop",2: "computer",3: "tablet",4: "monitor",5: "TV",6: "screen",7: "keyboard",8: "speaker",9: "cable"
+        0: "device",1: "laptop",2: "computer",3: "tablet",4: "monitor",5: "TV",6: "screen",7: "keyboard",8: "speaker",9: "cable"
     },{//objects_4
         0: "door",1: "table",2: "bed",3: "closet",4: "jacket",5: "T-shirt",6: "camera",7: "floor",8: "roof",9: "pillow"
     },{//animals_5
@@ -61,7 +61,7 @@ check.set({
     aliases         : ["unverify"],
     description     : "Connects Roblox user with discord user",
     usage           : "verify",
-    cooldown        : 15,
+    cooldown        : 10,
     unique          : false,
     category        : "roblox",
     worksInDMs      : true,
@@ -121,7 +121,7 @@ check.execute = async (message, args, server, isSlash) =>{
         
 
         let embed = makeEmbed(`Welcome back, ${robloxBody.cachedUsername}`,`How may I help you?`, server);
-        embed.addField("Verified on",`<t:${parentInt(parseInt(robloxBody.firstVerified)/1000)}:D>`)
+        embed.addField("Verified on",`<t:${parseInt(parseInt(robloxBody.firstVerified)/1000)}:D>`)
         embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${robloxBody.robloxId}&width=420&height=420&format=png`);
 
 
@@ -296,8 +296,10 @@ check.execute = async (message, args, server, isSlash) =>{
                                     words.push(randomWords[i][authorId[i]])
                                     
                                 }
+
+                                let altWords = ["verify", authorId, "and", `${usernameData.data.Id}`, "close"];
                                 
-                                let sentenceEmbed = makeEmbed("Verify that's you", `Please enter the following phrase into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\``, server)
+                                let sentenceEmbed = makeEmbed("Verify that's you", `Please enter one of the following phrase into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\`\n\n **OR** \n\n \`${altWords.join(" ")}\``, server)
                                 sentenceEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${usernameData.data.Id}&width=420&height=420&format=png`);
 
                                 sentenceEmbed.setImage("https://cdn.discordapp.com/attachments/926507472611582002/1034178689769943121/easterEgg.png");
@@ -324,9 +326,12 @@ check.execute = async (message, args, server, isSlash) =>{
                                                 if(word === words[index]){
                                                     matches.push(words[index]);
                                                     index++
+                                                } else if (word === altWords[index]){
+                                                    matches.push(altWords[index]);
+                                                    index++
                                                 }
                                             }
-                                            if(words.join("-") === matches.join("-")){
+                                            if(words.join("-") === matches.join("-") || altWords.join("-" === matches.join("-"))){
 
                                                 robloxVerificationCache[authorId] = {robloxId : usernameData.data.Id, cachedUsername : usernameData.data.Username};
                                                 
@@ -367,7 +372,9 @@ check.execute = async (message, args, server, isSlash) =>{
 
                                             message.channel.send({embeds:[makeEmbed("Command failed","An error occurred while getting data from roblox or your profile was empty!", server, false)]});
 
-                                            m.edit({content: "Command expired", components:[]});
+                                            
+                                            if(isSlash) message.editReply({content: "Command expired", components:[]});
+                                            else m.edit({content: "Command expired", components:[]});
                                         }
 
                                     })
@@ -384,7 +391,8 @@ check.execute = async (message, args, server, isSlash) =>{
                         })
                         .catch(e=>{
                             
-                            m.edit({components:[]});
+                            if(isSlash) message.editReply({content: "Command expired", components:[]});
+                            else m.edit({content: "Command expired", components:[]});
                         })
                     })
 
@@ -393,15 +401,15 @@ check.execute = async (message, args, server, isSlash) =>{
                     
 
                     
-                    m.edit({content: "Command expired", components:[]});
+                    if(isSlash) message.editReply({content: "Command expired", components:[]});
+                    else m.edit({content: "Command expired", components:[]});
                 }
                 
             })
             .catch(e=>{
-                console.log(e);
 
-                
-                m.edit({content: "Command expired", components:[]});
+                if(isSlash) message.editReply({content: "Command expired", components:[]});
+                else m.edit({content: "Command expired", components:[]});
             })
         });
     }

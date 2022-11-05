@@ -224,7 +224,7 @@ module.exports = async (client) =>{
 
       } else if(tsuGroups[group].isDivision && promotion.oldRank === null){
 
-        embed = makeEmbed(`A member has joined/ been accepted!`,`${username} was accepted: \`${hierarchy[promotion.newRank].name}\``, "09CA00", true, "CrazyBot TSU rank logs");
+        embed = makeEmbed(`A new member has joined!`,`${username} was accepted: \`${hierarchy[promotion.newRank].name}\``, "09CA00", true, "CrazyBot TSU rank logs");
         embed.setAuthor({name: "Join",iconURL: pictures.plus});
       }
 
@@ -273,7 +273,7 @@ module.exports = async (client) =>{
       let ping = `<@&${settings[group].role}>`
 
 
-      let embed = makeEmbed(`A member has left/ been kicked!`,`${username} discharged / was exiled`, "C10000", true, "CrazyBot TSU rank logs");
+      let embed = makeEmbed(`A member has left!`,`${username} discharged / was exiled`, "C10000", true, "CrazyBot TSU rank logs");
       if(tsuGroups[group].isBranch)embed = makeEmbed(`There has been a demotion`,`${username} has been demoted`, "660199", true, "CrazyBot TSU rank logs");
       embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`);
       if(tsuGroups[group].isBranch)embed.setAuthor({name: "Demotion",iconURL: pictures.down});

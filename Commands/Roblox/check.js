@@ -11,6 +11,8 @@ const botCache = require("../../caches/botCache");
 const fs = require("fs")
 const checkQueue = require("../../functions/checkQueue");
 const {MessageActionRow, MessageButton} = require("discord.js");
+const { default: axios } = require("axios");
+
 
 function read(string){
     let obj =  fs.readFileSync(string, "utf-8");
@@ -79,7 +81,7 @@ check.set({
     aliases         : [],
     description     : "Shows the user's TSU profile and status",
     usage           : "check <roblox username or ID>",
-    cooldown        : 10,
+    cooldown        : 7,
     unique          : true,
     category        : "roblox",
     worksInDMs      : false,
@@ -157,8 +159,12 @@ check.execute = async (message, args, server, isSlash) =>{
 
                 id = await noblox.getIdFromUsername(args0).catch(e=>id = 0);
                 if(!id){
-                    let robloxUsername = await noblox.getUsernameFromId(args0).catch(e=>id = 0);
-                    if(robloxUsername)id = args0;
+                    let robloxUsername = botCache.usernamesCache[args0] ?? await noblox.getUsernameFromId(args0).catch(e=>id = 0);
+                    if(robloxUsername){
+                        id = args0;
+                        botCache.usernamesCache[id] = robloxUsername;
+                        
+                    }
                 }
                 break;
             case "no args": 

@@ -340,7 +340,7 @@ setInterval(async () => {
 	
 },  2 * 24 * 60 * 60 * 1000);
 
-setTimeout(()=>{updateHistory(client);},10000);
+setTimeout(()=>{updateHistory(client);}, 1000 * 60);
 
 setInterval(async () => {
 	updateHistory(client);
@@ -376,4 +376,4 @@ setInterval(async ()=>{
 	botCache.bgcCache = {};
 	
 
-},1000 * 60 * 20);
+},1000 * 60 * 30);
