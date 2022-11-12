@@ -645,7 +645,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             // STATS
             embed.addField(`Stats`,`${information.friendCount ? "*Friends: " + information.friendCount : ""}${information.followerCount ? "\n*Followers: " + information.followerCount : ""} ${information.followingCount ? "\n*Following: " + information.followingCount : ""} ${information.age ? "\n*Account age: " + information.age + " days": ""} ${ "\n*Groups: " + groups.length } ${hasPublicInventory ? "\n*Basic clothing assets: "+ inventory.length : ""} ${hasPublicInventory ? "\n*Badges: " + badges.length + (current >= limit ? "+" : "") : ""} ${information.isBanned ? "\n*Is terminated: ✅": ""}`,false);
-            if(information?.friendCount > 30){score += 0.25; scoreDeductions.push("User has more than 30 frieds, score +0.25");}
+            if(information?.friendCount > 30){score += 0.25; scoreDeductions.push("User has more than 30 friends, score +0.25");}
             if(information?.followerCount > 30 && information?.followerCount < 200) {score +=0.25; scoreDeductions.push("User has between 30 and 200 followers, score + 0.25");}
             if(information?.age > 730) {score += 0.5; scoreDeductions.push("User's account age is greater than 2 years, score +0.5");} else if(information?.age > 365){score += 0.25; scoreDeductions.push("User's account age is greater than 1 year, score +0.25");}  
             if(notableTSU.length / groups.length >= 0.5){

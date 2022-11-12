@@ -3,13 +3,8 @@ const getRobloxData = require("../../functions/getRobloxData");
 const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
-const TSUgroups = require("../../config/TSUGroups.json");
-const raiderGroups = require("../../[TSU]_Background_Checker/allRaiderGroups.json");
-const getRaiderPower = require("../../[TSU]_Raider_Tracker/calculategamepasses")
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
-const fs = require("fs")
-const checkQueue = require("../../functions/checkQueue");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const { default: axios } = require("axios");
 
@@ -155,8 +150,8 @@ check.execute = async (message, args, server, isSlash) =>{
         let erroredOut = false;
         
         
-        const trelloData = await axios.get(`https://api.trello.com/1/search?query=${cachedUsername}&idBoards=${trelloInfo.blackListBoardId}&modelTypes=cards&key=${trelloInfo.key}&token=${trelloInfo.token}`).catch(e=>erroredOut = true);
-            
+        const trelloData = await axios.get(`https://api.trello.com/1/search?query=${id}&idBoards=${trelloInfo.blackListBoardId}&modelTypes=cards&key=${trelloInfo.key}&token=${trelloInfo.token}`).catch(e=>erroredOut = true);
+        
         if(erroredOut){
             const embed = makeEmbed("There was an error!", `An errored occoured while retreiving data from Trello, try again later`,server);
             pendingMessage?.delete().catch(e=>e);
@@ -171,13 +166,12 @@ check.execute = async (message, args, server, isSlash) =>{
 
         const cards = [];
         for(let card of trelloData?.data?.cards){
-            if(card?.name?.toLowerCase() === cachedUsername.toLowerCase()){
+            if(card?.name?.toLowerCase() === cachedUsername.toLowerCase() || card?.desc.includes(id)){
                 let obj = {};
                 let array = card.desc.split("\n");
                 
                 obj.div = array[0];
                 obj.name = card.name;
-                obj.assigner = array.find(string => string.includes("Assigned"))?.split("*")?.join("");
                 obj.url = card.url;
                 obj.labels = [];
                 card.labels.forEach(label=>{obj.labels.push(label.name)});
@@ -229,7 +223,8 @@ check.execute = async (message, args, server, isSlash) =>{
         }
 
         if(cards.length){
-
+            
+            
             const nextButton = new MessageButton()
             .setCustomId('next')
             .setEmoji("⏩")
@@ -249,12 +244,12 @@ check.execute = async (message, args, server, isSlash) =>{
             let max = cards.length;
 
             embed.setDescription(`Displaying card ${index + 1} out of ${max} \n\n\n ${cards[index].fullDescription}`);
-
+            embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
             embed.setFields(
                 {name: "\u200b", value: "\u200b", inline: false},
                 {name: "Card URL", value: `[CLICK HERE](${cards[index].url})`, inline: true},
                 {name: "list", value: cards[index].list, inline: true},
-                {name: "Labels", value: cards[index].labels.join("**, **"), inline: true},
+                {name: "Labels", value: cards[index].labels.length ? "**" + cards[index].labels.join("**, **") + "**" : "-" , inline: true},
             )
            
 
@@ -288,12 +283,12 @@ check.execute = async (message, args, server, isSlash) =>{
                     }
         
                     embed.setDescription(`Displaying card ${index + 1} out of ${max} \n\n\n ${cards[index].fullDescription}`);
-
+                    embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
                     embed.setFields(
                         {name: "\u200b", value: "\u200b", inline: false},
                         {name: "Card URL", value: `[CLICK HERE](${cards[index].url})`, inline: true},
                         {name: " list", value: cards[index].list, inline: true},
-                        {name: "Labels", value: cards[index].labels.join("**, **"), inline: true},
+                        {name: "Labels", value: cards[index].labels.length ? "**" + cards[index].labels.join("**, **") + "**" : "-", inline: true},
                     );
 
 
@@ -316,12 +311,12 @@ check.execute = async (message, args, server, isSlash) =>{
                     }
                     
                     embed.setDescription(`Displaying card ${index + 1} out of ${max} \n\n\n ${cards[index].fullDescription}`);
-
+                    embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=420&height=420&format=png`);
                     embed.setFields(
                         {name: "\u200b", value: "\u200b", inline: false},
                         {name: "Card URL", value: `[CLICK HERE](${cards[index].url})`, inline: true},
                         {name: "list", value: cards[index].list, inline: true},
-                        {name: "Labels", value: cards[index].labels.join("**, **"), inline: true},
+                        {name: "Labels", value: cards[index].labels.length ? "**" + cards[index].labels.join("**, **") + "**": "-", inline: true},
                     );
 
 
