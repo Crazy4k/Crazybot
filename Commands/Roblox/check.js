@@ -317,7 +317,7 @@ check.execute = async (message, args, server, isSlash) =>{
         embed.addField(`Username:`,`**${cachedUsername}**(${id})`,true);
 
         if(notableTSU.length)embed.addField("The Soviet Union groups:",`${notableTSU.join("\n")}`,false);
-        if(globalGroups.length)embed.addField("Noteable groups",globalGroups.join("\n"),false)
+        if(globalGroups.length)embed.addField("Notable groups",globalGroups.join("\n"),false)
         if(raiderGroups.length)embed.addField("Raider groups:",`${raiderGroups.join("\n")}`,false);
         embed.addField("\u200b","**Inventory**",false)
         embed.addField(`\💰Gamepasses:`,`**V1:** ${ownedGamepassesInV1Array.join(", ")}\n**V2:** ${ownedGamepassesInV2Array.join(", ")}`);

@@ -33,7 +33,7 @@ embed.set({
     isDevOnly : false,
     isSlashCommand :  true,
     isTestOnly : false,
-    usage : ";embed (embed Data in JSON) or /embed (simple way)",
+    usage : "embed (embed Data in JSON) or /embed (simple way)",
     options: [
             {
                 name : "title",

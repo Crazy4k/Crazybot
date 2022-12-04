@@ -27,7 +27,7 @@ avatar.set({
 	],
 });
 
-avatar.execute =  function(message, args, server) {
+avatar.execute =  async function(message, args, server) {
 	//if there was no arguments, send the avatar of the sender
 let authorID;
 let person
@@ -53,6 +53,9 @@ if(message.type === "APPLICATION_COMMAND"){
 		default:
 			if(!person)person = authorID
 			let dude = message.guild.members.cache.get(person);
+			if(!dude) {
+				dude = await message.guild.members.fetch(person);
+			}
 			const image1 = dude.user.displayAvatarURL();
 			message.reply(image1);
 			return true;

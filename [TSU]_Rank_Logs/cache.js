@@ -2,5 +2,6 @@ module.exports = {
     
     ranks: {},
     compare: {},
-    roles: {}
+    roles: {},
+    names : {}
 }

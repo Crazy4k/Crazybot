@@ -118,6 +118,12 @@
         "role": "",
         "name":"testing group",
         "emoji": "968134214933434439"
+    },
+    "names":{
+        "channel" : "1048313538889920595",
+        "role" : "",
+        "name" : "Names",
+        "emoji" :""
     }
 
 }

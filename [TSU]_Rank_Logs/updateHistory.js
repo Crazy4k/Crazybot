@@ -14,6 +14,7 @@ const pictures = {
   down: "https://cdn.discordapp.com/attachments/926507472611582002/968125838308540497/IMG_1544.png",
   plus: "https://cdn.discordapp.com/attachments/926507472611582002/968123881669935104/IMG_1547.png",
   minus: "https://cdn.discordapp.com/attachments/926507472611582002/968123881988710460/IMG_1548.png",
+  name: "https://cdn.discordapp.com/attachments/926507472611582002/1048929399476592730/1489295.png"
 
 }
 
@@ -23,13 +24,15 @@ module.exports = async (client) =>{
   
   const hierarchy = cache.roles;
   const ranks = cache.ranks;
-  const changes = {}
+  const changes = {} //cache that is updated for changes in ranks
+  const names = {};
+  const nameChanges = {};
   
-  
+ 
   for(let groupId in ranks){
     
 
-    for(let role of ranks[groupId]){
+    for(let role of ranks[groupId]){//loop thru and fetch members in every rank in TSU groups (excluding branch LRs)
 
       const players = [];
 
@@ -46,8 +49,8 @@ module.exports = async (client) =>{
       
       
       for(let player of players){
-        
-        usernamesCache[player.userId] = player.username;
+               
+        usernamesCache[player.userId] = names[player.userId] = player.displayName;
 
         if(!changes[groupId])changes[groupId] = {};
         if(!changes[groupId][role])changes[groupId][role] = [];
@@ -55,8 +58,7 @@ module.exports = async (client) =>{
         changes[groupId][role].push(player.userId);
       
       }
-
-
+      
     }
     
     /*{
@@ -70,6 +72,59 @@ module.exports = async (client) =>{
   let promotions = [];
   let demotions = [];
   const oldChanges = cache.compare;
+  
+  if(Object.values(cache.names).length && Object.values(names).length){
+
+    for(let id in cache.names){
+
+      if(cache.names[id] !== names[id]){
+        nameChanges[id] = [cache.names[id],names[id]];
+      }
+
+    }
+
+    for(let id in nameChanges){
+      let channel = client.channels.cache.get(settings["names"].channel);
+      if(!channel)channel = await client.channel.fetch(settings["names"].channel);
+  
+      const userId = id;
+      const oldUsername = nameChanges[id][0];
+      const newUsername = nameChanges[id][1];
+  
+      if(channel){
+          
+        let ping =`<@&${settings["names"].role}>`
+        let embed = makeEmbed(`A name change was detected!`,`${oldUsername} has changed their username to  \`${newUsername}\``, "F7F7F7", true, "CrazyBot TSU rank logs");
+        embed.setAuthor({name: "Name change",iconURL: pictures.name});
+  
+        
+  
+        embed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`);
+        embed.addField("User ID", userId, true);
+        embed.addField("Old username", oldUsername, true);
+        embed.addField("New username", newUsername, true);
+        //embed.addField("\u200b","\u200b");
+        
+       
+  
+        const profileButton = new MessageButton()
+        .setLabel(`${newUsername}'s profile`)
+        .setStyle('LINK')
+        .setEmoji("👤")
+        .setURL(`https://www.roblox.com/users/${userId}/profile`);
+  
+        
+        let row = new MessageActionRow().addComponents(profileButton);
+  
+        channel.send({embeds:[embed], components:[row]}).catch(e=>console.log(e));
+        
+      }
+    }
+  }
+  
+
+  
+  cache.names = names;
 
   if(!Object.values(cache.compare).length)cache.compare = changes;
   else {
@@ -161,6 +216,7 @@ module.exports = async (client) =>{
 
   if(promotions.length)console.log("promotions", promotions);
   if(demotions.length)console.log("demotions", demotions);
+  if(nameChanges.length)console.log("name changes", nameChanges);
 
   
   let thing =  fs.readFileSync("./Private_JSON_files/TSU_careers.json","utf-8");

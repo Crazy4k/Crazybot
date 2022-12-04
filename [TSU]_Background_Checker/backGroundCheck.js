@@ -268,11 +268,16 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
         
                         collector.on('collect', async i => {
                             collector.resetTimer();
+
+                            if(!botCache.bgcCache[id]){
+                                collector.stop();
+                                return;
+                            }
         
                             mainButton.setDisabled(false)
-                            if(botCache.bgcCache[id].friends.description)friendsButton.setDisabled(false);
-                            if(botCache.bgcCache[id].clothes.description)clothesButton.setDisabled(false);
-                            if(botCache.bgcCache[id].badges.description)missingBadgesButton.setDisabled(false);
+                            if(botCache.bgcCache[id]?.friends?.description)friendsButton.setDisabled(false);
+                            if(botCache.bgcCache[id]?.clothes?.description)clothesButton.setDisabled(false);
+                            if(botCache.bgcCache[id]?.badges?.description)missingBadgesButton.setDisabled(false);
                             scoreButton.setDisabled(false);
                             historyButton.setDisabled(false);
                             
