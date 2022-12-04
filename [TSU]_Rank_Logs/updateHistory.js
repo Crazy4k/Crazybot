@@ -50,7 +50,7 @@ module.exports = async (client) =>{
       
       for(let player of players){
                
-        usernamesCache[player.userId] = names[player.userId] = player.displayName;
+        usernamesCache[player.userId] = names[player.userId] = player.username;
 
         if(!changes[groupId])changes[groupId] = {};
         if(!changes[groupId][role])changes[groupId][role] = [];
