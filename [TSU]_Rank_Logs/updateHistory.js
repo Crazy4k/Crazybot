@@ -90,6 +90,8 @@ module.exports = async (client) =>{
       const userId = id;
       const oldUsername = nameChanges[id][0];
       const newUsername = nameChanges[id][1];
+
+      if(!oldUsername || !!newUsername)continue;
   
       if(channel){
           
