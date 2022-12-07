@@ -43,7 +43,7 @@ module.exports = async (client) =>{
   const ranks = cache.ranks;
   const changes = {} //cache that is updated for changes in ranks
   const names = {};
-  const nameChanges = {"941751145":["abbudi4k", "crazy4k"], "140635143":["diji","diju"]};
+  const nameChanges = {};
   
  
   for(let groupId in ranks){
