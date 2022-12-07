@@ -8,6 +8,7 @@ const settings = require("./config.json");
 const fs = require("fs");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const {usernamesCache} = require("../caches/botCache");
+const TSUgroups = require("../config/TSUGroups.json")
 
 const pictures = {
   up: "https://cdn.discordapp.com/attachments/926507472611582002/968125838656671795/IMG_1545.png",
@@ -18,6 +19,22 @@ const pictures = {
 
 }
 
+let jointBranchGroupIds = [];
+let jointDivGroupIds = [];
+
+for(let index in TSUgroups){
+  let group = TSUgroups[index];
+
+  if(group.isBranch){
+
+    jointBranchGroupIds.push(group.id);
+      
+  }else if(group.isDivision){
+
+    jointDivGroupIds.push(group.id);
+      
+  }  
+}
 
 module.exports = async (client) =>{
 
@@ -26,7 +43,7 @@ module.exports = async (client) =>{
   const ranks = cache.ranks;
   const changes = {} //cache that is updated for changes in ranks
   const names = {};
-  const nameChanges = {};
+  const nameChanges = {"941751145":["abbudi4k", "crazy4k"], "140635143":["diji","diju"]};
   
  
   for(let groupId in ranks){
@@ -91,11 +108,36 @@ module.exports = async (client) =>{
       const oldUsername = nameChanges[id][0];
       const newUsername = nameChanges[id][1];
 
-      if(!oldUsername || !!newUsername)continue;
+      if(!oldUsername )continue;
+      if(!newUsername)continue;
   
       if(channel){
-          
-        let ping =`<@&${settings["names"].role}>`
+
+        const groups = await noblox.getGroups(id).catch(e=>console.log(e)); 
+        let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));
+        let divisions   = groups.filter((group)=>jointDivGroupIds.includes(group.Id));
+
+        let string = [];
+        let ranks = [];
+
+        branches.forEach(element => {
+          ranks.push(element.Id);
+          string.push(`${TSUgroups[element.Id].name} **${element.Role}**`)
+        });
+
+        divisions.forEach(element => {
+          ranks.push(element.Id);
+          string.push(`${TSUgroups[element.Id].name} **${element.Role}**`)
+        });
+
+
+        let pings = [];
+        ranks.forEach(element =>{
+          pings.push(settings[element].role);
+        });
+        pings = pings.length? `<@&${pings.join("> <@&")}>` : "no ping";
+
+
         let embed = makeEmbed(`A name change was detected!`,`${oldUsername} has changed their username to  \`${newUsername}\``, "F7F7F7", true, "CrazyBot TSU rank logs");
         embed.setAuthor({name: "Name change",iconURL: pictures.name});
   
@@ -105,7 +147,8 @@ module.exports = async (client) =>{
         embed.addField("User ID", userId, true);
         embed.addField("Old username", oldUsername, true);
         embed.addField("New username", newUsername, true);
-        //embed.addField("\u200b","\u200b");
+        embed.addField("Ranks", string.join(",\n"), true);
+        
         
        
   
@@ -118,7 +161,7 @@ module.exports = async (client) =>{
         
         let row = new MessageActionRow().addComponents(profileButton);
   
-        channel.send({embeds:[embed], components:[row]}).catch(e=>console.log(e));
+        channel.send({embeds:[embed], components:[row], content: pings}).catch(e=>console.log(e));
         
       }
     }
