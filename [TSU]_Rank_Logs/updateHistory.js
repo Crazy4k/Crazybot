@@ -117,6 +117,8 @@ module.exports = async (client) =>{
         let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));
         let divisions   = groups.filter((group)=>jointDivGroupIds.includes(group.Id));
 
+        branches = branches.filter(group =>  TSUgroups[group.Id].highRanks.includes(group.RoleId) || TSUgroups[group.Id].HICOMRanks.includes(group.RoleId)|| TSUgroups[group.Id].managementAndStaff.includes(group.RoleId));
+        
         let string = [];
         let ranks = [];
 
