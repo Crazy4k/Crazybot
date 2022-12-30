@@ -13,7 +13,7 @@ const Command = require("../../Classes/Command");
 
 const checkUseres = (message, arg) => {
     if(arg) {
-        if(!isNaN(parseInt(arg)) && arg.length >= 17){
+        if(!isNaN(parseInt(arg)) && arg.length >= 16){
             if(message.guild.members.cache.get(arg)) {
                 return arg;
             } else return "not valid";
@@ -21,8 +21,9 @@ const checkUseres = (message, arg) => {
         } else if(arg === "me") {			
 			return message.author.id;
 		}else if(message.mentions.members.first()){
-            let id = arg.slice(3, arg.length-1);
+            let id = arg.slice(2, arg.length-1);
             if(id.startsWith("!"))id = arg.slice(1, arg.length-1);
+            
             let thing = message.mentions.members.get(id);
             if(thing)return thing.id;
             else return "not valid";
@@ -83,6 +84,7 @@ pointsbatchAdd.execute =async function(message, args, server) {
         //2+ = reason   
         const batchArray = args.join(" "). split("|");
         
+        
         const embed = makeEmbed("**Batch results**","",server,true);
         let edited = {}
 
@@ -102,7 +104,9 @@ pointsbatchAdd.execute =async function(message, args, server) {
                 if(smolArgs[i] === '')smolArgs.splice(i,1);  
             }
             
+           
             const persona = checkUseres(message,smolArgs[0]); 
+           
             
             const pointsToGive = smolArgs[1];
             let reason = smolArgs.splice(2).join(" ");

@@ -21,7 +21,7 @@ const checkUseres = (message, arg) => {
         } else if(arg === "me") {			
 			return message.author.id;
 		}else if(message.mentions.members.first()){
-            let id = arg.slice(3, arg.length-1);
+            let id = arg.slice(2n, arg.length-1);
             if(id.startsWith("!"))id = arg.slice(1, arg.length-1);
             let thing = message.mentions.members.get(id);
             if(thing)return thing.id;

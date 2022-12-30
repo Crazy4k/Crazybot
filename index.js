@@ -338,7 +338,7 @@ getRanksForLogs();
 setInterval(async () => {
 	getRanksForLogs();
 	
-},  2 * 24 * 60 * 60 * 1000);
+},   6 * 60 * 60 * 1000);
 
 setTimeout(()=>{updateHistory(client);}, 1000 * 60);
 
