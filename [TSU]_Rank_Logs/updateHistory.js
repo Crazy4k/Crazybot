@@ -102,7 +102,7 @@ module.exports = async (client) =>{
 
     for(let id in nameChanges){
       let channel = client.channels.cache.get(settings["names"].channel);
-      if(!channel)channel = await client.channel.fetch(settings["names"].channel);
+      if(!channel)channel = await client.channels.fetch(settings["names"].channel);
   
       const userId = id;
       const oldUsername = nameChanges[id][0];
