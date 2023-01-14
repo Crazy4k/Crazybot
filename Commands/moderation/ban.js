@@ -87,7 +87,7 @@ ban.execute = function(message, args, server, isSlash)  {
 			return false;
 			break;
 		default:
-			const target = message.guild.members.cache.get(id);
+			const target = message.guild.members.fetch(id);
 
 			if(target.permissions.has(this.whiteList)){
 				const embed1 = makeEmbed('Could not do this action on a server moderator',``, colors.failRed);

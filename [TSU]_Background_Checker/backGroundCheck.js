@@ -56,7 +56,7 @@ let trelloInfo = {
     kgbTrelloId: "60239dcea166e18eca0f89ea"
 
 }
-let loggingChannelId = "930527323260866671"
+let loggingChannelId = "927532313510821888"
 
 
 let jointRaiderGroups = [];
@@ -260,8 +260,33 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                         
                         pendingMessage?.delete().catch(e=>e);
         
-                        if(isSlash)await message?.editReply({embeds: [botCache.bgcCache[id].main], components: [row, row2]});
-                        let newMsg = !isSlash ? await message.reply({embeds:[botCache.bgcCache[id].main], components: [row, row2] }) : await message.fetchReply();
+                       
+                            let newMsg = null;
+                            let abort = false;
+            
+                            if(isSlash){
+
+                                await message?.editReply({embeds: [embed], components: [row, row2]}).catch(e=>{abort = true});
+                                newMsg = await message.fetchReply().catch(e=>{abort = true});
+
+                            } else {
+
+                                newMsg = await message.reply({embeds:[embed], components: [row, row2], failIfNotExists : false}).catch(e=>{
+                                    abort = true;
+                                    
+                                });
+                            }  
+
+                            
+
+                            if(abort || !newMsg){
+
+                                const embed = makeEmbed("Command failed", "There was an error while attempting to reply to the command.",server);
+                                sendAndDelete(message, embed, server);
+                                pendingMessage?.delete().catch(e=>e);
+                                return;
+
+                            }
                         
                         
                         const collector = newMsg.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   4 * 60 * 1000 });
@@ -849,9 +874,34 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     
                     
                     pendingMessage?.delete().catch(e=>e);
+
+                    let newMsg = null;
+                    let abort = false;
     
-                    if(isSlash)await message?.editReply({embeds: [embed], components: [row, row2]});
-                    let newMsg = !isSlash ? await message.reply({embeds:[embed], components: [row, row2]}) : await message.fetchReply();
+                    if(isSlash){
+
+                        await message?.editReply({embeds: [embed], components: [row, row2]}).catch(e=>{abort = true});
+                        newMsg = await message.fetchReply().catch(e=>{abort = true});
+
+                    } else {
+
+                        newMsg = await message.reply({embeds:[embed], components: [row, row2], failIfNotExists : false}).catch(e=>{
+                            abort = true;
+                            
+                        });
+                    }  
+
+                    
+
+                   if(abort || !newMsg){
+
+                    const embed = makeEmbed("Command failed", "There was an error while attempting to reply to the command.",server);
+                    sendAndDelete(message, embed, server);
+                    pendingMessage?.delete().catch(e=>e);
+                    return;
+
+                   }
+                   
                     
                     
                     const collector = newMsg.createMessageComponentCollector({ filter: button =>  button.user.id === author.id, time:   4 * 60 * 1000 });

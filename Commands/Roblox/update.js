@@ -50,12 +50,10 @@ update.execute = async function(message, args, server, isSlash) {
         case "not valid":
         case "everyone":
         case "not useable":	
-
         
-            const embed1 = makeEmbed('invalid input',this.usage, server);
-            sendAndDelete(message,embed1, server);
+            sendAndDelete(message,makeEmbed('invalid input',this.usage, server), server);
             return false;
-            break;
+
         case "no args": 
             userId = authorId;
         default:             

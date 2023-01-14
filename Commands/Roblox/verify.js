@@ -66,6 +66,7 @@ check.set({
     category        : "roblox",
     worksInDMs      : true,
     isDevOnly       : false,
+    requiredPerms   : "MANAGE_ROLES",
     isSlashCommand  : true,
     
 });

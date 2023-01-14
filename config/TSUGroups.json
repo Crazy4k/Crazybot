@@ -300,5 +300,18 @@
         "ImportantRole": 0,
         "hasCuffs"  : true,
         "id"        : 4291835
+    },
+    "16467057":{
+        "name"      : "Border troops",
+        "link"      : "https://www.roblox.com/groups/16467057/Soviet-order-roops#!/about",
+        "isBranch"  : false,
+        "isDivision": true,
+        "isRaider"  : false,
+        "ImportantRole": 0,
+        "hasCuffs"  : true,
+        "highRanks" : [93594678, 93594680, 93594681],
+        "HICOMRanks": [93594691,93594700,93594701],
+        "managementAndStaff": [93594723, 92090384],
+        "id"        : 16467057
     }
 }

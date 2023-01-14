@@ -37,12 +37,24 @@ bgcheck.set({
 
 bgcheck.execute = async (message, args, server, isSlash, ) =>{
 
-    if(isSlash)await message.deferReply().catch(e=>console.log(e));
+    let sentMessage;
+    let abort = false;
+
+    if(isSlash){
+
+        await message.deferReply().catch(e=>console.log(e));
+
+    } else {
+
+        sentMessage = await message.reply("CrazyBot is thinking...").catch(e=>{abort = true});
+
+    }
+    
 
     let isAuthor = false;
     
     const date1 = Date.now()
-
+    
     let res;
     let status;
     let id;
@@ -68,8 +80,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
 
     
     
-    let sentMessage;
-    if(!isSlash) sentMessage = await message.reply("CrazyBot is thinking...");
+    if(abort)return false;
 
 
     await checkQueue()

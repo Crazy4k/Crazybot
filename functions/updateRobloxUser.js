@@ -16,8 +16,7 @@ const botCache = require("../caches/botCache")
  */
 
 module.exports = async (message, userId, server, isCommandExecution, forceUnverified, ignoreOtherRoles) =>{
-    return new Promise(async(resolve, reject) => {
-
+    
     let isVerified = true;
     
     let robloxBody;
@@ -38,17 +37,22 @@ module.exports = async (message, userId, server, isCommandExecution, forceUnveri
 
         if(server.verifiedRole){
             
-            let user = message.guild.members.cache.get(userId);
+            let user = await message.guild.members.fetch(userId).catch(e=>console.log("Error: ", e));
             let role = message.guild.roles.cache.get(server.verifiedRole);
             if(role){
-                if(!user.roles.cache.get(server.verifiedRole)){
+
+                let res = user.roles.cache.get(server.verifiedRole);
+                if(!res){
                     
-                    await user.roles.add(server.verifiedRole,"auto verified role")
+                    user.roles.add(server.verifiedRole,"auto verified role")
+                    .then(res=>{
+                        roleStatus = true;
+                        extraInfo.push("Add verified role.");
+                    })
                     .catch(err=> {
                         roleStatus = false;
                         extraInfo.push("Couldn't add the role.");
                     });
-                    if(user.roles.cache.get(server.verifiedRole)) roleStatus = true;
                 } else {
                     roleStatus = true;
                 }
@@ -56,23 +60,34 @@ module.exports = async (message, userId, server, isCommandExecution, forceUnveri
                 extraInfo.push("Verified role not found in this server");
             }
             
-        } else extraInfo.push("Verified role isn't enabled in this server.");
-        if(server.forceRobloxNames){
-            let user = message.guild.members.cache.get(userId);
+        } else {
+            extraInfo.push("Verified role isn't enabled in this server.");
+        }
 
-            await user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
-            .catch(err=> {
-                nicknameStatus = false;
-                extraInfo.push("Couldn't update the nickname.");
-            });
+        if(server.forceRobloxNames){
+            let user = await message.guild.members.fetch(userId).catch(e=>console.log("Error: ", e));
+
+            if(user){
+                await user.setNickname(robloxBody.robloxUsername,"auto roblox nickname change")
+                .catch(err=> {
+                    nicknameStatus = false;
+                    extraInfo.push("Couldn't update the nickname.");
+                });
+            }
+
             if(user.nickname === robloxBody.robloxUsername){
                 nicknameStatus = true;
             } else nicknameStatus = false;
-        } else extraInfo.push("Roblox nicknames aren't enabled in this server.");
+
+        } else {
+            
+            extraInfo.push("Roblox nicknames aren't enabled in this server.");
+        }
+
         if(server.robloxBinds && !ignoreOtherRoles){
             
             let robloxGroups = await noblox.getGroups(parseInt(robloxBody.robloxId)).catch(err=>extraInfo.push("Failed to fetch groups"));
-            let user = message.guild.members.cache.get(userId);
+            let user = await message.guild.members.fetch(userId);
             if(robloxGroups && user){
 
                 let discordRolesToadd = [];
@@ -135,15 +150,20 @@ module.exports = async (message, userId, server, isCommandExecution, forceUnveri
         let nicknameStatus = false;
         let extraInfo = [];
 
-        let user = message.guild.members.cache.get(userId);
-        let role = message.guild.roles.cache.get(server.verifiedRole) ?? "";
+        let user = await message.guild.members.fetch(userId).catch(e=>console.log("Error: ", e));
+        let role = message.guild.roles.fetch(server.verifiedRole) ?? "";
 
         
 
         if(server.verifiedRole){
             
             if(role){
-                if(user.roles.cache.get(server.verifiedRole)){
+                let res = user.roles.cache.get(server.verifiedRole)
+
+                
+                
+
+                if(res){
                 
                     user.roles.remove(server.verifiedRole,"auto verified role")
                     .then(yes=> roleStatus = true)
@@ -152,7 +172,7 @@ module.exports = async (message, userId, server, isCommandExecution, forceUnveri
                         roleStatus = false;
                         extraInfo.push("Couldn't remove the role.");
                     });
-                    if(!user.roles.cache.get(server.verifiedRole))roleStatus = true;
+                    if(!res)roleStatus = true;
                 } else {
                     roleStatus = true;
                 }
@@ -186,7 +206,7 @@ module.exports = async (message, userId, server, isCommandExecution, forceUnveri
     }
     
    
-    return resolve(embed);
-});
+    return embed;
+
 
 };
