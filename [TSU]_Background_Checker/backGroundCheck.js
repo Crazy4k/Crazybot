@@ -266,12 +266,12 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             
                             if(isSlash){
 
-                                await message?.editReply({embeds: [embed], components: [row, row2]}).catch(e=>{abort = true});
+                                await message?.editReply({embeds: [botCache.bgcCache[id].main], components: [row, row2]}).catch(e=>{abort = true});
                                 newMsg = await message.fetchReply().catch(e=>{abort = true});
 
                             } else {
 
-                                newMsg = await message.reply({embeds:[embed], components: [row, row2], failIfNotExists : false}).catch(e=>{
+                                newMsg = await message.reply({embeds:[botCache.bgcCache[id].main], components: [row, row2], failIfNotExists : false}).catch(e=>{
                                     abort = true;
                                     
                                 });
