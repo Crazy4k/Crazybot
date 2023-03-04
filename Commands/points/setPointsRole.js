@@ -24,7 +24,7 @@ pointsRole.set({
 pointsRole.execute = async function(message, args, server, isSlash) { 
 
     
-    sendAndDelete(message, "This command has been moved to the `panel` command", server);         
+    sendAndDelete(message, `This command has been moved to the \`${server.prefix}panel\` command`, server);         
 }
 
-module.exports =pointsRole;
+module.exports = pointsRole;

@@ -84,7 +84,7 @@ if(isSlash){
 }
 if(!reason) reason = "`No reason given.`";
 
-if(message.guild.members.cache.get(author.id).permissions.has( Permissions.FLAGS["ADMINISTRATOR"] ) || message.guild.members.cache.get(author.id).roles.cache.has(servery.whiteListedRole)){
+if(message.guild.members.cache.get(author.id).permissions.has( Permissions.FLAGS["ADMINISTRATOR"] ) || message.guild.members.cache.get(author.id)?.roles?.cache.has(servery.whiteListedRole)){
 
     //0 = tag
     //1 = number

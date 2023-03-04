@@ -103,7 +103,7 @@ client.on('messageCreate', async (message) => {
 				guildsCache[message.guildId] = data;
 			} catch(error){
 				console.log(error);
-				console.log("ERROR IN LINE 257")
+				console.log("ERROR IN LINE 107")
 			}finally{
 				console.log("FETCHED FROM DATABASE");
 				mongoose.connection.close();
@@ -260,10 +260,10 @@ timer.addEventListener("minutesUpdated",()=>{
 	
 });
 
-
+if(config.bot_info.modules['[TSU]_Raider_Tracker']){
 
 // TSU raider tracker
-/*
+
 const getMembers = require("./[TSU]_Raider_Tracker/getMembers");
 const trackRaiders = require("./[TSU]_Raider_Tracker/getOnlineRaiders");
 
@@ -325,27 +325,35 @@ function read(string){
 
 	
 })()
-*/
 
+console.log("[TSU]_Raider_Tracker module activated.")
+
+}
 
 //TSU rank logs
+if(config.bot_info.modules['[TSU]_Rank_Logs']){
 
-const updateHistory = require("./[TSU]_Rank_Logs/updateHistory");
-const getRanksForLogs = require("./[TSU]_Rank_Logs/getRanks");
-
-getRanksForLogs();
-
-setInterval(async () => {
+	const updateHistory = require("./[TSU]_Rank_Logs/updateHistory");
+	const getRanksForLogs = require("./[TSU]_Rank_Logs/getRanks");
+	
 	getRanksForLogs();
 	
-},   6 * 60 * 60 * 1000);
-
-setTimeout(()=>{updateHistory(client);}, 1000 * 60);
-
-setInterval(async () => {
-	updateHistory(client);
+	setInterval(async () => {
+		getRanksForLogs();
+		
+	},   6 * 60 * 60 * 1000);
 	
-}, 7 * 60 * 1000);
+	setTimeout(()=>{updateHistory(client);}, 1000 * 60);
+	
+	setInterval(async () => {
+		updateHistory(client);
+		
+	}, 7 * 60 * 1000);
+
+	console.log("[TSU]_Rank_Logs module activated.");
+}
+
+
 
 let iter = 0;
 

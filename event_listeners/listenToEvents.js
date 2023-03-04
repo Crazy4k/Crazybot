@@ -59,7 +59,7 @@ module.exports = (client, mongo) => {
         errorHandler(client);
 
         if(client.user.id === "869954815982190632" || client.user.id === "799752849163550721"){
-            console.log("Background checker folder detected!")
+            
             const updateRaiderHistory = require("../[TSU]_Background_Checker/updateRaiderHistory");
             const cache = require("../[TSU]_Background_Checker/cache");
             const raiderGroups = require("../[TSU]_Background_Checker/allRaiderGroups.json");
@@ -78,17 +78,17 @@ module.exports = (client, mongo) => {
 
             })()
             
-
-        
             setInterval(async () => {
 
                 updateRaiderHistory();
                 getbadges();
                 
             }, 24 * 60 * 60 * 1000);
+
+            console.log("[TSU]_Background_Checker module activated.")
         }
 
-
+        
 
     });
 

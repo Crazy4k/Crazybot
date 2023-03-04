@@ -12,6 +12,11 @@
       "deleteFailedCommands": false,
       "deleteFailedMessagedAfter": 10000
 
+    },
+    "modules":{
+      "TSU_Background_Checker":true,
+      "[TSU]_Raider_Tracker": false,
+      "[TSU]_Rank_Logs": true
     }
   }
 }
