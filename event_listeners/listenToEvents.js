@@ -21,7 +21,9 @@ const roleUpdate		= require("../event_listeners/roleUpdate");
 
 const errorHandler      = require("../functions/error_handler");
 const botCache = require("../caches/botCache");
-let config = require("../config/config.json")
+let config = require("../config/config.json");
+
+const fs = require("fs");
 
 
 module.exports = (client, mongo) => {
@@ -58,12 +60,13 @@ module.exports = (client, mongo) => {
     
         errorHandler(client);
 
-        if(client.user.id === "869954815982190632" || client.user.id === "799752849163550721"){
+        //activate if folder exists
+        if(fs.existsSync("../[TSU]_Background_Checker/updateRaiderHistory")){
             
-            const updateRaiderHistory = require("../[TSU]_Background_Checker/updateRaiderHistory");
-            const cache = require("../[TSU]_Background_Checker/cache");
-            const raiderGroups = require("../[TSU]_Background_Checker/allRaiderGroups.json");
-            const getbadges = require("../[TSU]_Background_Checker/getbadges");
+            const updateRaiderHistory = require("../[TSU]_Background_Checker s/updateRaiderHistory");
+            const cache = require("../[TSU]_Background_Checker s/cache");
+            const raiderGroups = require("../[TSU]_Background_Checker s/allRaiderGroups.json");
+            const getbadges = require("../[TSU]_Background_Checker s/getbadges");
 
             let groupsArray = [];
             for(let i in raiderGroups){

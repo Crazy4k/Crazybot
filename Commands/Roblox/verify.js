@@ -300,7 +300,7 @@ check.execute = async (message, args, server, isSlash) =>{
 
                                 let altWords = ["verify", authorId, "and", `${usernameData.data.Id}`, "close"];
                                 
-                                let sentenceEmbed = makeEmbed("Verify that's you", `Please enter one of the following phrase into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\`\n\n **OR** \n\n \`${altWords.join(" ")}\``, server)
+                                let sentenceEmbed = makeEmbed("Verify that's you", `Please enter one of the following phrases into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\`\n\n **OR** \n\n \`${altWords.join(" ")}\``, server)
                                 sentenceEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${usernameData.data.Id}&width=420&height=420&format=png`);
 
                                 sentenceEmbed.setImage("https://cdn.discordapp.com/attachments/926507472611582002/1034178689769943121/easterEgg.png");
@@ -314,68 +314,76 @@ check.execute = async (message, args, server, isSlash) =>{
                                         
                                         m.edit({components:[]});
 
-                                        let userInfo = await axios.get(`https://users.roblox.com/v1/users/${usernameData.data?.Id}`).catch(e=>e);
+                                        if(a.customId === "true"){
+
+                                            let userInfo = await axios.get(`https://users.roblox.com/v1/users/${usernameData.data?.Id}`).catch(e=>e);
                                         
 
-                                        if(userInfo?.data?.description){
-                                            
-                                            let description = userInfo.data.description.split(/\n/).join(" ").split(/ +/);
-                                            
-                                            let index = 0;
-                                            let matches = [];
-                                            for(let word of description){
-                                                if(word === words[index]){
-                                                    matches.push(words[index]);
-                                                    index++
-                                                } else if (word === altWords[index]){
-                                                    matches.push(altWords[index]);
-                                                    index++
-                                                }
-                                            }
-                                            if(words.join("-") === matches.join("-") || altWords.join("-" === matches.join("-"))){
-
-                                                robloxVerificationCache[authorId] = {robloxId : usernameData.data.Id, cachedUsername : usernameData.data.Username};
+                                            if(userInfo?.data?.description){
                                                 
-                                                await mongo().then(async (mongoose) =>{
-
-                                                    try{ 
-                                                            
-                                                        await verificationSchema.findOneAndUpdate({_id: authorId},{
-                                                            
-                                                            robloxId :robloxVerificationCache[authorId].robloxId,
-                                                            cachedUsername: robloxVerificationCache[authorId].cachedUsername,
-                                                            firstVerified: Date.now()
-                                                            
-                                                        },{upsert: true});
-
-                                                        let successEmbed = makeEmbed("Success ✅",`Your Roblox and Discord accounts have been connected successfully. \n If you want to remove/update your data, redo the command.`,server)
-                                                        message.channel.send({embeds:[successEmbed]});
-                                                        updateRobloxUser(message, authorId, server, false);
-                                                        
-                                                    } catch(error){
-
-                                                        console.log(error);
-                                                        let failed = makeEmbed("Error!",`And error happened while trying to connect to the database. Please try again.`,server)
-                                                        message.channel.send({embeds:[failed]});
-                                                        
-                                                    }finally{
-                                                        console.log("WROTE TOO DATABASE");
-                                                        mongoose.connection.close();
+                                                let description = userInfo.data.description.split(/\n/).join(" ").split(/ +/);
+                                                
+                                                let index = 0;
+                                                let matches = [];
+                                                console.log("matches", matches);
+                                                
+                                                for(let word of description){
+                                                    if(word === words[index]){
+                                                        matches.push(words[index]);
+                                                        index++
+                                                    } else if (word === altWords[index]){
+                                                        matches.push(altWords[index]);
+                                                        index++
                                                     }
-                                                });
+                                                }
+                                                console.log("bool", words.join("-") === matches.join("-") || altWords.join("-") === matches.join("-"));
+                                                if(words.join("-") === matches.join("-") || altWords.join("-") === matches.join("-")){
+
+                                                    robloxVerificationCache[authorId] = {robloxId : usernameData.data.Id, cachedUsername : usernameData.data.Username};
+                                                    
+                                                    await mongo().then(async (mongoose) =>{
+
+                                                        try{ 
+                                                                
+                                                            await verificationSchema.findOneAndUpdate({_id: authorId},{
+                                                                
+                                                                robloxId :robloxVerificationCache[authorId].robloxId,
+                                                                cachedUsername: robloxVerificationCache[authorId].cachedUsername,
+                                                                firstVerified: Date.now()
+                                                                
+                                                            },{upsert: true});
+
+                                                            let successEmbed = makeEmbed("Success ✅",`Your Roblox and Discord accounts have been connected successfully. \n If you want to remove/update your data, redo the command.`,server)
+                                                            message.channel.send({embeds:[successEmbed]});
+                                                            updateRobloxUser(message, authorId, server, false);
+                                                            
+                                                        } catch(error){
+
+                                                            console.log(error);
+                                                            let failed = makeEmbed("Error!",`And error happened while trying to connect to the database. Please try again.`,server)
+                                                            message.channel.send({embeds:[failed]});
+                                                            
+                                                        }finally{
+                                                            console.log("WROTE TOO DATABASE");
+                                                            mongoose.connection.close();
+                                                        }
+                                                    });
+                                                } else {
+                                                    let nope = makeEmbed("Description does not match!",`The description/about section of that user does not match the provided phrase. Make sure the words are in the correct order and that there is at least 1 space between each word.`,server)
+                                                    message.channel.send({embeds:[nope]});
+                                                }
+                                            
+
                                             } else {
-                                                let nope = makeEmbed("Description does not match!",`The description/about section of that user does not match the provided phrase. Make sure the words are in the correct order and that there is at least 1 space between each word.`,server)
-                                                message.channel.send({embeds:[nope]});
+
+                                                message.channel.send({embeds:[makeEmbed("Command failed","An error occurred while getting data from roblox or your profile was empty!", server, false)]});
+
+                                                
+                                                if(isSlash) message.editReply({content: "Command expired", components:[]});
+                                                else m.edit({content: "Command expired", components:[]});
                                             }
-                                            
-
                                         } else {
-
-                                            message.channel.send({embeds:[makeEmbed("Command failed","An error occurred while getting data from roblox or your profile was empty!", server, false)]});
-
-                                            
-                                            if(isSlash) message.editReply({content: "Command expired", components:[]});
-                                            else m.edit({content: "Command expired", components:[]});
+                                            m.channel.send("Command cancelled.");
                                         }
 
                                     })

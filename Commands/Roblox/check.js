@@ -4,8 +4,7 @@ const makeEmbed = require("../../functions/embed");
 const checkUser = require("../../functions/checkUser");
 const noblox = require("noblox.js");
 const TSUgroups = require("../../config/TSUGroups.json");
-const raiderGroups = require("../../[TSU]_Background_Checker/allRaiderGroups.json");
-const getRaiderPower = require("../../[TSU]_Raider_Tracker/calculategamepasses")
+const getRaiderPower = require("../../[TSU]_Raider_Tracker/calculategamepasses");
 const sendAndDelete = require("../../functions/sendAndDelete");
 const botCache = require("../../caches/botCache");
 const fs = require("fs")
@@ -13,6 +12,12 @@ const checkQueue = require("../../functions/checkQueue");
 const {MessageActionRow, MessageButton} = require("discord.js");
 const { default: axios } = require("axios");
 
+
+let raiderGroups = {};
+
+if(fs.existsSync("../../[TSU]_Background_Checker/allRaiderGroups.json")){
+    raiderGroups = require("../../[TSU]_Background_Checker/allRaiderGroups.json");
+}
 
 function read(string){
     let obj =  fs.readFileSync(string, "utf-8");

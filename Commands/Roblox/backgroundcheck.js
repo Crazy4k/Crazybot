@@ -2,6 +2,7 @@ const Command = require("../../Classes/Command");
 const checkUser = require("../../functions/checkUser");
 const botCache = require("../../caches/botCache");
 const checkQueue = require("../../functions/checkQueue");
+const fs = require("fs");
 
 
 //queue
@@ -49,6 +50,13 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
         sentMessage = await message.reply("CrazyBot is thinking...").catch(e=>{abort = true});
 
     }
+
+    if(fs.existsSync("../../[TSU]_Background_Checker")){
+        const embed = makeEmbed('Cannot do this command',"This bot cannot do this command because the files needed are missing or incorrectly named.", server);
+        pendingMessage?.delete().catch(e=>e);
+        sendAndDelete(message, embed, server)
+        return false;
+    }
     
 
     let isAuthor = false;
@@ -92,7 +100,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     
     try {
 
-        await require("../../[TSU]_Background_Checker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
+        await require("../../[TSU]_Background_Checker s/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
     } catch (error) {
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;
