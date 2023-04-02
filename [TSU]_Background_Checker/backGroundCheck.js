@@ -184,7 +184,11 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                     if(!id){
                         
                         let robloxUsername = await noblox.getUsernameFromId(username).catch(e=>id = 0);
-                        if(robloxUsername)username = args0;
+                        if(robloxUsername){
+                            botCache.usernamesCache[username] = robloxUsername;
+                            username = args0;
+                            
+                        }
                     }
                     break;
                 }
@@ -221,6 +225,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
             let {cachedUsername, robloxId} = res;
             if(!id)id = robloxId;
             if(!cachedUsername) cachedUsername = args0;
+            if(`${cachedUsername}` === `${id}`)cachedUsername = botCache.usernamesCache[id];
     
             //info to be used for the archive. if user isnt verifed, abort
             let loggingInfo = {};

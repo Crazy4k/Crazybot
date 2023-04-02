@@ -100,7 +100,7 @@ bgcheck.execute = async (message, args, server, isSlash, ) =>{
     
     try {
 
-        await require("../../[TSU]_Background_Checker s/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
+        await require("../../[TSU]_Background_Checker/backGroundCheck")(message, args, server, isSlash, res, status, id, username, args0, author, isAuthor, sentMessage, queueTime);
     } catch (error) {
         setTimeout(()=>{
             botCache.isOnRobloxCooldown = false;

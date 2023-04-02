@@ -63,10 +63,10 @@ module.exports = (client, mongo) => {
         //activate if folder exists
         if(fs.existsSync("../[TSU]_Background_Checker/updateRaiderHistory")){
             
-            const updateRaiderHistory = require("../[TSU]_Background_Checker s/updateRaiderHistory");
-            const cache = require("../[TSU]_Background_Checker s/cache");
-            const raiderGroups = require("../[TSU]_Background_Checker s/allRaiderGroups.json");
-            const getbadges = require("../[TSU]_Background_Checker s/getbadges");
+            const updateRaiderHistory = require("../[TSU]_Background_Checker/updateRaiderHistory");
+            const cache = require("../[TSU]_Background_Checker/cache");
+            const raiderGroups = require("../[TSU]_Background_Checker/allRaiderGroups.json");
+            const getbadges = require("../[TSU]_Background_Checker/getbadges");
 
             let groupsArray = [];
             for(let i in raiderGroups){

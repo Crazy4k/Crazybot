@@ -111,6 +111,7 @@ check.set({
 
 check.execute = async (message, args, server, isSlash) =>{
 
+    //bruh i have no clue what these variables are for and if i remove one, everything breaks 😭
     let isAuthor = false;
     
     let res;
@@ -188,7 +189,11 @@ check.execute = async (message, args, server, isSlash) =>{
                     id = await noblox.getIdFromUsername(username).catch(e=>id = 0);
                     if(!id){
                         let robloxUsername = await noblox.getUsernameFromId(username).catch(e=>id = 0);
-                        if(robloxUsername)username = args0;
+                        if(robloxUsername){
+                            botCache.usernamesCache[username] = robloxUsername;
+                            username = args0;
+                            
+                        }
                     }
                     break;
                 }
@@ -217,6 +222,7 @@ check.execute = async (message, args, server, isSlash) =>{
         let {cachedUsername, robloxId} = res;
         if(!id)id = robloxId;
         if(!cachedUsername) cachedUsername = args0;
+        if(`${cachedUsername}` === `${id}`)cachedUsername = botCache.usernamesCache[id];
         //GET GROUPS
         const groups = await noblox.getGroups(id).catch(e=>console.log(e));
         let branches    = groups.filter((group)=>jointBranchGroupIds.includes(group.Id));

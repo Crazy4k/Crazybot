@@ -265,19 +265,26 @@ check.execute = async (message, args, server, isSlash) =>{
                 if(isSlash) message.editReply({components:[]});
                 else m.edit({components:[]});
 
+                let usernameData = await axios.post('https://users.roblox.com/v1/usernames/users', {
+                    usernames: [a.first().content],
+                    excludeBannedUsers: true
+                  }, {
+                    headers: {
+                      'accept': 'text/json',
+                      'Content-Type': 'text/json'
+                    }
+                  })
                 
+                const data = usernameData.data.data[0];
                 
-                let usernameData = await axios.get("https://api.roblox.com/users/get-by-username?username=" + a.first().content)
-                
-                
-                
-                if(usernameData.data?.Id){
+                if(data){
 
                     let infoEmbed = makeEmbed("Is this you?","",server, false);
-                    infoEmbed.addField("Username",usernameData.data.Username, true);
-                    infoEmbed.addField("Id",""+usernameData.data.Id, true);
-                    infoEmbed.addField("Profile link",`[CLICK HERE](https://www.roblox.com/users/${usernameData.data.Id}/profile)`,false);
-                    infoEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${usernameData.data.Id}&width=420&height=420&format=png`);
+                    infoEmbed.addField("Username", data.requestedUsername, true);
+                    infoEmbed.addField("Display name",`${data.displayName}`, true);
+                    infoEmbed.addField("Id",`${data.id}`, true);
+                    infoEmbed.addField("Profile link",`[CLICK HERE](https://www.roblox.com/users/${data.id}/profile)`,false);
+                    infoEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${data.id}&width=420&height=420&format=png`);
 
                     message.channel.send({embeds:[infoEmbed], components: [booleanRow, listeningRow]})
                     .then(m=>{
@@ -298,10 +305,10 @@ check.execute = async (message, args, server, isSlash) =>{
                                     
                                 }
 
-                                let altWords = ["verify", authorId, "and", `${usernameData.data.Id}`, "close"];
+                                let altWords = ["verify", authorId, "and", `${data.id}`, "close"];
                                 
                                 let sentenceEmbed = makeEmbed("Verify that's you", `Please enter one of the following phrases into your "About" section in your Roblox profile: \n\n \`${words.join(" ")}\`\n\n **OR** \n\n \`${altWords.join(" ")}\``, server)
-                                sentenceEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${usernameData.data.Id}&width=420&height=420&format=png`);
+                                sentenceEmbed.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${data.id}&width=420&height=420&format=png`);
 
                                 sentenceEmbed.setImage("https://cdn.discordapp.com/attachments/926507472611582002/1034178689769943121/easterEgg.png");
                                 
@@ -316,7 +323,7 @@ check.execute = async (message, args, server, isSlash) =>{
 
                                         if(a.customId === "true"){
 
-                                            let userInfo = await axios.get(`https://users.roblox.com/v1/users/${usernameData.data?.Id}`).catch(e=>e);
+                                            let userInfo = await axios.get(`https://users.roblox.com/v1/users/${data.id}`).catch(e=>e);
                                         
 
                                             if(userInfo?.data?.description){
@@ -339,7 +346,7 @@ check.execute = async (message, args, server, isSlash) =>{
                                                 console.log("bool", words.join("-") === matches.join("-") || altWords.join("-") === matches.join("-"));
                                                 if(words.join("-") === matches.join("-") || altWords.join("-") === matches.join("-")){
 
-                                                    robloxVerificationCache[authorId] = {robloxId : usernameData.data.Id, cachedUsername : usernameData.data.Username};
+                                                    robloxVerificationCache[authorId] = {robloxId : data.id, cachedUsername : data.Username};
                                                     
                                                     await mongo().then(async (mongoose) =>{
 
@@ -399,7 +406,6 @@ check.execute = async (message, args, server, isSlash) =>{
                             }
                         })
                         .catch(e=>{
-                            
                             if(isSlash) message.editReply({content: "Command expired", components:[]});
                             else m.edit({content: "Command expired", components:[]});
                         })
@@ -416,6 +422,7 @@ check.execute = async (message, args, server, isSlash) =>{
                 
             })
             .catch(e=>{
+                console.log(e)
 
                 if(isSlash) message.editReply({content: "Command expired", components:[]});
                 else m.edit({content: "Command expired", components:[]});
