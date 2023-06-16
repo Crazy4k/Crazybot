@@ -56,7 +56,7 @@ let trelloInfo = {
     kgbTrelloId: "60239dcea166e18eca0f89ea"
 
 }
-let loggingChannelId = "927532313510821888"
+let loggingChannelId = "930527323260866671"
 
 
 let jointRaiderGroups = [];
@@ -716,7 +716,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
     
             //ex rading groups
     
-            if(exRaidingGroups.length){
+          /*  if(exRaidingGroups.length){
                 
                 historyEmbed.addField("\u200b","**Raiding history**", false);
                 exRaidingGroups.forEach(f=>historyEmbed.addField("\u200b",f.join("\n"), false));
@@ -731,7 +731,7 @@ module.exports = async (message, args, server, isSlash, res, status, id, usernam
                 
                 historyEmbed.addField("\u200b","**TSU history**", false);
                 exTSUGroups.forEach(f=>historyEmbed.addField("\u200b",f.join("\n"), false));
-            }
+            }*/
 
             
             branches.forEach(group => {

@@ -371,6 +371,7 @@ setInterval(async ()=>{
 		{str:`${members} members in ${servers} servers `,type:{type: "WATCHING"}},
 		{str:"to /help",type:{type: "LISTENING"}},
 		{str:`CrazyBot ${config["bot_info"].version}`,type:{type: "PLAYING"}},
+		{str:`I forgor my data 💀 `,type:{type: "PLAYING"}}
 		
 	];
 
