@@ -75,7 +75,7 @@ for(let category of bigcommandfile){
 //command handler|prefix based
 
 client.on('messageCreate', async (message) => {
-	if(!botCache.isReady)return
+	if(!botCache.isReady)return;
 	if(message.author.bot)return;
 	if(message.channel.type === "DM" || message.channel.type === "GROUP_DM"){//handle DM commands
 		const prefix = config.bot_info.dmSettings.prefix;//universal prefix is ;
